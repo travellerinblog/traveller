@@ -4,8 +4,7 @@ import Home from '../components/Home/Home.vue'
 import Header from '../components/Home/Header.vue'
 import Navigation from '../components/Home/Navigation.vue'
 import Footer from '../components/Home/Footer.vue'
-
-import Join from '../components/Join/Join.vue'
+import SignUp from '../components/SignUp/SignUp.vue'
 import SignIn from '../components/SignIn/SignIn.vue'
 import MemberLeave from '../components/MemberLeave/MemberLeave.vue'
 import MyPage from '../components/MyPage/MyPage.vue'
@@ -30,27 +29,33 @@ export default new Router({
       children: [
         {
           path: '/header',
-          component: Header
+          component: Header,
+          name: 'Header'
         },
         {
           path: '/footer',
-          component: Footer
+          component: Footer,
+          name: 'Footer'
         },
         {
-          path: '/Join',
-          component: Join
+          path: '/sign-in',
+          component: SignUp,
+          name: 'SignUp'
         },
         {
-          path: '/SingIn',
-          component: SignIn
+          path: '/sign-up',
+          component: SignIn,
+          name: 'SignIn'
         },
         {
-          path: '/MemberLeave',
-          component: MemberLeave
+          path: '/member-leave',
+          component: MemberLeave,
+          name: 'MemberLeave'
         },
         {
           path: '/member/:id',
-          component: MyPage
+          component: MyPage,
+          name: 'MyPage'
         }
       ]
     },
