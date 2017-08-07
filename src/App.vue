@@ -8,8 +8,8 @@
 <script>
 export default {
   name: 'app',
-  data(){
-    return {};
+  data () {
+    return {}
   }
 }
 </script>
