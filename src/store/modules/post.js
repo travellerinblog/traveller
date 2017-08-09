@@ -1,12 +1,8 @@
 // 글쓰기
 export default {
   namespaced: true,
-  state: {
-
-  },
-  getters: {
-  
-  },
+  state: {},
+  getters: {},
   mutations: {},
   actions: {}
 }
