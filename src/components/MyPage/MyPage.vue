@@ -1,5 +1,5 @@
 <template lang="pug">
-  h1 MyPage.vue
+  h1 마이페이지
 </template>
 
 <script>
