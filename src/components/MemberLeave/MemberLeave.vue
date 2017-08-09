@@ -1,5 +1,5 @@
 <template lang="pug">
-  h1 MemberLeave.vue
+  h1 회원탈퇴
 </template>
 
 <script>
