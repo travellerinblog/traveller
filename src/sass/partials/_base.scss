@@ -1,0 +1,32 @@
+@import 'mixin';
+
+// 반응형 콘텐츠
+%readable-hidden{
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  left: -99999em;
+  border: 0;
+  padding: 0;
+  margin: -1px;
+}
+%ir{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+//반응형
+.responsive-object{
+  /* svg 이미지가 아닐때는 꼭 max-로 작성해 준다.*/
+  max-width: 100%;
+  height: auto;
+}
+.responsive-svg{
+  width: 100%;/* svg 는 작게만들기 때문에 100%로 잡아준다. */
+  height: auto;/* 꼭 작성할것 */
+}

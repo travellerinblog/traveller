@@ -1,53 +1,49 @@
 @import 'mixin';
 // 컨테이너 및 그리드 최대 넓이
 $container-width: 100%;
-$grid-max-width: 1336px;
+$grid-max-width: 2000px;
 // 전체 영역을 포함하는 컨테이너
-.container
-  {width: $container-width;}
-
+.container{
+    width: $container-width;
+}
 // 그리드
-.grid
-  {max-width: $grid-max-width;
-  margin: 0 auto;
-  @include clearfix;
+.grid{
+    max-width: $grid-max-width;
+    margin: 0 auto;
+    @include clearfix;
 }
-
 // 가로형 그리드 컬럼 배치를 위한 선언
-.col
-{  box-sizing: border-box;
-  float: left;
-  position: relative;
-  width: 100%;
-  min-height: 50px;
+.col{
+    box-sizing: border-box;
+    float: left;
+    position: relative;
+    width: 100%;
+    min-height: 50px;
 }
-
 // 컬럼의 안쪽 여백
-.col
-{  
-  @include mobile {   
-    padding-left: 10px;
-    padding-right: 10px
-  }
-  @include tablet{
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  @include desktop{
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  }
-    
-
+.col{
+    @include mobile{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    @include tablet{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    @include desktop{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
 // 이중 컬럼 내부 안쪽 여백 제거
-.alpha
-{  margin-left: 0}
-
-.omega
-{  margin-right: 0}
-
+.alpha{
+    margin-left: 0;
+}
+.omega{
+    margin-right: 0;
+}
 // col 숫자
+// $all:($mobile-col: 4, $tablet-col: 8, $desktop-col: 12,);
 $mobile-col: 4;
 $tablet-col: 8;
 $desktop-col: 12;
@@ -57,15 +53,19 @@ $i: 1;
     @for $i from $i to $mobile-col{
         .col-m-#{$i}{
             width: (100% / $mobile-col) * $i;
+            background: red;
         }
         .col-m-offset-#{$i}{
             margin-left: (100% / $mobile-col) * $i;
+            background: yellow;
         }
         .col-m-push-#{$i}{
             left: (100% / $mobile-col) * $i;
+            background: blue;
         }
         .col-m-pull-#{$i}{
             right: (100% / $mobile-col) * $i;
+            background: green;
         }
     }
 }
@@ -74,15 +74,19 @@ $i: 1;
     @for $i from $i to $tablet-col{
         .col-t-#{$i}{
             width: (100% / $tablet-col) * $i;
+            background: orange;
         }
         .col-t-offset-#{$i}{
             margin-left: (100% / $tablet-col) * $i;
+            background: palegreen;
         }
         .col-t-push-#{$i}{
             left: (100% / $tablet-col) * $i;
+            background: violet;
         }
         .col-t-pull-#{$i}{
             right: (100% / $tablet-col ) * $i;
+            background: paleturquoise;
         }
     }
 }
@@ -91,15 +95,19 @@ $i: 1;
     @for $i from $i to $desktop-col{
         .col-d-#{$i}{
             width: (100% / $desktop-col) * $i;
+            background: pink;
         }
         .col-d-offset-#{$i}{
             margin-left: (100% / $desktop-col) * $i;
+            background: olive;
         }
         .col-d-push-#{$i}{
             left: (100% / $desktop-col) * $i;
+            background: orangered;
         }
         .col-d-pull-#{$i}{
             right: (100% / $desktop-col) * $i;
+            background: orchid;
         }
     }
 }
