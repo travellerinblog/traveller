@@ -1,8 +1,11 @@
 <template lang="pug">
   #app
-    img(src="./assets/logo.png")
-    router-view.test.col-m-3.col-m-offset-1.col-t-6.col-t-offset-1
-    router-view(name="gnb")
+    .wrapper
+      img(src="./assets/logo.png")
+      router-view(name="gnb")
+      router-view
+      .grid
+        .col.col-m-1.col-t-2.col-d-10 hello
 </template>
 
 <script>
@@ -16,12 +19,29 @@ export default {
 
 <style lang="scss">
 @import './sass/App';
-.test{
-  background-color: yellow;
-  height: 100px;
- }
+@font-face {
+  font-family: 'Nanum Square';
+  src: url('./assets/font/NanumSquareR.eot');
+  src: url('./assets/font/NanumSquareR.eot?#iefix') format('embedded-opentype'),
+       url('./assets/font/NanumSquareR.woff') format('woff'),
+       url('./assets/font/NanumSquareR.ttf')  format('truetype'),
+       url('./assets/font/NanumSquareOTFR.svg#9e23ceb0c858ca37642ba540402577eb') format('svg');
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Nanum Square';
+  src: url('./assets/font/NanumSquareB.eot');
+  src: url('./assets/font/NanumSquareB.eot?#iefix') format('embedded-opentype'),
+       url('./assets/font/NanumSquareB.woff') format('woff'),
+       url('./assets/font/NanumSquareB.ttf')  format('truetype'),
+       url('./assets/font/NanumSquareOTFB.svg#a41a1fda1fdf3dafd3394867a156b1cf') format('svg');
+       
+  font-style: bold;
+  font-weight: 700;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Nanum Square','Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
