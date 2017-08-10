@@ -1,0 +1,105 @@
+@import 'mixin';
+// 컨테이너 및 그리드 최대 넓이
+$container-width: 100%;
+$grid-max-width: 1336px;
+// 전체 영역을 포함하는 컨테이너
+.container
+  {width: $container-width;}
+
+// 그리드
+.grid
+  {max-width: $grid-max-width;
+  margin: 0 auto;
+  @include clearfix;
+}
+
+// 가로형 그리드 컬럼 배치를 위한 선언
+.col
+{  box-sizing: border-box;
+  float: left;
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+}
+
+// 컬럼의 안쪽 여백
+.col
+{  
+  @include mobile {   
+    padding-left: 10px;
+    padding-right: 10px
+  }
+  @include tablet{
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  @include desktop{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  }
+    
+
+// 이중 컬럼 내부 안쪽 여백 제거
+.alpha
+{  margin-left: 0}
+
+.omega
+{  margin-right: 0}
+
+// col 숫자
+$mobile-col: 4;
+$tablet-col: 8;
+$desktop-col: 12;
+$i: 1;
+// 미디어쿼리 - 모바일
+@include mobile{
+    @for $i from $i to $mobile-col{
+        .col-m-#{$i}{
+            width: (100% / $mobile-col) * $i;
+        }
+        .col-m-offset-#{$i}{
+            margin-left: (100% / $mobile-col) * $i;
+        }
+        .col-m-push-#{$i}{
+            left: (100% / $mobile-col) * $i;
+        }
+        .col-m-pull-#{$i}{
+            right: (100% / $mobile-col) * $i;
+        }
+    }
+}
+// 미디어쿼리 - 타블릿
+@include tablet{
+    @for $i from $i to $tablet-col{
+        .col-t-#{$i}{
+            width: (100% / $tablet-col) * $i;
+        }
+        .col-t-offset-#{$i}{
+            margin-left: (100% / $tablet-col) * $i;
+        }
+        .col-t-push-#{$i}{
+            left: (100% / $tablet-col) * $i;
+        }
+        .col-t-pull-#{$i}{
+            right: (100% / $tablet-col ) * $i;
+        }
+    }
+}
+// 미디어쿼리 - 데스크탑
+@include desktop{
+    @for $i from $i to $desktop-col{
+        .col-d-#{$i}{
+            width: (100% / $desktop-col) * $i;
+        }
+        .col-d-offset-#{$i}{
+            margin-left: (100% / $desktop-col) * $i;
+        }
+        .col-d-push-#{$i}{
+            left: (100% / $desktop-col) * $i;
+        }
+        .col-d-pull-#{$i}{
+            right: (100% / $desktop-col) * $i;
+        }
+    }
+}
