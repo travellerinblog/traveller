@@ -23,7 +23,7 @@ export const store = new Vuex.Store({
   },
   getters: {
     firebaseAlldata (state) {
-      return state.firebaseAlldata
+      return state.firebase_data
     }
   },
   actions: {

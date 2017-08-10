@@ -28,32 +28,32 @@ export default new Router({
       },
       children: [
         {
-          path: '/header',
+          path: 'header',
           component: Header,
           name: 'Header'
         },
         {
-          path: '/footer',
+          path: 'footer',
           component: Footer,
           name: 'Footer'
         },
         {
-          path: '/sign-in',
+          path: 'sign-up',
           component: SignUp,
           name: 'SignUp'
         },
         {
-          path: '/sign-up',
+          path: 'sign-ip',
           component: SignIn,
           name: 'SignIn'
         },
         {
-          path: '/member-leave',
+          path: 'member-leave',
           component: MemberLeave,
           name: 'MemberLeave'
         },
         {
-          path: '/member/:id',
+          path: 'member/:id',
           component: MyPage,
           name: 'MyPage'
         }
