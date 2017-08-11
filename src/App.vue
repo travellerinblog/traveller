@@ -4,8 +4,8 @@
       img(src="./assets/logo.png")
       router-view(name="gnb")
       router-view
-      .grid
-        .col.col-m-1.col-t-2.col-d-10 hello
+      // .grid
+      //   .col.col-m-1.col-t-2.col-d-10 hello
 </template>
 
 <script>
