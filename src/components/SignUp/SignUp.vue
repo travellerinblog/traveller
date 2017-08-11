@@ -15,7 +15,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('signup', ['signUpByGoogle'])
+    ...mapMutations(['signUpByGoogle'])
   }
 }
 </script>
