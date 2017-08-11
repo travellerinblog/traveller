@@ -1,9 +1,9 @@
 <template lang="pug">
   div
-    .video(v-if="false")
+    .video(v-if="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
-    .image-carousel.tablet(role="region" aria-label="여행지 이미지 슬라이드" v-if="true")
+    .image-carousel(v-if="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       ul(role="tablist")
         li(role="presentation")
           a#slide-tab-1.indicator.active-tab(href="#slide-img-1" role="tab" aria-label="대한민국 서울 광화문의 야경" aria-control="slide-img-1" aria-selected="true")
@@ -29,21 +29,45 @@
       .button-group(role="group" v-if="false")
         input.prev-button(type="button" aria-label="previous content" value="‹")
         input.prev-button(type="button" aria-label="next content" value="›")
-
-
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
   data () {
     return {
 
+    }
+  },
+  mounted () {
+    this.$nextTick(function () {
+      window.addEventListener('resize', this.getWindowWidth)
+
+      // Init
+      this.getWindowWidth()
+    })
+  },
+  computed: {
+    ...mapGetters([
+      'getScreenSize', 'isDesktopScreen'
+    ])
+  },
+  methods: {
+    getWindowWidth (event) {
+      let width = document.documentElement.clientWidth
+      console.log(width)
+      this.$store.dispatch('setScreenSize', width)
+      // this.windowWidth = document.documentElement.clientWidth;
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .video{
+    width: 100%;
+    height: auto;
+  }
   .image-carousel.moblie{
     height: 505px;
   }

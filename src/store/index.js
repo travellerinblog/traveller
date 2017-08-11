@@ -9,14 +9,14 @@ export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   state: {
 // -------------------------------------------
-// Firebase
+// Firebase state
 // -------------------------------------------
     // firebase의 모든 데이터
     firebase_data: {},
 // -------------------------------------------
-// Home
+// Home state
 // -------------------------------------------
-  // 비주얼 영역
+  // 비주얼 영역 state
     screen_size: ''
   },
   getters: {
@@ -31,11 +31,10 @@ export const store = new Vuex.Store({
 // -------------------------------------------
     // 비주얼
     getScreenSize (state) {
-
+      return state.screen_size
     },
     isDesktopScreen (state) {
-    },
-    isTabletScreen (state) {
+      return state.screen_size === 'desktop'
     }
   },
   actions: {
@@ -43,12 +42,20 @@ export const store = new Vuex.Store({
 // Home
 // -------------------------------------------
     // 비주얼
-    setScreenSize () {
-
+    setScreenSize (context, payload) {
+      let screenSize = ''
+      if (payload < 768) {
+        screenSize = 'mobile'
+      } else if (payload >= 768 && payload < 1200) {
+        screenSize = 'tablet'
+      } else {
+        screenSize = 'desktop'
+      }
+      context.commit('setScreenSize', screenSize)
     }
   },
-  mutations: {
 
+  mutations: {
 // -------------------------------------------
 // Firebase
 // -------------------------------------------
@@ -62,6 +69,9 @@ export const store = new Vuex.Store({
 // Home
 // -------------------------------------------
     // 비주얼
+    setScreenSize (state, payload) {
+      state.screen_size = payload
+    },
 
 // -------------------------------------------
 // Home component

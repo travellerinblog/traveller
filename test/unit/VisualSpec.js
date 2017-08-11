@@ -21,10 +21,28 @@
 // 4. 윈도우 사이즈에 맞춰서 이미지 크기 변경 
 
 
+//테스트 케이스
+// 윈도우 사이즈가 1300일 때 isDesktopScreen이 true
+// =>video div가 보인다.
+// 윈도우 사이즈가 750일 때 getScreenSize는 'moblie', 
+// => image-carousel에 mobile class가 있다 
+// 윈도우 사이즈가 790일 때 getScreenSize는 'tablet', 
+// => image-carousel에 tablet class가 있다 
 
-describe("Visual.vue", function(){
-  var c = require('./../../src/components/Home/Visual.vue');
+
+describe("Visual.vue는", function(){
+  var component = require('./../../src/components/Home/Visual.vue');
   it('', function(){
     expect().toBe();
   });
 });
+
+
+
+// example test 
+// describe("App vue", function(){
+//   var c = require('./../../src/App.vue');
+//   it('데이터를 가져야 한다', function(){
+//     expect(typeof c.data).toBe('function');
+//   });
+// });
