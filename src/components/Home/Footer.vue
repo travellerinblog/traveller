@@ -1,6 +1,17 @@
 <template lang="pug">
-  div
-    h1 푸터
+  footer.grid
+    h1.logo.col.col-d-1.col-t-2.col-m-1
+      router-link(to="/" tag="a" href) Traveler
+    nav.col.col-d-7.col-t-5.col-t-6.col-m-3
+      ul
+        router-link(to="/" tag="li") 
+          a(href) 이용약관
+        router-link(to="/" tag="li") 
+          a(href) 개인정보
+    .col.col-d-4.col-t-8.col-m-4
+      ul.copyright
+        li Serom &amp; Dasom &amp; Ado
+        li 2017 &copy; Traveler
 </template>
 
 <script>
@@ -12,7 +23,130 @@ export default {
   }
 }
 </script>
-
-<style lang="sass">
-
+<style lang="scss" scoped>
+@import '../../sass/App.scss';
+.a11y-hidden{
+  @extend %readable-hidden;    
+}
+footer{
+  border-top: rgba(#000, 0.2) 1px solid;
+}
+.logo a{
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #f4430b;
+  text-decoration: none;
+}
+nav ul{
+  @include clearfix;
+  li{
+    float: left;
+    font-size: 14px;
+    a{
+      color: rgba(#000, 0.6);
+      text-decoration: none;
+    }
+  }
+  li:first-child{
+    &::after{
+      content: "|";
+      display: inline-block;
+      padding: 0 10px;
+      font-size: 14px;
+      color: rgba(#000, 0.6);
+    }
+  }
+}
+.copyright{
+  @include clearfix;
+  li{
+    font-size: 14px;
+    a{
+      color: rgba(#000, 0.6);
+    }
+  }
+}
+@include mobile{
+  footer{
+    height: 74px;
+  }
+  .logo a{
+    margin-left: 10px;
+  }
+  nav ul{
+    @include clearfix;
+    float: right;
+    margin-right: 10px;
+  }
+  .copyright{
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+@include tablet{
+  footer{
+    height: 78px;
+  }
+  .logo a{
+    margin-left: 20px;
+  }
+  nav ul{
+    @include clearfix;
+    float: right;
+    margin-right: 20px;
+  }
+  .copyright{
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+@include desktop{
+  footer{
+    height: 72px;
+  }
+  .logo a{
+    margin-top: 28px;
+    margin-left: 40px;
+  }
+  nav ul{
+    margin-top: 30px;
+    margin-left: 30px;
+  }
+  .copyright{
+    @include clearfix;
+    float: right;
+    margin-top: 30px;
+    margin-right: 40px;
+    li{
+      float: left;
+    }
+    li:first-child{
+      &::after{
+        content: "|";
+        display: inline-block;
+        padding: 0 10px;
+        font-size: 14px;
+        color: rgba(#000, 0.6);
+      }
+    }
+  }
+}
+@include breakpoint(0px, 1199px){
+  .logo a{
+    margin-top: 15px;
+  }
+  nav ul{
+    margin-top: 18px;
+  }
+  .copyright{
+    margin-top: 8px;
+    li:first-child{
+      float: left;
+    }
+    li:last-child{
+      float: right;
+    }
+  }
+}
 </style>

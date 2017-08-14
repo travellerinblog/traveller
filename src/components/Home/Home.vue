@@ -1,12 +1,21 @@
 <template lang="pug">
- h1 Home.vue
-  button(type="button" @click="getDatabase()") click
+  div
+    Header
+    Main
+    Footer
 </template>
 
 <script>
+import Header from './Header.vue'
+import Main from './Main.vue'
+import Footer from './Footer.vue'
 import {mapMutations} from 'vuex'
+
 export default {
   name: 'home',
+  components: {
+    Header, Main, Footer
+  },
   created: function () {
     return this.$store.commit('getDatabase')
   },
@@ -17,5 +26,6 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../sass/App';
 
 </style>
