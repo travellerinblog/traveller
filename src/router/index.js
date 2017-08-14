@@ -28,12 +28,12 @@ export default new Router({
       },
       children: [
         {
-          path: 'header',
+          path: '',
           component: Header,
           name: 'Header'
         },
         {
-          path: 'footer',
+          path: '',
           component: Footer,
           name: 'Footer'
         },
