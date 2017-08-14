@@ -17,10 +17,9 @@ export default {
     Header, Main, Footer
   },
   created: function () {
-    return this.$store.commit('getDatabase')
+    this.$store.commit('getDatabase')
   },
   methods: {
-    ...mapMutations(['getDatabase'])
   }
 }
 </script>
