@@ -1,21 +1,19 @@
 <template lang="pug">
-  transition(name="fade")
+  transition(name="slide")
     .carousel-item(v-show="isVisible")
       slot
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
   name: 'VisualCarouselItem',
+  props: ['index'],
   computed: {
     isVisible () {
-      return this.$parent.active_index === this.index
-    }
-  },
-  data () {
-    return {
-      index: 0
-    }
+      return this.getAcitveIndex === this.index
+    },
+    ...mapGetters(['getCarouselItems', 'getAcitveIndex'])
   }
 }
 </script>
@@ -24,17 +22,17 @@ export default {
   .carousel-item{
     position: absolute;
     width: 100%;
-    img{
-      width: 100%;
-      height: auto;
-    }
+    flex: 0 0 100%;
   }
-  .fade-enter,
-  .fade-leave-to{
-    opacity: 0;
+
+  .slide-leave-active,
+  .slide-enter-active {
+    transition: 1.5s;
   }
-  .fade-enter-active,
-  .fade-leave-active{
-    transition: opacity 0.4s;
+  .slide-enter {
+    transform: translateX(100%);
+  }
+  .slide-leave-to {
+    transform: translate(-100%);
   }
 </style>

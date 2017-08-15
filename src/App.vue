@@ -1,11 +1,7 @@
 <template lang="pug">
   #app
     .wrapper
-      img(src="./assets/logo.png")
-      router-view(name="gnb")
       router-view
-      // .grid
-      //   .col.col-m-1.col-t-2.col-d-10 hello
 </template>
 
 <script>
@@ -36,16 +32,14 @@ export default {
        url('./assets/font/NanumSquareB.woff') format('woff'),
        url('./assets/font/NanumSquareB.ttf')  format('truetype'),
        url('./assets/font/NanumSquareOTFB.svg#a41a1fda1fdf3dafd3394867a156b1cf') format('svg');
-       
-  font-style: bold;
+  font-style: normal;
   font-weight: 700;
 }
 #app {
   font-family: 'Nanum Square','Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  text-align: left;
+  color: #000;
 }
 </style>

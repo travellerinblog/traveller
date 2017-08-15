@@ -1,12 +1,12 @@
 <template lang="pug">
-    ul.carousel
+    .carousel(:class="getScreenSize")
       slot
       .button-group(role="group" v-if="isTabletScreen")
         button.carousel-button.prev(type="button" aria-label="previous content" @click="prevItem") ‹
         button.carousel-button.next(type="button" aria-label="next content" @click="nextItem") ›
       ul.indicators(role="tablist")
-        li(role="presentation" v-for="n in items_count" :aria-label="'item' + n")
-          a(href role="tab" @click.prevent="gotoItem(n-1)" aria-selected="false" :class="{'active-tab': active_index === n-1}" ) 
+        li(role="presentation" v-for="n in itemCount" :aria-label="'item' + n")
+          a(href role="tab" @click.prevent="gotoItem(n-1)" aria-selected="false" :class="{'active-tab': getAcitveIndex === n-1}" )
 </template>
 
 <script>
@@ -20,57 +20,75 @@ export default {
     }
   },
   mounted () {
-    this.items.forEach((item, index) => {
-      item.index = index
-    })
+    this.setItemIndex()
+
+    // this.$el.addEventListener('mouseenter', this.pauseAutoplay)
+    // this.$el.addEventListener('mouseleave', this.startAutoplay)
+    // this.$el.addEventListener('focusin', this.pauseAutoplay)
+    // this.$el.addEventListener('focusout', this.startAutoplay)
+
+    // this.startAutoplay()
   },
   data () {
     return {
-      active_index: this.index,
-      items: this.$children
+      // autoplayTime: 3000,
+      // autoplayInterval: null
     }
   },
   computed: {
-    items_count () {
-      return this.items.length
-    },
-    class_name (n) {
-      return this.active_index === n ? 'indicator active-tab' : 'indicator'
-    },
     ...mapGetters([
-      'getScreenSize', 'isDesktopScreen', 'isTabletScreen'
+      'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'itemCount', 'getAcitveIndex'
     ])
   },
   methods: {
-    prevItem () {
-      this.active_index === 0 ? this.active_index = 3 : this.active_index--
+    setItemIndex () {
+      this.$store.commit('setItemIndex')
     },
-    nextItem () {
-      this.active_index === 3 ? this.active_index = 0 : this.active_index++
+    prevItem () {
+      this.$store.commit('prevItem')
+    },
+    nextItem (event) {
+      this.$store.commit('nextItem')
     },
     gotoItem (n) {
-      this.active_index = n
+      this.$store.commit('gotoItem', n)
     }
+    // pauseAutoplay () {
+    //   if (this.autoplayInterval) {
+    //     this.autoplayInterval = clearInterval(this.autoplayInterval)
+    //   }
+    // },
+    // startAutoplay () {
+    //   this.autoplayInterval = setInterval(() => {
+    //     this.nextItem()
+    //   }, this.autoplayTime)
+    // }
   }
 }
 </script>
 
 <style scoped lang="scss" >
+  .mobile.carousel{
+    height: 253px;
+  }
+  .tablet.carousel{
+    height: 362px;
+  }
   .carousel {
+    width: 100%;
     position: relative;
-    height: 770px;
+    overflow: hidden;
   }
   .carousel-button {
     position: absolute;
     top: 50%;
-    border: none;
-    background-color: yellow;
-    opacity: 0.7;
+    width: 32px;
+    height: 32px;
     transition: opacity 0.4s;
     transform: translateY(-50%);
-    &:hover{
-      opacity: 1;
-    }
+    background-color: rgba(202, 58, 13, 0.45);
+    border: none;
+    border-radius: 100%;
     &.prev{
       left: 20px;
     }
@@ -78,23 +96,28 @@ export default {
       right: 20px;
     }
   }
+  button[type="button"] {
+    padding: 0;
+    font-size: 30px;
+    color: rgb(244,67,11);
+  }
   .indicators {
     position: absolute;
-    left: 50%;
-    bottom: 40px;
-    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    bottom: 20px;
+    width: 100%;
     li {
-      float: left;
     }
     a {
       display: block;
-      width: 20px;
-      height: 3px;
-      margin: 0 4px;
-      background-color: yellow;
+      width: 32px;
+      height: 2px;
+      margin: 0 8px;
+      background-color: rgba(255,255,255,0.5);
     }
     .active-tab {
-      background-color: green;
+      background-color: rgb(255,255,255);
       cursor: default;
     }
   }
