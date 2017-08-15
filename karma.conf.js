@@ -10,14 +10,15 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: [ 'browserify', 'jasmine'],
+    frameworks: [ 'browserify','jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-       './test/**/*Spec.js'
+       './test/**/*Spec.js',
     ],
-
+    
+ 
 
     // list of files to exclude
     exclude: [
@@ -60,7 +61,10 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: [
+      // 'PhantomJS',
+    'Chrome'
+    ],
 
 
     // Continuous Integration mode

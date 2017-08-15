@@ -17,6 +17,7 @@ export const store = new Vuex.Store({
 // Home state
 // -------------------------------------------
   // 비주얼 영역 state
+    // class에 사용할 기기명
     screen_size: ''
   },
   getters: {
@@ -30,11 +31,19 @@ export const store = new Vuex.Store({
 // Home
 // -------------------------------------------
     // 비주얼
+    // mobile/tablet/desktop 값을 반환
+    // class에 동적으로 연결, 스타일 지정에 사용.
     getScreenSize (state) {
       return state.screen_size
     },
+    // 스크린 사이즈가에 따라서 true/false 반환
+    // v-if에 값을 넣어 video/image 중 무엇이 보일지 정해준다.
     isDesktopScreen (state) {
       return state.screen_size === 'desktop'
+    },
+    // 태블릿 사이즈일 때 버튼이 보이게 연결.
+    isTabletScreen (state) {
+      return state.screen_size === 'tablet'
     }
   },
   actions: {
@@ -42,6 +51,7 @@ export const store = new Vuex.Store({
 // Home
 // -------------------------------------------
     // 비주얼
+    // 윈도우 사이즈에 따른 기기명을 actions에 전달
     setScreenSize (context, payload) {
       let screenSize = ''
       if (payload < 768) {
@@ -69,10 +79,16 @@ export const store = new Vuex.Store({
 // Home
 // -------------------------------------------
     // 비주얼
+    // 윈도우 사이즈에 따른 기기명을 state에 넣는다.
     setScreenSize (state, payload) {
       state.screen_size = payload
     },
-
+    findImagesAndTabs (state, payload) {
+      state.slide_images = payload.slideImages
+      state.tabs = payload.tabs
+      state.active_image = payload.active_image
+      state.active_tab = payload.active_tab
+    },
 // -------------------------------------------
 // Home component
 // -------------------------------------------
