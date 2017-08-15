@@ -1,20 +1,20 @@
 <template lang="pug">
   div
-    Header
-    Main
-    Footer
+    Header-Component
+    Main-Component
+    Footer-Component
 </template>
 
 <script>
-import Header from './Header.vue'
-import Main from './Main.vue'
-import Footer from './Footer.vue'
-import {mapMutations} from 'vuex'
+import HeaderComponent from './Header.vue'
+import MainComponent from './Main.vue'
+import FooterComponent from './Footer.vue'
+// import {mapMutations} from 'vuex'
 
 export default {
   name: 'home',
   components: {
-    Header, Main, Footer
+    HeaderComponent, MainComponent, FooterComponent
   },
   created: function () {
     this.$store.commit('getDatabase')
