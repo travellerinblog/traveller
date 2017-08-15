@@ -17,8 +17,9 @@ export const store = new Vuex.Store({
 // Home state
 // -------------------------------------------
   // 비주얼 영역 state
-    // class에 사용할 기기명
+    // screen_size는 mobile/tablet/desktop , screen_width는 창크기(숫자)
     screen_size: '',
+    screen_width: '',
     // carousel items
     carousel_items: [
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fgwanghwamun.jpg?alt=media&token=b31abddb-19c3-4503-b466-4191321f33aa', alt: '대한민국 서울 광화문의 야경', content: '서울'},
@@ -44,6 +45,9 @@ export const store = new Vuex.Store({
     // class에 동적으로 연결, 스타일 지정에 사용.
     getScreenSize (state) {
       return state.screen_size
+    },
+    getScreenWidth (state) {
+      return state.screen_width
     },
     // 스크린 사이즈가에 따라서 true/false 반환
     // v-if에 값을 넣어 video/image 중 무엇이 보일지 정해준다.
@@ -73,16 +77,16 @@ export const store = new Vuex.Store({
 // -------------------------------------------
     // 비주얼
     // 윈도우 사이즈에 따른 기기명을 actions에 전달
-    setScreenSize (context, payload) {
+    setScreenSize (context, screenWidth) {
       let screenSize = ''
-      if (payload < 768) {
+      if (screenWidth < 768) {
         screenSize = 'mobile'
-      } else if (payload >= 768 && payload < 1200) {
+      } else if (screenWidth >= 768 && screenWidth < 1200) {
         screenSize = 'tablet'
       } else {
         screenSize = 'desktop'
       }
-      context.commit('setScreenSize', screenSize)
+      context.commit('setScreenSize', {screenSize, screenWidth})
     }
   },
 
@@ -102,18 +106,14 @@ export const store = new Vuex.Store({
     // 비주얼
     // 윈도우 사이즈에 따른 기기명을 state에 넣는다.
     setScreenSize (state, payload) {
-      state.screen_size = payload
+      state.screen_size = payload.screenSize
+      state.screen_width = payload.screenWidth
     },
     findImagesAndTabs (state, payload) {
       state.slide_images = payload.slideImages
       state.tabs = payload.tabs
       state.active_image = payload.active_image
       state.active_tab = payload.active_tab
-    },
-    setItemIndex (state) {
-      state.carousel_items.forEach((item, index) => {
-        item.index = index
-      })
     },
     prevItem (state) {
       state.active_index === 0 ? state.active_index = 3 : state.active_index--
