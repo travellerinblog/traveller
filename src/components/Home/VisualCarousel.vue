@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted () {
-    this.autoPlayInit()
+    // this.autoPlayInit()
   },
   data () {
     return {

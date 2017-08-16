@@ -8,6 +8,12 @@ Vue.use(firebase)
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   state: {
+
+// -------------------------------------------
+// 공통
+// -------------------------------------------
+    all_blog_list: [],
+    filter_by: '',
 // -------------------------------------------
 // Firebase state
 // -------------------------------------------
@@ -42,9 +48,21 @@ export const store = new Vuex.Store({
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fuk.jpg?alt=media&token=73a53c15-15fc-4262-ad9f-de231f8f0659', alt: '영국', content: '영국', country: 'uk'},
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Ftaiwan.jpg?alt=media&token=b7e289b6-b1b5-418c-a3fa-7074d1c1b019', alt: '대만', content: '대만', country: 'Taiwan'},
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2FUS.jpg?alt=media&token=eda10492-1beb-4a22-a17e-7b7c380c7df6', alt: '미국', content: '미국', country: 'US'}
-    ]
+    ],
+    filtered_country_list: []
   },
   getters: {
+// -------------------------------------------
+// 공통
+// -------------------------------------------
+    getFilteredList (state) {
+      switch (state.filter_by) {
+        case 'country':
+          return state.filtered_country_list
+        case 'all':
+          return state.all_blog_list
+      }
+    },
 // -------------------------------------------
 // Firebase
 // -------------------------------------------
@@ -121,17 +139,11 @@ export const store = new Vuex.Store({
 // -------------------------------------------
 // Home
 // -------------------------------------------
-    // 비주얼
+    // 비주얼 뮤테이션
     // 윈도우 사이즈에 따른 기기명을 state에 넣는다.
     setScreenSize (state, payload) {
       state.screen_size = payload.screenSize
       state.screen_width = payload.screenWidth
-    },
-    findImagesAndTabs (state, payload) {
-      state.slide_images = payload.slideImages
-      state.tabs = payload.tabs
-      state.active_image = payload.active_image
-      state.active_tab = payload.active_tab
     },
     prevItem (state) {
       state.active_index === 0 ? state.active_index = 3 : state.active_index--
@@ -145,17 +157,37 @@ export const store = new Vuex.Store({
     isVisible (state, payload) {
       state.visible = payload === state.active_index
     },
-// -------------------------------------------
-// Home component
-// -------------------------------------------
-// Header 영역
-// Footer 영역
-// 나 여기 왔다 갔다 영역
-// -------------------------------------------
-// 어디로 갈래 영역
-// 우리가 강추한다 영역
-// 비주얼 영역
-
+    // country list 뮤테이션
+    swipeCountryList (state, payload) {
+      switch (payload) {
+        case 'next':
+          var firstItem = state.country_list_items.shift()
+          state.country_list_items.push(firstItem)
+          break
+        case 'prev':
+          var lastItem = state.country_list_items.pop()
+          state.country_list_items.unshift(lastItem)
+          break
+      }
+    },
+    filterCountryList (state, payload) {
+      var lists = state.firebase_data.lists
+      state.all_blog_list = []
+      for (var prop in lists) {
+        if (payload === lists[prop].country) {
+          state.filtered_country_list.push(lists[prop])
+        }
+      }
+      state.filter_by = 'country'
+    },
+    setAllBlogList (state) {
+      var lists = state.firebase_data.lists
+      state.filtered_country_list = []
+      for (var prop in lists) {
+        state.all_blog_list.push(lists[prop])
+      }
+      state.filter_by = 'all'
+    },
 // -------------------------------------------
     // List 컴포넌트
 // -------------------------------------------
