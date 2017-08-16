@@ -28,7 +28,21 @@ export const store = new Vuex.Store({
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fsydney.jpg?alt=media&token=d5a01206-9bd2-4d02-b2c2-79705ef6f8cf', alt: '호주 시드니 오페라 하우스의 야경', content: '호주'}
     ],
     active_index: 0,
-    visible: false
+    visible: false,
+
+    // country list state
+    country_list_items: [
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fkorea.jpg?alt=media&token=291e1aa7-628c-4cbc-8a39-e7e531efa617', alt: '대한민국', content: '대한민국', country: 'Korea'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fgreece.jpg?alt=media&token=0a597b14-9a23-472c-9ee3-99920aa95da6', alt: '그리스', content: '그리스', country: 'greece'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fchina.jpg?alt=media&token=954c0410-cc65-489e-8263-275dcfc16fb0', alt: '중국', content: '중국', country: 'china'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2FItaly.jpg?alt=media&token=41786354-e223-4d5c-b7bd-c7ede4424379', alt: '이탈리아', content: '이탈리아', country: 'Italy'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fcanada.jpg?alt=media&token=17c94efd-5be8-4efb-899f-a8a334d77630', alt: '캐나다', content: '캐나다', country: 'Canada'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fjapan.jpg?alt=media&token=8d89fc0f-6bc5-4fbc-8a8b-6aa18824724e', alt: '일본', content: '일본', country: 'japan'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2FPhilippines.jpg?alt=media&token=1f07e1e9-25bb-40a0-a1be-60dc0961b6bb', alt: '필리핀', content: '필리핀', country: 'Philippines'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Fuk.jpg?alt=media&token=73a53c15-15fc-4262-ad9f-de231f8f0659', alt: '영국', content: '영국', country: 'uk'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Ftaiwan.jpg?alt=media&token=b7e289b6-b1b5-418c-a3fa-7074d1c1b019', alt: '대만', content: '대만', country: 'Taiwan'},
+      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2FUS.jpg?alt=media&token=eda10492-1beb-4a22-a17e-7b7c380c7df6', alt: '미국', content: '미국', country: 'US'}
+    ]
   },
   getters: {
 // -------------------------------------------
@@ -40,7 +54,7 @@ export const store = new Vuex.Store({
 // -------------------------------------------
 // Home
 // -------------------------------------------
-    // 비주얼
+    // 비주얼 영역 getters
     // mobile/tablet/desktop 값을 반환
     // class에 동적으로 연결, 스타일 지정에 사용.
     getScreenSize (state) {
@@ -69,6 +83,10 @@ export const store = new Vuex.Store({
     },
     isVisible (state) {
       return state.visible
+    },
+    // country list 영역 getters
+    getCountryListItems (state) {
+      return state.country_list_items
     }
   },
   actions: {

@@ -6,7 +6,7 @@
         button.carousel-button.next(type="button" aria-label="next content" @click="nextItem")
       ul.indicators(role="tablist")
         li(role="presentation" v-for="n in itemCount" :aria-label="'item' + n")
-          a(href role="tab" @click.prevent="gotoItem(n-1)" aria-selected="false" :class="{'active-tab': getAcitveIndex === n-1}" )
+          a(href role="tab" @click.prevent="gotoItem(n-1)" :aria-selected="getAcitveIndex === n-1" :class="{'active-tab': getAcitveIndex === n-1}" )
 </template>
 
 <script>

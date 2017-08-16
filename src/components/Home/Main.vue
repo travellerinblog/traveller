@@ -1,21 +1,17 @@
 <template lang="pug">
   .main.grid
     Visual
-    p 가나다라
-    p 가나다라
-    p 가나다라
-    p 가나다라
-    p 가나다라
-    p 가나다라
+    Country-List
 </template>
 
 <script>
 import Visual from './Visual.vue'
+import CountryList from './CountryList.vue'
 
 export default {
   name: 'main',
   components: {
-    Visual
+    Visual, CountryList
   }
 }
 </script>

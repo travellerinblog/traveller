@@ -1,4 +1,4 @@
-<template lang="pug">
+<template lang="pug" v-cloak>
   #app
     .wrapper
       router-view
@@ -41,5 +41,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #000;
+}
+[v-cloak] { 
+  display: none 
 }
 </style>
