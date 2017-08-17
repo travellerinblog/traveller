@@ -7,7 +7,7 @@
           img(:src="getRecommendItem.contents[0]")
         router-link(to="/view" @click.native="gotoBlogView('list1')").content-text.col.col-d-5.col-m-4.col-t-3
           h2.title {{getRecommendItem.title}}
-          p.info {{getConvertedDate}}  |  {{getConvertedDate.country_kr}}  | {{ getRecommendItem.name}}
+          p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
           p.text {{ getEllipsisText }}
 
 
