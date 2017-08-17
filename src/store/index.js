@@ -23,6 +23,9 @@ export const store = new Vuex.Store({
 // -------------------------------------------
 // Home state
 // -------------------------------------------
+  // header 영역
+    show_modal: false,
+    show_search: false
   // 비주얼 영역 state
     // screen_size는 mobile/tablet/desktop , screen_width는 창크기(숫자)
     screen_size: '',
@@ -82,9 +85,22 @@ export const store = new Vuex.Store({
     firebaseAlldata (state) {
       return state.firebase_data
     },
+
 // -------------------------------------------
 // Home
 // -------------------------------------------
+    // 헤더 영역 getters
+    showNav (state) {
+      return state.show_modal
+    },
+    closeNav (state) {
+      return state.show_modal
+    },
+    showSearch (state) {
+      return state.show_search
+    },
+    closeSearch (state) {
+      return state.show_search
     // 비주얼 영역 getters
     // mobile/tablet/desktop 값을 반환
     // class에 동적으로 연결, 스타일 지정에 사용.
@@ -163,6 +179,19 @@ export const store = new Vuex.Store({
 // -------------------------------------------
 // Home
 // -------------------------------------------
+    // Header 영역
+    showMeModal (state) {
+      state.show_modal = true
+    },
+    closeMeModal (state) {
+      state.show_modal = false
+    },
+    showMeSearch (state) {
+      state.show_search = true
+    },
+    closeMeSearch (state) {
+      state.show_search = false
+    },
     // 비주얼 뮤테이션
     // 윈도우 사이즈에 따른 기기명을 state에 넣는다.
     setScreenSize (state, payload) {

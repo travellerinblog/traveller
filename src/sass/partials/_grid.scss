@@ -1,61 +1,51 @@
 @import 'mixin';
 // 컨테이너 및 그리드 최대 넓이
 $container-width: 100%;
-// $grid-max-width: 2000px;
+$m-grid-padding: 2%;
+$t-grid-padding: 3%;
+$d-grid-padding: 4%;
 // 전체 영역을 포함하는 컨테이너
 .container{
-  width: $container-width;
+  @include mobile{
+    width: $container-width;
+    padding-left: $m-grid-padding;
+    padding-right: $m-grid-padding;
+  }
+  @include tablet{
+    width: $container-width;
+    padding-left: $t-grid-padding;
+    padding-right: $t-grid-padding;
+  }
+  @include desktop{
+    width: $container-width;
+    padding-left: $d-grid-padding;
+    padding-right: $d-grid-padding;
+  }
 }
-// 그리드
-.grid{
-  // max-width: $grid-max-width;
-  margin: 0 auto;
-  @include clearfix;
-}
+
 // 가로형 그리드 컬럼 배치를 위한 선언
 .col{
   box-sizing: border-box;
   float: left;
   position: relative;
   width: 100%;
+  min-height: 50px;
 }
 // 컬럼의 안쪽 여백
-// .col{
-//   @include mobile{
-//     padding-left: 8px;
-//     padding-right: 8px;
-//   }
-//   @include tablet{
-//     padding-left: 12px;
-//     padding-right: 12px;
-//   }
-//   @include desktop{
-//     padding-left: 20px;
-//     padding-right: 20px;
-//   }
-// }
-// 이중 컬럼 내부 안쪽 여백 제거
-.alpha{
+.col{
   @include mobile{
-    padding-left: 0;
   }
   @include tablet{
-    padding-left: 0;
   }
   @include desktop{
-    padding-left: 40px;
   }
 }
+// 이중 컬럼 내부 안쪽 여백 제거
+.alpha{
+  margin-left: 0;
+}
 .omega{
-  @include mobile{
-    padding-right: 0;
-  }
-  @include tablet{
-    padding-right: 0;
-  }
-  @include desktop{
-    padding-right: 40px;
-  }
+  margin-right: 0;
 }
 // col 숫자
 // $all:($mobile-col: 4, $tablet-col: 8, $desktop-col: 12,);

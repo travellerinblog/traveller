@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../components/Home/Home.vue'
-import Header from '../components/Home/Header.vue'
+import THeader from '../components/Home/THeader.vue'
 import Navigation from '../components/Home/Navigation.vue'
-import Footer from '../components/Home/Footer.vue'
+import TFooter from '../components/Home/TFooter.vue'
 import SignUp from '../components/SignUp/SignUp.vue'
 import SignIn from '../components/SignIn/SignIn.vue'
 import MemberLeave from '../components/MemberLeave/MemberLeave.vue'
@@ -29,13 +29,13 @@ export default new Router({
       children: [
         {
           path: '',
-          component: Header,
-          name: 'Header'
+          component: THeader,
+          name: 'THeader'
         },
         {
           path: '',
-          component: Footer,
-          name: 'Footer'
+          component: TFooter,
+          name: 'TFooter'
         },
         {
           path: 'sign-up',
