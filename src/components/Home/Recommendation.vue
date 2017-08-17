@@ -7,7 +7,7 @@
           img(:src="getRecommendItem.contents[0]")
         router-link(to="/view" @click.native="gotoBlogView('list1')").content-text.col.col-d-5.col-m-4.col-t-3
           h2.title {{getRecommendItem.title}}
-          p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
+          p.info {{getConvertedDate}}  |  {{getConvertedDate.country_kr}}  | {{ getRecommendItem.name}}
           p.text {{ getEllipsisText }}
 
 
@@ -19,12 +19,8 @@ export default {
   beforeCreate () {
     this.$store.commit('setRecommendItem')
   },
-  mounted () {
-    this.$nextTick(function () {
-      // 화면 사이즈가 바뀌면 사이즈에 맞춰서 몇 글자까지 보일지 정해진다.
-      window.addEventListener('resize', this.setEllipsisText)
-      this.setEllipsisText()
-    })
+  updated () {
+    this.setEllipsisText()
   },
   data () {
     return {
