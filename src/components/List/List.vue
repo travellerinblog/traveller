@@ -7,6 +7,7 @@
         p 나라: {{ list.country }}
         p 작성자: {{ list.name }}
         hr
+
 </template>
 
 <script>
