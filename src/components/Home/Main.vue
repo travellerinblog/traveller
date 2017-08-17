@@ -2,16 +2,18 @@
   .main.grid
     Visual
     Country-List
+    Recommendation
 </template>
 
 <script>
 import Visual from './Visual.vue'
 import CountryList from './CountryList.vue'
+import Recommendation from './Recommendation.vue'
 
 export default {
   name: 'main',
   components: {
-    Visual, CountryList
+    Visual, CountryList, Recommendation
   }
 }
 </script>

@@ -60,6 +60,12 @@ export default new Router({
       ]
     },
     {
+      path: '/view',
+      component: View,
+      name: 'View',
+      props: true
+    },
+    {
       path: '/list',
       name: 'List',
       components: {
@@ -71,11 +77,6 @@ export default new Router({
           path: '/maps',
           component: Maps,
           name: 'Maps'
-        },
-        {
-          path: '/:id/view',
-          component: View,
-          name: 'View'
         },
         {
           path: '/:id/write',

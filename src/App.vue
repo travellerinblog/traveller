@@ -1,5 +1,5 @@
-<template lang="pug" v-cloak>
-  #app
+<template lang="pug">
+  #app(v-cloak)
     .wrapper
       router-view
 </template>

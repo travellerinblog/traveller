@@ -14,11 +14,12 @@ export const store = new Vuex.Store({
 // -------------------------------------------
     all_blog_list: [],
     filter_by: '',
+    blog_view_item: null,
 // -------------------------------------------
 // Firebase state
 // -------------------------------------------
     // firebase의 모든 데이터
-    firebase_data: {},
+    firebase_data: null,
 // -------------------------------------------
 // Home state
 // -------------------------------------------
@@ -49,12 +50,20 @@ export const store = new Vuex.Store({
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2Ftaiwan.jpg?alt=media&token=b7e289b6-b1b5-418c-a3fa-7074d1c1b019', alt: '대만', content: '대만', country: 'Taiwan'},
       {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/CountryList%2FUS.jpg?alt=media&token=eda10492-1beb-4a22-a17e-7b7c380c7df6', alt: '미국', content: '미국', country: 'US'}
     ],
-    filtered_country_list: []
+      // 나라 이름으로 필터된 item들
+    filtered_country_list: [],
+
+    // recommendation state
+    recommend_item: {},
+    ellipsis_text: ''
   },
   getters: {
 // -------------------------------------------
 // 공통
 // -------------------------------------------
+    // list에 뿌려줄 item들
+    // state의 fiter_by값에 따라서 화면에 보여줄 내용이 달라진다.
+    // 필터링하는 메소드에서 fitery_by에 값을 넣어주어야 함.
     getFilteredList (state) {
       switch (state.filter_by) {
         case 'country':
@@ -62,6 +71,10 @@ export const store = new Vuex.Store({
         case 'all':
           return state.all_blog_list
       }
+    },
+    // 블로그 내용에 해당하는 item
+    getBlogViewItem (state) {
+      return state.blog_view_item
     },
 // -------------------------------------------
 // Firebase
@@ -105,6 +118,17 @@ export const store = new Vuex.Store({
     // country list 영역 getters
     getCountryListItems (state) {
       return state.country_list_items
+    },
+    // 추천 영역의 getters
+    getRecommendItem (state) {
+      return state.recommend_item
+    },
+    getConvertedDate (state) {
+      var convert = state.recommend_item.write_date
+      return convert.substring(0, 10).split('-').join('.')
+    },
+    getEllipsisText (state) {
+      return state.ellipsis_text
     }
   },
   actions: {
@@ -159,6 +183,9 @@ export const store = new Vuex.Store({
     },
     // country list 뮤테이션
     swipeCountryList (state, payload) {
+      // 전달 받은 값에 따라서 이미지 슬라이드가 왼쪽으로 움직일지 오른쪽으로 움직일지 정한다.
+      // next라면 배열 리스트의 첫번째 요소가 가장 뒤로가고
+      // prev라면 배열 리스트의 마지막 요소가 가장 앞으로 온다.
       switch (payload) {
         case 'next':
           var firstItem = state.country_list_items.shift()
@@ -171,22 +198,70 @@ export const store = new Vuex.Store({
       }
     },
     filterCountryList (state, payload) {
+      // countrylist.vue로 부터 나라 이름을 전달 받아, 같은 나라의 글 목록만 필터링하는 메소드
       var lists = state.firebase_data.lists
-      state.all_blog_list = []
+      // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
+      state.filtered_country_list = []
       for (var prop in lists) {
         if (payload === lists[prop].country) {
+          // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
           state.filtered_country_list.push(lists[prop])
         }
       }
+      // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
       state.filter_by = 'country'
     },
     setAllBlogList (state) {
+      // 모든 blog 글 목록을 구하는 메소드
+      // state.firebase_data.lists는 Object이기 때문에, 사용하기 편하게 배열에 하나씩 push해 주었다.
       var lists = state.firebase_data.lists
-      state.filtered_country_list = []
+      state.all_blog_list = []
       for (var prop in lists) {
         state.all_blog_list.push(lists[prop])
       }
       state.filter_by = 'all'
+    },
+    // 추천의 뮤테이션
+    setRecommendItem (state) {
+      // 미리 받아놓은 firebase_data를 사용하려고 하니 에러가 발생하여, list item 하나만 가져와서 사용.
+      firebase.database.ref('/lists/list1').on('value', snapshot => {
+        state.recommend_item = snapshot.val()
+      })
+    },
+    gotoBlogView (state, key) {
+      // 블로그 글 내용으로 가는 메소드.
+      // 전체 글 목록에서 Recommendation.vue에서 전달받은 key값과 같은 key를 갖는 list를 state에 넣어준다.
+      var lists = state.firebase_data.lists
+      for (var prop in lists) {
+        if (prop === key) {
+          state.blog_view_item = lists[prop]
+        }
+      }
+    },
+    setEllipsisText (state) {
+      // 화면 사이즈에 따라서 몇 글자까지 보일지 정해준다.
+      let clientWidth = document.documentElement.clientWidth
+      let textLength = state.recommend_item.contents[1].length
+      let text = state.recommend_item.contents[1]
+      if (clientWidth < 767) {
+        if (textLength < 120) {
+          state.ellipsis_text = text
+        } else {
+          state.ellipsis_text = text.substring(0, 117) + '...'
+        }
+      } else if (clientWidth >= 768 && clientWidth < 1200) {
+        if (textLength < 250) {
+          state.ellipsis_text = text
+        } else {
+          state.ellipsis_text = text.substring(0, 247) + '...'
+        }
+      } else {
+        if (textLength < 500) {
+          state.ellipsis_text = text
+        } else {
+          state.ellipsis_text = text.substring(0, 497) + '...'
+        }
+      }
     },
 // -------------------------------------------
     // List 컴포넌트
