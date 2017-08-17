@@ -19,7 +19,20 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
-
+%common{
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+%maxwidth{
+  max-width: 1920px;
+  margin: 0 auto;
+}
+%text-ellipsis{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 //반응형
 .responsive-object{
   /* svg 이미지가 아닐때는 꼭 max-로 작성해 준다.*/
@@ -29,4 +42,33 @@
 .responsive-svg{
   width: 100%;/* svg 는 작게만들기 때문에 100%로 잡아준다. */
   height: auto;/* 꼭 작성할것 */
+}
+
+.btn-close{
+  display: block;
+  overflow: hidden;
+  @extend %common;
+  padding: 0;
+  background: none;
+  border: 0 none;
+  text-align: center;
+  &::before{
+    display: block;
+    @extend %common;
+    margin-right: 10px;
+    font-size: 20px;
+  }
+}
+.btn-search{
+  display: block;
+  overflow: hidden;
+  @extend %common;
+  background: none;
+  text-align: center;
+  &::before{
+    display: block;
+    @extend %common;
+    margin-right: 10px;
+    font-size: 20px;
+  }
 }

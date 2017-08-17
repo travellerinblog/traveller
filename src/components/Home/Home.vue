@@ -1,20 +1,20 @@
 <template lang="pug">
   div
-    Header
-    Main
-    Footer
+    t-header
+    t-main
+    t-footer
 </template>
 
 <script>
-import Header from './Header.vue'
-import Main from './Main.vue'
-import Footer from './Footer.vue'
-import {mapMutations} from 'vuex'
+import THeader from './THeader.vue'
+import TMain from './TMain.vue'
+import TFooter from './TFooter.vue'
+// import {mapMutations} from 'vuex'
 
 export default {
   name: 'home',
   components: {
-    Header, Main, Footer
+    THeader, TMain, TFooter
   },
   created: function () {
     this.$store.commit('getDatabase')
@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../sass/App';
 
 </style>

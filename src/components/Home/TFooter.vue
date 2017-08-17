@@ -2,13 +2,13 @@
   footer.grid
     h1.logo.col.col-d-1.col-t-2.col-m-1
       router-link(to="/" tag="a" href) Traveler
-    nav.col.col-d-7.col-t-5.col-t-6.col-m-3
+    nav.col.col-d-8.col-t-6.col-m-3
       ul
         router-link(to="/" tag="li") 
           a(href) 이용약관
         router-link(to="/" tag="li") 
           a(href) 개인정보
-    .col.col-d-4.col-t-8.col-m-4
+    div.col.col-d-3.col-t-8.col-m-4
       ul.copyright
         li Serom &amp; Dasom &amp; Ado
         li 2017 &copy; Traveler
@@ -32,7 +32,7 @@ footer{
   border-top: rgba(#000, 0.2) 1px solid;
 }
 .logo a{
-  display: block;
+  display: inline-block;
   font-size: 20px;
   font-weight: 700;
   color: #f4430b;
@@ -89,16 +89,16 @@ nav ul{
     height: 78px;
   }
   .logo a{
-    margin-left: 20px;
+    margin-left: 15px;
   }
   nav ul{
     @include clearfix;
     float: right;
-    margin-right: 20px;
+    margin-right: 15px;
   }
   .copyright{
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
   }
 }
 @include desktop{
@@ -107,17 +107,16 @@ nav ul{
   }
   .logo a{
     margin-top: 28px;
-    margin-left: 40px;
+    margin-left: 20px;
   }
   nav ul{
     margin-top: 30px;
-    margin-left: 30px;
   }
   .copyright{
     @include clearfix;
     float: right;
     margin-top: 30px;
-    margin-right: 40px;
+    margin-right: 20px;
     li{
       float: left;
     }
@@ -149,4 +148,5 @@ nav ul{
     }
   }
 }
+
 </style>
