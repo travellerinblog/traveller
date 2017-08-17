@@ -1,5 +1,5 @@
 <template lang="pug">
-  #app
+  #app(v-cloak)
     .wrapper
       a(href="#content" class="a11y-hidden ") 본문 바로가기 링크
       router-view
@@ -67,5 +67,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #000;
+}
+[v-cloak] { 
+  display: none 
 }
 </style>

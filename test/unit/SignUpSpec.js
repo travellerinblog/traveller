@@ -35,11 +35,3 @@
 // 3. 유저키 아래에 data들 추가. id,name,picture
 // 4. password는 null ?
 // 끝??
-
-describe("signup.js", function(){
-  var c = require('./../../src/components/SignUp/SignUp.vue');
-  it('signUpByGoogle은 함수이다', function(){
-    const google = c.methods.signUpByGoogle
-    expect(typeof google).toBe('function');
-  });
-});
