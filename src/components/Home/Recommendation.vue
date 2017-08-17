@@ -19,12 +19,8 @@ export default {
   beforeCreate () {
     this.$store.commit('setRecommendItem')
   },
-  mounted () {
-    this.$nextTick(function () {
-      // 화면 사이즈가 바뀌면 사이즈에 맞춰서 몇 글자까지 보일지 정해진다.
-      window.addEventListener('resize', this.setEllipsisText)
-      this.setEllipsisText()
-    })
+  updated () {
+    this.setEllipsisText()
   },
   data () {
     return {
