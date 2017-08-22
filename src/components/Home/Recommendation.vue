@@ -4,7 +4,7 @@
         h1.header.col.col-m-2.col-t-2.col-d-2 우리가 강추한다!
       .content.grid
         router-link(to="/view" @click.native="gotoBlogView('list1')").content-image.col.col-d-7.col-t-5
-          img(:src="getRecommendItem.contents[0]")
+          img(:src="getItemImgSrc")
         router-link(to="/view" @click.native="gotoBlogView('list1')").content-text.col.col-d-5.col-m-4.col-t-3
           h2.title {{getRecommendItem.title}}
           p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
@@ -17,17 +17,21 @@
 import {mapGetters} from 'vuex'
 export default {
   beforeCreate () {
-    this.$store.commit('setRecommendItem')
+    this.$store.dispatch('setRecommendItem')
+    this.$store.dispatch('setListsData')
+  },
+  mounted () {
+    // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
+    this.$nextTick(function () {
+      // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
+      window.addEventListener('resize', this.getWindowWidth)
+    })
   },
   updated () {
     this.setEllipsisText()
   },
-  data () {
-    return {
-    }
-  },
   computed: {
-    ...mapGetters(['getScreenSize', 'getRecommendItem', 'getConvertedDate', 'getEllipsisText'])
+    ...mapGetters(['getScreenSize', 'getRecommendItem', 'getConvertedDate', 'getEllipsisText', 'getItemImgSrc'])
   },
   methods: {
     gotoBlogView (key) {
@@ -42,10 +46,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a{
-  text-decoration: none; 
-}
+@import '../../sass/App';
 .recommend-container{
+  @extend %maxwidth;
+  a{
+    text-decoration: none; 
+  }
   background-color: rgba(244, 67, 11, 0.04);
   .header{
     color: rgb(10,9,8);
@@ -70,17 +76,17 @@ a{
 }
 
 
-@media (max-width: 767px){
+@include mobile{
   .recommend-container{
-      height: 498px;
+    height: 498px;
   }
   .header{
-    margin: 44px 0 0 16px;
+    margin: 32px 0 0 10px;
     font-size: 16px;
   }
   .content{
     height: 368px;
-    margin: 20px 16px 48px 16px;
+    margin: 8px 16px 48px 10px;
   }
   .content-image{
     height: 215px;
@@ -105,17 +111,17 @@ a{
     }
   }
 }
-@media (min-width: 768px) and (max-width: 1199px){
+@include tablet{
   .recommend-container{
     height: 401px;
   }
   .header{
-    margin: 44px 0 0 24px;
+    margin: 32px 0 0 15px;
     font-size: 18px;
   }
   .content {
     height: 271px;
-    margin: 20px 35px 48px 24px;
+    margin: 8px 35px 48px 15px;
   }
   .content-image{
     height: 100%;
@@ -140,17 +146,17 @@ a{
     }
   }
 }
-@media (min-width: 1200px){
+@include desktop{
   .recommend-container{
     height: 936px;
   }
   .header{
-    margin: 72px 0 0 40px;
+    margin: 56px 0 0 20px;
     font-size: 28px;
   }
   .content{
     height: 692px;
-    margin: 48px 36px 96px 40px;
+    margin: 32px 36px 96px 20px;
   }
   .content-image{
     height: 100%;

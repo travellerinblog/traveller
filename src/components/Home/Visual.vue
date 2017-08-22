@@ -20,12 +20,14 @@ export default {
   components: {
     VisualCarousel, VisualCarouselItem
   },
-  data () {
-    return {
-    }
-  },
-  updated () {
-    this.getWindowWidth()
+  mounted () {
+    // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
+    this.$nextTick(function () {
+      // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
+      window.addEventListener('resize', this.getWindowWidth)
+      // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행.
+      this.getWindowWidth()
+    })
   },
   computed: {
     ...mapGetters([

@@ -1,0 +1,66 @@
+[debug] [2017-08-22T08:09:32.999Z] ----------------------------------------------------------------------
+[debug] [2017-08-22T08:09:33.002Z] Command:      C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\bin\firebase serve
+[debug] [2017-08-22T08:09:33.002Z] CLI Version:  3.9.1
+[debug] [2017-08-22T08:09:33.003Z] Platform:     win32
+[debug] [2017-08-22T08:09:33.003Z] Node Version: v7.10.0
+[debug] [2017-08-22T08:09:33.003Z] Time:         Tue Aug 22 2017 17:09:33 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:33.003Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-08-22T08:09:33.019Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-08-22T08:09:33.020Z] > authorizing via signed-in user
+[debug] [2017-08-22T08:09:33.022Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-08-22T08:09:33.022Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/TZDBN2kpth2SOPYisb4XokDwk5OheCoQGNuOqmS7VGY',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Tue Aug 22 2017 17:09:33 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:33.657Z] <<< HTTP RESPONSE 200
+[debug] [2017-08-22T08:09:33.669Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/traveller-in-blog  
+ Tue Aug 22 2017 17:09:33 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:35.318Z] <<< HTTP RESPONSE 200
+[debug] [2017-08-22T08:09:35.319Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/traveller-in-blog/tokens  
+ Tue Aug 22 2017 17:09:35 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:36.442Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\___SomDa\Documents\study\project\traveller'...
+[info] 
+[debug] [2017-08-22T08:09:36.445Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/traveller-in-blog  
+ Tue Aug 22 2017 17:09:36 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:38.051Z] <<< HTTP RESPONSE 200
+[debug] [2017-08-22T08:09:38.052Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/514437709393/clients/_:getWebAppConfig  
+ Tue Aug 22 2017 17:09:38 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:09:39.168Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+
+[info] Shutting down...
+[debug] [2017-08-22T08:10:01.049Z] ----------------------------------------------------------------------
+[debug] [2017-08-22T08:10:01.055Z] Command:      C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\bin\firebase serve
+[debug] [2017-08-22T08:10:01.056Z] CLI Version:  3.9.1
+[debug] [2017-08-22T08:10:01.056Z] Platform:     win32
+[debug] [2017-08-22T08:10:01.057Z] Node Version: v7.10.0
+[debug] [2017-08-22T08:10:01.058Z] Time:         Tue Aug 22 2017 17:10:01 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:10:01.058Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-08-22T08:10:01.101Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-08-22T08:10:01.102Z] > authorizing via signed-in user
+[debug] [2017-08-22T08:10:01.109Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/traveller-in-blog  
+ Tue Aug 22 2017 17:10:01 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:10:02.445Z] <<< HTTP RESPONSE 200
+[debug] [2017-08-22T08:10:02.446Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/traveller-in-blog/tokens  
+ Tue Aug 22 2017 17:10:02 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:10:03.484Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\___SomDa\Documents\study\project\traveller'...
+[info] 
+[debug] [2017-08-22T08:10:03.487Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/traveller-in-blog  
+ Tue Aug 22 2017 17:10:03 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:10:04.875Z] <<< HTTP RESPONSE 200
+[debug] [2017-08-22T08:10:04.876Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/514437709393/clients/_:getWebAppConfig  
+ Tue Aug 22 2017 17:10:04 GMT+0900 (대한민국 표준시)
+[debug] [2017-08-22T08:10:06.171Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+
+[info] Shutting down...

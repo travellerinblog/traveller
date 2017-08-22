@@ -2,10 +2,10 @@
     .carousel(:class="getScreenSize")
       slot
       .button-group(role="group" v-if="isTabletScreen")
-        button.carousel-button.prev(type="button" aria-label="previous content" @click="prevItem")
+        button.carousel-button.prev(type="button" aria-label="previous content" @click="prevItem") 
         button.carousel-button.next(type="button" aria-label="next content" @click="nextItem")
       ul.indicators(role="tablist")
-        li(role="presentation" v-for="n in itemCount" :aria-label="'item' + n")
+        li(role="presentation" v-for="n in itemCount" :aria-label="'item' + n" )
           a(href role="tab" @click.prevent="gotoItem(n-1)" :aria-selected="getAcitveIndex === n-1" :class="{'active-tab': getAcitveIndex === n-1}" )
 </template>
 
@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      autoplayTime: 3000,
+      autoplayTime: 4000,
       autoplayInterval: null
     }
   },
@@ -95,19 +95,23 @@ button[type="button"] {
   padding: 0;
 }
 .prev::after {
-  content: '‹';
+  content: '\66';
   position: absolute;
-  top: -7px;
-  left: 10px;
-  font-size: 32px;
+  top: 5px;
+  left: 6px;
+  transform: rotate(-90deg);
+  font-family: "travelericon";
+  font-size: 19px;
   color: rgb(244,67,11);
 }
 .next::after {
-  content: '›';
+  content: '\66';
   position: absolute;
-  top: -7px;
-  right: 10px;
-  font-size: 32px;
+  top: 5px;
+  left: 5px;
+  transform: rotate(90deg);
+  font-family: "travelericon";
+  font-size: 19px;
   color: rgb(244,67,11);
 }
 .indicators {
@@ -127,6 +131,11 @@ button[type="button"] {
   .active-tab {
     background-color: rgb(255,255,255);
     cursor: default;
+  }
+  a::after{
+    content: '';
+    width: 32px;
+    padding: 15px;
   }
 }
 @include mobile{

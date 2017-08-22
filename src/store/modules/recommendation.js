@@ -1,33 +1,38 @@
-import firebase from './../../firebase'
+import axios from 'axios'
 export default {
   state: {
     recommend_item: {},
-    ellipsis_text: ''
+    ellipsis_text: '',
+    item_img_src: '',
+    contents: '',
+    write_date: ''
   },
   getters: {
     getRecommendItem (state) {
       return state.recommend_item
     },
+    getItemImgSrc (state) {
+      return state.item_img_src
+    },
     getConvertedDate (state) {
-      var convert = state.recommend_item.write_date
-      return convert.substring(0, 10).split('-').join('.')
+      return state.write_date.substring(0, 10).split('-').join('.')
     },
     getEllipsisText (state) {
       return state.ellipsis_text
     }
   },
   mutations: {
-    setRecommendItem (state) {
-      // 미리 받아놓은 firebase_data를 사용하려고 하니 에러가 발생하여, list item 하나만 가져와서 사용.
-      firebase.database.ref('/lists/list1').on('value', snapshot => {
-        state.recommend_item = snapshot.val()
-      })
+    setRecommendItem (state, payload) {
+      state.recommend_item = payload.list1
+      state.item_img_src = payload.list1.contents[0]
+      state.contents = payload.list1.contents[1]
+      state.write_date = payload.list1.write_date
     },
     setEllipsisText (state) {
       // 화면 사이즈에 따라서 몇 글자까지 보일지 정해준다.
       let clientWidth = document.documentElement.clientWidth
-      let textLength = state.recommend_item.contents[1].length
-      let text = state.recommend_item.contents[1]
+      let textLength = state.contents.length
+      let text = state.contents
       if (clientWidth < 767) {
         if (textLength < 120) {
           state.ellipsis_text = text
@@ -49,5 +54,12 @@ export default {
       }
     }
   },
-  actions: {}
+  actions: {
+    setRecommendItem (context) {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        context.commit('setRecommendItem', response.data)
+      }).catch(error => console.log(error.message))
+    }
+  }
 }

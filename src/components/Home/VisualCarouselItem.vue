@@ -1,6 +1,6 @@
 <template lang="pug">
   transition(name="slide")
-    .carousel-item(v-show="isVisible" :class="getScreenSize")
+    .carousel-item(v-show="isVisible")
       slot
 </template>
 
