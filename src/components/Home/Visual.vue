@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.grid(:class="getScreenSize")
+  div.grid
     .video.col(v-if="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
@@ -22,17 +22,10 @@ export default {
   },
   data () {
     return {
-
     }
   },
-  mounted () {
-    // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
-    this.$nextTick(function () {
-      // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
-      window.addEventListener('resize', this.getWindowWidth)
-      // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행.
-      this.getWindowWidth()
-    })
+  updated () {
+    this.getWindowWidth()
   },
   computed: {
     ...mapGetters([
@@ -49,11 +42,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../../sass/App';
+@include mobile{
+  img {
+    transform: translateY(-15%);
+  }
+}
+@include tablet{
+  img{
+    transform: translateY(-20%);
+  }
+}
+@include desktop{
   .video{
-    position: relative;
-    width: 100%;
-    height: 720px;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 720px;
+  overflow: hidden;
     video{
       width: 100%;
       height: auto;
@@ -66,12 +71,10 @@ export default {
       color: #fff
     }
   }
+}
+@include breakpoint(0px, 1199px){
   img {
     width: 100%;
-    transform: translateY(-15%);
-  }
-  .tablet img{
-    transform: translateY(-20%);
   }
   .content {
     position: absolute;
@@ -85,6 +88,6 @@ export default {
     color: #fff;
     background-color: rgba(10,9,8,0.4);
   }
-
+}
 </style>
 

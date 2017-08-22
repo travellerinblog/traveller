@@ -1,9 +1,17 @@
 @import 'mixin';
 // 컨테이너 및 그리드 최대 넓이
 $container-width: 100%;
+$grid-max-width: 1920;
 $m-grid-padding: 2%;
 $t-grid-padding: 3%;
 $d-grid-padding: 4%;
+
+
+.grid{
+  max-width: $grid-max-width;
+  margin: 0 auto;
+  @include clearfix;
+}
 // 전체 영역을 포함하는 컨테이너
 .container{
   @include mobile{

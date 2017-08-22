@@ -1,14 +1,13 @@
 <template lang="pug">
 .country-list(:class="getScreenSize")
-  .container
-    .country-header.grid
-      h1.country-title.col.col-m-2.col-t-2.col-d-2 어디로 갈래?
-      router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기 &rarr;
-    v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-      router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="item in getCountryListItems" :key="item.country") 
-        a(href)
-          img(:src="item.src" :alt="item.alt") 
-          p.country-content.col {{ item.content }}
+  .country-header.grid
+    h1.country-title.col.col-m-2.col-t-2.col-d-2 어디로 갈래?
+    router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기 &rarr;
+  v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
+    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="item in getCountryListItems" :key="item.country") 
+      a(href)
+        img(:src="item.src" :alt="item.alt") 
+        p.country-content.col {{ item.content }}
 </template>
 
 <script>

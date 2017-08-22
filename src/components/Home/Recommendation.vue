@@ -1,5 +1,5 @@
 <template lang="pug">
-    .recommend-container.container(:class="getScreenSize")
+    .recommend-container(:class="getScreenSize")
       .content-header.grid
         h1.header.col.col-m-2.col-t-2.col-d-2 우리가 강추한다!
       .content.grid
