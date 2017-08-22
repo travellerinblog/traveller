@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.grid
+  .visual-container
     .video.col(v-if="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
@@ -33,7 +33,7 @@ export default {
     ])
   },
   methods: {
-    getWindowWidth (event) {
+    getWindowWidth () {
       let width = document.documentElement.clientWidth
       this.$store.dispatch('setScreenSize', width)
     }

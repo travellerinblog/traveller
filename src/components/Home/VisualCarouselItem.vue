@@ -19,23 +19,28 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .carousel-item{
-    position: absolute;
-  }
-  .mobile.carousel-item {
+@import '../../sass/App';
+.carousel-item{
+  position: absolute;
+}
+.slide-leave-active,
+.slide-enter-active {
+  transition: 1.5s;
+}
+.slide-enter {
+  transform: translateX(100%);
+}
+.slide-leave-to {
+  transform: translate(-100%);
+}
+@include mobile{
+  .carousel-item {
     height: 253px;
   }
-  .tablet.carousel-item{
+}
+@include tablet{
+  .carousel-item{
     height: 362px;
   }
-  .slide-leave-active,
-  .slide-enter-active {
-    transition: 1.5s;
-  }
-  .slide-enter {
-    transform: translateX(100%);
-  }
-  .slide-leave-to {
-    transform: translate(-100%);
-  }
+}
 </style>
