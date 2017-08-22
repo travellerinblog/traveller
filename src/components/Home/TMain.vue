@@ -1,13 +1,19 @@
 <template lang="pug">
   main#content.grid
+    Visual
     blog-list
+    CountryList
+    Recommendation
 </template>
 
 <script>
 import BlogList from './BlogList.vue'
+import Visual from './Visual.vue'
+import CountryList from './CountryList.vue'
+import Recommendation from './Recommendation.vue'
 export default {
   components: {
-    BlogList
+    BlogList, Visual, CountryList, Recommendation
   }
 }
 </script>
