@@ -297,4 +297,44 @@ export default {
       }
     }
   }
+  .item-container{
+    margin: 25px 0 0 0;
+    height: 480px;
+  }
+  .col-d-6{
+    width: 48%;
+  }
+  p{
+    padding-top: 28px;
+    height: 72px;
+    font-size: 24px;
+  }
+  .country-item:nth-child(3) {
+    opacity: 0.4;
+    z-index: -1;
+  }
+  img{
+    height: 100%;
+  }
+}
+@include breakpoint(0px, 1199px){
+  .country-title{
+    font-size: 18px;
+  }
+  .country-more{
+    font-size: 14px;
+  }
+  .item-container{
+    height: 254px;
+  }
+  .country-item:nth-child(2) {
+    opacity: 0.4;
+    z-index: -1;
+  }
+  p{
+    padding-top: 19px;
+    height: 52px;
+    font-size: 15px;
+  }
+}
 </style>

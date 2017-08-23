@@ -9,8 +9,6 @@
         h2.title {{getRecommendItem.title}}
         p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
         p.text {{ getEllipsisText }}
-
-
 </template>
 
 <script>
