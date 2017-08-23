@@ -4,14 +4,15 @@
       h1.logo
         router-link(to="/" tag="a") 
           a(href) Traveler
-      button.btn-nav(type="button" @click="onshowModal") 메뉴
+      button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
       .search
         form#search-form(role="search")
           fieldset 
             legend.a11y-hidden 검색 폼
-            button.btn-open-search.icon-search24(type="button" @click="onshowSearch") 검색어를 입력하세요
+            button.btn-open-search.icon-search(type="button" @click="onshowSearch") 
+              span 검색어를 입력하세요
             .search-area.col.col-d-12.col-t8.col-m-4(v-show="showSearch")
-              label.icon-search24.btn-search(for="search-keyword") 검색어 입력하세요
+              label.icon-search.btn-search(for="search-keyword") 검색어 입력하세요
               input#search-keyword(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요")
               button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
     .log.col.col-d-2.col-t-2.col-m-1
@@ -86,24 +87,40 @@ header{
   width: 40px;
   height: 40px;
   margin: 7px 20px 0 20px;
+  padding: 0;
   border: 0 none;
-  background: #ff0;
+  background: none;
+  &::before{
+    display: block;
+    width: 40px;
+    height: 35px;
+    line-height: 40px;
+    font-size: 30px;
+    padding-top: 5px;
+    text-align: center;
+    font-weight: bold;
+  }
 }
 .btn-open-search{
   display: block;
-  padding: 5px 10px;
+  padding: 7px 10px 3px;
   margin-top: 12px;
   border: 0 none;
-  background: #fff;
+  background: none;
   color: #000;
   &::before{
-    display: inline-block;
+    float: left;
+    display: block;
     width: 24px;
     height: 24px;
     line-height: 24px;
-    margin-right: 10px;
-    vertical-align: bottom;
-    font-size: 20px;
+    font-size: 24px;
+  }
+  span{
+    float: left;
+    display: block;
+    height: 24px;
+    @extend %text-ellipsis;
   }
 }
 .search-area{
@@ -118,10 +135,20 @@ header{
   z-index: 10;
   label{
     float: left;
+    &::before{
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      margin-right: 10px;
+      vertical-align: -5px;
+      font-size: 24px;
+    }
   }
   input{
     float: left;
     display: block;
+    width: 70vw;
     height: 32px;
     line-height: 32px;
     background: #fff;
@@ -205,5 +232,11 @@ header{
     }
   }
 }
-
+@include breakpoint(0px, 427px){
+  .btn-open-search{
+    span{
+      max-width: 98px;
+    }
+  }
+}
 </style>

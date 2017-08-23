@@ -83,7 +83,7 @@ export default {
   transform: translateY(-50%);
   background-color: rgba(255, 255, 255, 0.6);
   border: none;
-  border-radius: 100%;
+  border-radius: 50%;
   &.prev{
     left: 20px;
   }
@@ -103,6 +103,7 @@ button[type="button"] {
   font-family: "travelericon";
   font-size: 19px;
   color: rgb(244,67,11);
+  font-weight: bold;
 }
 .next::after {
   content: '\66';
@@ -113,6 +114,7 @@ button[type="button"] {
   font-family: "travelericon";
   font-size: 19px;
   color: rgb(244,67,11);
+  font-weight: bold;
 }
 .indicators {
   position: absolute;
