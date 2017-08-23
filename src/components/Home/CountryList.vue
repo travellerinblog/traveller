@@ -1,16 +1,21 @@
 <template lang="pug">
-.country-list(:class="getScreenSize")
-  .country-header.grid
-    h1.country-title.col.col-m-2.col-t-2.col-d-2 어디로 갈래?
-    router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기 &rarr;
-  v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="item in getCountryListItems" :key="item.country") 
-      a(href)
-        img(:src="item.src" :alt="item.alt") 
-        p.country-content.col {{ item.content }}
+.countrylist
+  .country-title
+    h1 어디로 갈래?
+    router-link.country-more(tag="a" to="/list" @click.native="setAllBlogList") 더보기
+      i.icon-next
+  .country-body
+    v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
+      router-link( to="/list" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+        a(href)
+          figure
+            div
+              img(:src="item.src" :alt="item.alt") 
+            figcaption
+              strong {{ item.content }}
 </template>
 
-<script>
+<script scoped>
 import {mapGetters} from 'vuex'
 export default {
   data () {
@@ -19,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getCountryListItems', 'getScreenSize'])
+    ...mapGetters(['getCountryListItems'])
   },
   methods: {
     dragStart () {
@@ -45,113 +50,251 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .country-list{
-    .country-title{
-      font-weight: bold;
-      font-size: 18px;
-      color: rgb(10,9,8);
+  @import '../../sass/App';
+  .countrylist {
+    @extend %maxwidth;
+  }
+  
+  .country-title {
+    @include clearfix;
+    h1 {
+      float: left;
+      margin-bottom: 8px;
+      color: #0a0908;
+      font-weight: 700;
     }
-    .country-more{
-      text-align: right;
-      color: rgba(10, 9, 8, 0.5);
-      font-size: 14px;
+    a {
+      float: right;
+      display: block;
+      color: rgba(#000, .5);
+      text-decoration: none;
+      i {
+        vertical-align: -2px;
+        margin-left: 8px;
+      }
     }
   }
-  .item-container{
-    display: flex;
-    height: 254px;
+  
+  .country-body {
+    position: relative;
+    margin-bottom: 16px;
+    width: 100%;
     overflow: hidden;
-    .country-item{
-      position: relative;
-    }
-    img{
-      height: 100%;
-      user-drag: none; 
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-drag: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-    p{
-      padding-top: 19px;
-      position: absolute;
-      height: 52px;
-      bottom: 0;
-      color: #fff;
-      box-sizing: border-box;
-    }
-    .country-content{
-      padding-left: 15px;
-      width: 200%;
-      left: 0;
-      background-color: rgba(10, 9, 8, 0.4);
-    }
-  }
-  // 사이즈 별로 다른 설정
-  .mobile{
-    margin: 32px 0 12px 16px;
-    .item-container{
-      margin: 8px 0 0 16px;
-    }
-    .country-more{
-      padding-right: 16px;
-    }
-  }
-  .tablet{
-    margin: 44px 0 12px 24px;
-    .item-container{
-      margin: 6px 0 0 24px;
-    }
-    img{
-      position: relative;
-      top: -50%;
-      height: 200%;
-    }
-    .country-content{
-      padding-left: 24px;
-    }
-    .country-more{
-      padding-right: 27px;
+    box-sizing: border-box;
+    ul {
+      @include clearfix;
+      li {
+        float: left;
+        box-sizing: border-box;
+        height: 480px;
+        a {
+          position: relative;
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+        figure {
+          div {
+            width: 100%;
+            overflow: hidden;
+            img {
+              height: 100%;
+              width: auto;
+              user-drag: none; 
+              user-select: none;
+              -moz-user-select: none;
+              -webkit-user-drag: none;
+              -webkit-user-select: none;
+              -ms-user-select: none;
+            }
+          }
+          figcaption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 58px;
+            box-sizing: border-box;
+            background: rgba(#000, .4);
+            color: #fff;
+            strong {
+              font-size: 22px;
+              height: 58px;
+              line-height: 58px;
+            }
+          }
+        }
+      }
     }
   }
-  .mobile, .tablet {
-    .country-item:nth-child(2) {
-      opacity: 0.4;
-      z-index: -1;
+  
+  @include mobile {
+    .country-title {
+      padding: 0 10px;
+      height: 42px;
+      line-height: 42px;
+      h1 {
+        font-size: 18px;
+        height: 42px;
+        line-height: 42px;
+      }
+      a {
+        font-size: 14px;
+        i {
+          font-size: 12px;
+        }
+      }
+    }
+    .country-body {
+      height: 254px;
+      ul{
+        padding: 0 10px;
+        li {
+          width: 80%;
+          a{
+            height: 254px;
+            figure {
+              height: 254px;
+              div {
+                height: 254px;
+                img {
+                  width: 100%;
+                  height: auto;
+                }
+              }
+              figcaption {
+                padding: 0 10px;
+                strong{
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+        }
+        li:nth-child(2) {
+          opacity: 0.5;
+          width: 20%;
+          a{
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }  
     }
   }
-  .desktop{
-    margin: 64px 0 16px 40px;
-    .item-container{
-      margin: 25px 0 0 40px;
+  
+  @include tablet {
+    .country-title {
+      padding: 0 15px;
+      height: 42px;
+      line-height: 42px;
+      h1 {
+        font-size: 18px;
+        height: 42px;
+        line-height: 42px;
+      }
+      a {
+        font-size: 14px;
+        i {
+          font-size: 12px;
+        }
+      }
+    }
+    .country-body {
+      height: 340px;
+      ul{
+        padding: 0 15px;
+        li {
+          width: 45%;
+          a{
+            height: 340px;
+            figure {
+              height: 340px;
+              div {
+                height: 340px;
+              }
+              figcaption {
+                padding: 0 15px;
+                strong{
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+        }
+        li:nth-child(3) {
+          opacity: 0.5;
+          width: 10%;
+          a{
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    } 
+  }
+  
+  @include desktop {
+    .country-title {
+      padding: 0 20px;
+      height: 60px;
+      line-height: 60px;
+      h1 {
+        font-size: 28px;
+        height: 60px;
+        line-height: 60px;
+      }
+      a {
+        font-size: 16px;
+        i {
+          font-size: 14px;
+        }
+      }
+    }
+    .country-body {
       height: 480px;
+      ul{
+        padding-left: 20px;
+        padding-right: 20px;
+        li {
+          width: 30%;
+          figure {
+            height: 680px;
+            div {
+              height: 680px;
+            }
+            figcaption {
+              padding: 0 20px;
+            }
+          }
+        }
+        li:nth-child(4) {
+          opacity: 0.5;
+          width: 10%;
+          a{
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
     }
-    .col-d-6{
-      width: 48%;
-    }
-    .country-title{
-      font-size: 28px;
-    }
-    .country-item:nth-child(3) {
-      opacity: 0.4;
-      z-index: -1;
-    }
-    p{
-      padding-top: 28px;
-      height: 72px;
-      font-size: 24px;
-    }
-    .country-content{
-      padding-left: 40px;
-    }
-    .country-more{
-      padding-right: 40px;
-      font-size: 16px;
-    }
-  }
-  // 공통 요소
-  a {
-    text-decoration: none;
   }
 </style>
