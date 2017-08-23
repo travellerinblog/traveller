@@ -15,113 +15,45 @@
 </template>
 
 <script>
-export default {
-  data () {
-    return {
+  export default {
+    data () {
+      return {
 
+      }
     }
   }
-}
 </script>
+
 <style lang="scss" scoped>
-@import '../../sass/App.scss';
-.a11y-hidden{
-  @extend %readable-hidden;    
-}
-footer{
-  border-top: rgba(#000, 0.2) 1px solid;
-}
-.logo a{
-  display: inline-block;
-  font-size: 20px;
-  font-weight: 700;
-  color: #f4430b;
-  text-decoration: none;
-}
-nav ul{
-  @include clearfix;
-  li{
-    float: left;
-    font-size: 14px;
-    a{
-      color: rgba(#000, 0.6);
-      text-decoration: none;
-    }
+  @import '../../sass/App.scss';
+  .a11y-hidden {
+    @extend %readable-hidden;
   }
-  li:first-child{
-    &::after{
-      content: "|";
-      display: inline-block;
-      padding: 0 10px;
-      font-size: 14px;
-      color: rgba(#000, 0.6);
-    }
+  
+  footer {
+    border-top: rgba(#000, 0.2) 1px solid;
   }
-}
-.copyright{
-  @include clearfix;
-  li{
-    font-size: 14px;
-    a{
-      color: rgba(#000, 0.6);
-    }
+  
+  .logo a {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f4430b;
+    text-decoration: none;
   }
-}
-@include mobile{
-  footer{
-    height: 74px;
-  }
-  .logo a{
-    margin-left: 10px;
-  }
-  nav ul{
+  
+  nav ul {
     @include clearfix;
-    float: right;
-    margin-right: 10px;
-  }
-  .copyright{
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-}
-@include tablet{
-  footer{
-    height: 78px;
-  }
-  .logo a{
-    margin-left: 15px;
-  }
-  nav ul{
-    @include clearfix;
-    float: right;
-    margin-right: 15px;
-  }
-  .copyright{
-    margin-left: 15px;
-    margin-right: 15px;
-  }
-}
-@include desktop{
-  footer{
-    height: 72px;
-  }
-  .logo a{
-    margin-top: 28px;
-    margin-left: 20px;
-  }
-  nav ul{
-    margin-top: 30px;
-  }
-  .copyright{
-    @include clearfix;
-    float: right;
-    margin-top: 30px;
-    margin-right: 20px;
-    li{
+    li {
       float: left;
+      font-size: 14px;
+      a {
+        color: rgba(#000, 0.6);
+        text-decoration: none;
+      }
     }
-    li:first-child{
-      &::after{
+    li:first-child {
+      &::after {
         content: "|";
         display: inline-block;
         padding: 0 10px;
@@ -130,23 +62,99 @@ nav ul{
       }
     }
   }
-}
-@include breakpoint(0px, 1199px){
-  .logo a{
-    margin-top: 15px;
-  }
-  nav ul{
-    margin-top: 18px;
-  }
-  .copyright{
-    margin-top: 8px;
-    li:first-child{
-      float: left;
+  
+  .copyright {
+    @include clearfix;
+    li {
+      font-size: 14px;
+      a {
+        color: rgba(#000, 0.6);
+      }
     }
-    li:last-child{
+  }
+  
+  @include mobile {
+    footer {
+      height: 74px;
+    }
+    .logo a {
+      margin-left: 10px;
+    }
+    nav ul {
+      @include clearfix;
       float: right;
+      margin-right: 10px;
+    }
+    .copyright {
+      margin-left: 10px;
+      margin-right: 10px;
     }
   }
-}
-
+  
+  @include tablet {
+    footer {
+      height: 78px;
+    }
+    .logo a {
+      margin-left: 15px;
+    }
+    nav ul {
+      @include clearfix;
+      float: right;
+      margin-right: 15px;
+    }
+    .copyright {
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+  }
+  
+  @include desktop {
+    footer {
+      height: 72px;
+    }
+    .logo a {
+      margin-top: 28px;
+      margin-left: 20px;
+    }
+    nav ul {
+      margin-top: 30px;
+    }
+    .copyright {
+      @include clearfix;
+      float: right;
+      margin-top: 30px;
+      margin-right: 20px;
+      li {
+        float: left;
+      }
+      li:first-child {
+        &::after {
+          content: "|";
+          display: inline-block;
+          padding: 0 10px;
+          font-size: 14px;
+          color: rgba(#000, 0.6);
+        }
+      }
+    }
+  }
+  
+  @include breakpoint(0px, 1199px) {
+    .logo a {
+      margin-top: 15px;
+    }
+    nav ul {
+      margin-top: 18px;
+    }
+    .copyright {
+      margin-top: 8px;
+      li:first-child {
+        float: left;
+      }
+      li:last-child {
+        float: right;
+      }
+    }
+  }
 </style>

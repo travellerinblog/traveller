@@ -68,6 +68,7 @@
 <style lang="scss" scoped>
   @import '../../sass/App';
   .bloglist {
+    margin-top: 20px;
     @extend %maxwidth;
   }
   

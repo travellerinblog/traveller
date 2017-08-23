@@ -1,57 +1,58 @@
 <template lang="pug">
-.countrylist
-  .country-title
-    h1 어디로 갈래?
-    router-link.country-more(tag="a" to="/list" @click.native="setAllBlogList") 더보기
-      i.icon-next
-  .country-body
-    v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
-      router-link( to="/list" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
-        a(href)
-          figure
-            div
-              img(:src="item.src" :alt="item.alt") 
-            figcaption
-              strong {{ item.content }}
+  .countrylist
+    .country-title
+      h1 어디로 갈래?
+      router-link.country-more(tag="a" to="/list" @click.native="setAllBlogList") 더보기
+        i.icon-next
+    .country-body
+      v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
+        router-link( to="/list" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+          a(href)
+            figure
+              div
+                img(:src="item.src" :alt="item.alt") 
+              figcaption
+                strong {{ item.content }}
 </template>
 
 <script scoped>
-import {mapGetters} from 'vuex'
-export default {
-  data () {
-    return {
-      drag_start_point: null
-    }
-  },
-  computed: {
-    ...mapGetters(['getCountryListItems'])
-  },
-  methods: {
-    dragStart () {
-      this.drag_start_point = event.clientX
+  import {mapGetters} from 'vuex'
+  export default {
+    data () {
+      return {
+        drag_start_point: null
+      }
     },
-    dragEnd () {
-      this.drag_start_point > event.clientX ? this.next() : this.prev()
+    computed: {
+      ...mapGetters(['getCountryListItems'])
     },
-    filterCountryList (country) {
-      this.$store.commit('filterCountryList', country)
-    },
-    setAllBlogList () {
-      this.$store.commit('setAllBlogList')
-    },
-    next (event) {
-      this.$store.commit('swipeCountryList', 'next')
-    },
-    prev () {
-      this.$store.commit('swipeCountryList', 'prev')
+    methods: {
+      dragStart () {
+        this.drag_start_point = event.clientX
+      },
+      dragEnd () {
+        this.drag_start_point > event.clientX ? this.next() : this.prev()
+      },
+      filterCountryList (country) {
+        this.$store.commit('filterCountryList', country)
+      },
+      setAllBlogList () {
+        this.$store.commit('setAllBlogList')
+      },
+      next (event) {
+        this.$store.commit('swipeCountryList', 'next')
+      },
+      prev () {
+        this.$store.commit('swipeCountryList', 'prev')
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
   @import '../../sass/App';
   .countrylist {
+    margin-top: 20px;
     @extend %maxwidth;
   }
   
@@ -100,7 +101,7 @@ export default {
             img {
               height: 100%;
               width: auto;
-              user-drag: none; 
+              user-drag: none;
               user-select: none;
               -moz-user-select: none;
               -webkit-user-drag: none;
@@ -147,11 +148,11 @@ export default {
     }
     .country-body {
       height: 254px;
-      ul{
+      ul {
         padding: 0 10px;
         li {
           width: 80%;
-          a{
+          a {
             height: 254px;
             figure {
               height: 254px;
@@ -164,7 +165,7 @@ export default {
               }
               figcaption {
                 padding: 0 10px;
-                strong{
+                strong {
                   font-size: 18px;
                 }
               }
@@ -174,7 +175,7 @@ export default {
         li:nth-child(2) {
           opacity: 0.5;
           width: 20%;
-          a{
+          a {
             figure {
               div {
                 img {
@@ -185,7 +186,7 @@ export default {
             }
           }
         }
-      }  
+      }
     }
   }
   
@@ -208,11 +209,11 @@ export default {
     }
     .country-body {
       height: 340px;
-      ul{
+      ul {
         padding: 0 15px;
         li {
           width: 45%;
-          a{
+          a {
             height: 340px;
             figure {
               height: 340px;
@@ -221,7 +222,7 @@ export default {
               }
               figcaption {
                 padding: 0 15px;
-                strong{
+                strong {
                   font-size: 18px;
                 }
               }
@@ -231,7 +232,7 @@ export default {
         li:nth-child(3) {
           opacity: 0.5;
           width: 10%;
-          a{
+          a {
             figure {
               div {
                 img {
@@ -243,7 +244,7 @@ export default {
           }
         }
       }
-    } 
+    }
   }
   
   @include desktop {
@@ -265,7 +266,7 @@ export default {
     }
     .country-body {
       height: 480px;
-      ul{
+      ul {
         padding-left: 20px;
         padding-right: 20px;
         li {
@@ -283,7 +284,7 @@ export default {
         li:nth-child(4) {
           opacity: 0.5;
           width: 10%;
-          a{
+          a {
             figure {
               div {
                 img {
