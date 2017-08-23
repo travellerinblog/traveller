@@ -13,7 +13,7 @@
 
 </template>
 
-<script>
+<script scoped>
   import {mapGetters} from 'vuex'
   export default {
     beforeCreate () {
