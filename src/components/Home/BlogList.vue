@@ -211,10 +211,10 @@
     .bloglist-body {
       height: 254px;
       .btn_prev{
-        left: 10px;
+        left: 15px;
       }
       .btn_next{
-        right: 10px;
+        right: 15px;
       }
       ul{
         padding: 0 5px;
@@ -279,10 +279,10 @@
     .bloglist-body {
       height: 340px;
       .btn_prev{
-        left: 15px;
+        left: 20px;
       }
       .btn_next{
-        right: 15px;
+        right: 20px;
       }
       ul{
         padding: 0 8px;
@@ -345,10 +345,10 @@
     .bloglist-body {
       height: 680px;
       .btn_prev{
-        left: 20px;
+        left: 25px;
       }
       .btn_next{
-        right: 20px;
+        right: 25px;
       }
       ul{
         padding: 0 10px;
