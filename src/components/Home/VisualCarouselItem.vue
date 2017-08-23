@@ -1,6 +1,6 @@
 <template lang="pug">
-  transition(name="slide")
-    .carousel-item(v-show="isVisible" :class="getScreenSize")
+  transition(:name="slide")
+    .carousel-item(v-show="isVisible")
       slot
 </template>
 
@@ -13,29 +13,42 @@ export default {
     isVisible () {
       return this.getAcitveIndex === this.index
     },
-    ...mapGetters(['getCarouselItems', 'getAcitveIndex', 'getScreenSize'])
+    ...mapGetters(['getCarouselItems', 'getAcitveIndex', 'getScreenSize', 'slide'])
   }
 }
 </script>
 
 <style scoped lang="scss">
-  .carousel-item{
-    position: absolute;
-  }
-  .mobile.carousel-item {
+@import '../../sass/App';
+.carousel-item{
+  position: absolute;
+}
+.slideleft-leave-active,
+.slideleft-enter-active,
+.slideright-leave-active,
+.slideright-enter-active {
+  transition: 1.5s;
+}
+.slideleft-enter {
+  transform: translateX(125%);
+}
+.slideleft-leave-to {
+  transform: translate(-125%);
+}
+.slideright-enter {
+  transform: translateX(-125%);
+}
+.slideright-leave-to {
+  transform: translate(125%);
+}
+@include mobile{
+  .carousel-item {
     height: 253px;
   }
-  .tablet.carousel-item{
+}
+@include tablet{
+  .carousel-item{
     height: 362px;
   }
-  .slide-leave-active,
-  .slide-enter-active {
-    transition: 1.5s;
-  }
-  .slide-enter {
-    transform: translateX(100%);
-  }
-  .slide-leave-to {
-    transform: translate(-100%);
-  }
+}
 </style>

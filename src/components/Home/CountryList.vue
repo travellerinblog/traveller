@@ -1,10 +1,11 @@
 <template lang="pug">
-.country-list(:class="getScreenSize")
+.country-list
   .country-header.grid
     h1.country-title.col.col-m-2.col-t-2.col-d-2 어디로 갈래?
-    router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기 &rarr;
+    router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기
+      i.icon-next
   v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="item in getCountryListItems" :key="item.country") 
+    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="(item, index) in getCountryListItems" :key="item.country") 
       a(href)
         img(:src="item.src" :alt="item.alt") 
         p.country-content.col {{ item.content }}
@@ -45,27 +46,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .country-list{
-    .country-title{
-      font-weight: bold;
-      font-size: 18px;
-      color: rgb(10,9,8);
-    }
-    .country-more{
-      text-align: right;
-      color: rgba(10, 9, 8, 0.5);
-      font-size: 14px;
-    }
+@import '../../sass/App';
+
+.country-list{
+   @extend %maxwidth;
+   .country-title{
+     font-weight: bold;
+     color: rgb(10,9,8);
+   }
+   .country-more{
+    text-align: right;
+    color: rgba(10, 9, 8, 0.5);
+   }
+  a {
+    text-decoration: none;
   }
   .item-container{
     display: flex;
-    height: 254px;
     overflow: hidden;
     .country-item{
       position: relative;
     }
     img{
-      height: 100%;
       user-drag: none; 
       user-select: none;
       -moz-user-select: none;
@@ -74,84 +76,102 @@ export default {
       -ms-user-select: none;
     }
     p{
-      padding-top: 19px;
+      width: 200%;
       position: absolute;
-      height: 52px;
       bottom: 0;
       color: #fff;
       box-sizing: border-box;
     }
     .country-content{
       padding-left: 15px;
-      width: 200%;
       left: 0;
       background-color: rgba(10, 9, 8, 0.4);
     }
   }
-  // 사이즈 별로 다른 설정
-  .mobile{
-    margin: 32px 0 12px 16px;
-    .item-container{
-      margin: 8px 0 0 16px;
-    }
-    .country-more{
-      padding-right: 16px;
-    }
+}
+.icon-next{
+  position: relative;
+  top: 2px;
+}
+@include mobile{
+  .country-list{
+     margin: 32px 0 12px 10px;
   }
-  .tablet{
-    margin: 44px 0 12px 24px;
-    .item-container{
-      margin: 6px 0 0 24px;
-    }
-    img{
-      position: relative;
-      top: -50%;
-      height: 200%;
-    }
-    .country-content{
-      padding-left: 24px;
-    }
-    .country-more{
-      padding-right: 27px;
-    }
+  .country-more{
+    padding-right: 16px;
   }
-  .mobile, .tablet {
-    .country-item:nth-child(2) {
-      opacity: 0.4;
-      z-index: -1;
-    }
+  .item-container{
+    margin: 8px 0 0 0;
   }
-  .desktop{
-    margin: 64px 0 16px 40px;
-    .item-container{
-      margin: 25px 0 0 40px;
-      height: 480px;
-    }
-    .col-d-6{
-      width: 48%;
-    }
-    .country-title{
-      font-size: 28px;
-    }
-    .country-item:nth-child(3) {
-      opacity: 0.4;
-      z-index: -1;
-    }
-    p{
-      padding-top: 28px;
-      height: 72px;
-      font-size: 24px;
-    }
-    .country-content{
-      padding-left: 40px;
-    }
-    .country-more{
-      padding-right: 40px;
-      font-size: 16px;
-    }
+  img{
+    height: 100%;
   }
-  // 공통 요소
-  a {
-    text-decoration: none;
+}
+@include tablet{
+  .country-list{
+    margin: 44px 0 12px 15px;
   }
+  .country-more{
+    padding-right: 27px;
+  }
+  .item-container{
+    margin: 6px 0 0 0;
+  }
+  img{
+    position: relative;
+    top: -50%;
+    height: 200%;
+  }
+}
+@include desktop{
+  .country-list{
+    margin: 64px 0 16px 20px;
+  }
+  .country-title{
+    font-size: 28px;
+  }
+  .country-more{
+    padding-right: 40px;
+    font-size: 16px;
+  }
+  .item-container{
+    margin: 25px 0 0 0;
+    height: 480px;
+  }
+  .col-d-6{
+    width: 48%;
+  }
+  p{
+    padding-top: 28px;
+    height: 72px;
+    font-size: 24px;
+  }
+  .country-item:nth-child(3) {
+    opacity: 0.4;
+    z-index: -1;
+  }
+  img{
+    height: 100%;
+  }
+}
+@include breakpoint(0px, 1199px){
+  .country-title{
+    font-size: 18px;
+  }
+  .country-more{
+    font-size: 14px;
+  }
+  .item-container{
+    height: 254px;
+  }
+  .country-item:nth-child(2) {
+    opacity: 0.4;
+    z-index: -1;
+  }
+  p{
+    padding-top: 19px;
+    height: 52px;
+    font-size: 15px;
+  }
+}
 </style>
