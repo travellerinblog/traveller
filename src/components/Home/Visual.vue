@@ -7,18 +7,29 @@
     .image-carousel.col(v-if="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       visual-carousel.carousel
         visual-carousel-item(v-for="(item, index) in getCarouselItems" :index="index" key="index")
-          img(:src="item.src" :alt="item.alt")
-          p.content {{ item.content }}
+          v-touch(tag="ul" daraggable="true" @swipeleft="nextItem" @swiperight="prevItem" :swipe-options="{ direction: 'horizontal'}").item-container.grid
+            router-link(tag="li" to="/view" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
+              a(href)
+                img(:src="item.contents[0]" :alt="item.country_kr")
+                p.content {{ item.country_kr }}
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 import VisualCarousel from './VisualCarousel.vue'
 import VisualCarouselItem from './VisualCarouselItem.vue'
 export default {
   name: 'Visual',
+  data () {
+    return {
+      drag_start_point: null
+    }
+  },
   components: {
     VisualCarousel, VisualCarouselItem
+  },
+  beforeCreate () {
+    this.$store.dispatch('setCarouselItem')
   },
   mounted () {
     // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
@@ -38,23 +49,20 @@ export default {
     getWindowWidth () {
       let width = document.documentElement.clientWidth
       this.$store.dispatch('setScreenSize', width)
-    }
+    },
+    dragStart () {
+      this.drag_start_point = event.clientX
+    },
+    dragEnd () {
+      this.drag_start_point > event.clientX ? this.$store.commit('nextItem') : this.$store.commit('prevItem')
+    },
+    ...mapMutations(['gotoBlogView', 'prevItem', 'nextItem'])
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../sass/App';
-@include mobile{
-  img {
-    transform: translateY(-15%);
-  }
-}
-@include tablet{
-  img{
-    transform: translateY(-20%);
-  }
-}
 @include desktop{
   .video{
   position: relative;
@@ -76,7 +84,14 @@ export default {
 }
 @include breakpoint(0px, 1199px){
   img {
-    width: 100%;
+    width: 125%;
+    transform: translateY(-10%);
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
   .content {
     position: absolute;
@@ -84,7 +99,7 @@ export default {
     padding-left: 40px;
     left: 0px;
     bottom: 0px;
-    width: 100%;
+    width: 125%;
     height: 76px;
     font-size: 23px;
     color: #fff;

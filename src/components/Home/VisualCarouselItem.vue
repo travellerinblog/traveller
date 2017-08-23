@@ -1,5 +1,5 @@
 <template lang="pug">
-  transition(name="slide")
+  transition(:name="slide")
     .carousel-item(v-show="isVisible")
       slot
 </template>
@@ -13,7 +13,7 @@ export default {
     isVisible () {
       return this.getAcitveIndex === this.index
     },
-    ...mapGetters(['getCarouselItems', 'getAcitveIndex', 'getScreenSize'])
+    ...mapGetters(['getCarouselItems', 'getAcitveIndex', 'getScreenSize', 'slide'])
   }
 }
 </script>
@@ -23,15 +23,23 @@ export default {
 .carousel-item{
   position: absolute;
 }
-.slide-leave-active,
-.slide-enter-active {
+.slideleft-leave-active,
+.slideleft-enter-active,
+.slideright-leave-active,
+.slideright-enter-active {
   transition: 1.5s;
 }
-.slide-enter {
-  transform: translateX(100%);
+.slideleft-enter {
+  transform: translateX(125%);
 }
-.slide-leave-to {
-  transform: translate(-100%);
+.slideleft-leave-to {
+  transform: translate(-125%);
+}
+.slideright-enter {
+  transform: translateX(-125%);
+}
+.slideright-leave-to {
+  transform: translate(125%);
 }
 @include mobile{
   .carousel-item {

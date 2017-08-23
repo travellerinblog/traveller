@@ -1,17 +1,14 @@
+import axios from 'axios'
 export default {
   state: {
     // screen_size는 mobile/tablet/desktop , screen_width는 창크기(숫자)
     screen_size: '',
     screen_width: '',
     // carousel items
-    carousel_items: [
-      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fgwanghwamun.jpg?alt=media&token=b31abddb-19c3-4503-b466-4191321f33aa', alt: '대한민국 서울 광화문의 야경', content: '서울'},
-      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fmatterhorn.jpg?alt=media&token=a68b8630-c08c-4315-a014-e0381911e340', alt: '스위스 마테호른산이 보이는 산길', content: '스위스'},
-      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fchiang-mai.jpg?alt=media&token=45d46ccb-3516-4524-be67-bc3c59e3fd43', alt: '태국 치앙마이의 사원', content: '태국'},
-      {src: 'https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2Fcarousel_img%2Fsydney.jpg?alt=media&token=d5a01206-9bd2-4d02-b2c2-79705ef6f8cf', alt: '호주 시드니 오페라 하우스의 야경', content: '호주'}
-    ],
+    carousel_items: [],
     active_index: 0,
-    visible: false
+    visible: false,
+    slide: ''
   },
   getters: {
     // mobile/tablet/desktop 값을 반환
@@ -42,6 +39,9 @@ export default {
     },
     isVisible (state) {
       return state.visible
+    },
+    slide (state) {
+      return state.slide
     }
   },
   mutations: {
@@ -51,15 +51,37 @@ export default {
     },
     prevItem (state) {
       state.active_index === 0 ? state.active_index = 3 : state.active_index--
+      state.slide = 'slideright'
     },
     nextItem (state) {
       state.active_index === 3 ? state.active_index = 0 : state.active_index++
+      state.slide = 'slideleft'
     },
     gotoItem (state, payload) {
+      if (state.active_index === 0 && payload === 3) {
+        state.slide = 'slideright'
+      } else if (state.active_index === 3 && payload === 0) {
+        state.slide = 'slideleft'
+      } else {
+        state.active_index < payload ? state.slide = 'slideleft' : state.slide = 'slideright'
+      }
       state.active_index = payload
     },
     isVisible (state, payload) {
       state.visible = payload === state.active_index
+    },
+    setCarouselItem (state, payload) {
+      state.carousel_items = []
+      for (var prop in payload) {
+        if (payload.hasOwnProperty(prop) && payload[prop].star === 5) {
+          var item = payload[prop]
+          item.key = prop
+          state.carousel_items.push(item)
+          if (state.carousel_items.length === 4) {
+            break
+          }
+        }
+      }
     }
   },
   actions: {
@@ -74,6 +96,12 @@ export default {
         screenSize = 'desktop'
       }
       context.commit('setScreenSize', {screenSize, screenWidth})
+    },
+    setCarouselItem (context) {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then(response => {
+        context.commit('setCarouselItem', response.data)
+      }).catch(error => console.log(error.message))
     }
   }
 }
