@@ -9,7 +9,6 @@
   import THeader from './THeader.vue'
   import TMain from './TMain.vue'
   import TFooter from './TFooter.vue'
-  // import {mapMutations} from 'vuex'
 
   export default {
     name: 'home',
@@ -18,8 +17,6 @@
     },
     created: function () {
       this.$store.commit('getDatabase')
-    },
-    methods: {
     }
   }
 </script>

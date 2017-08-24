@@ -8,7 +8,7 @@
       visual-carousel.carousel
         visual-carousel-item(v-for="(item, index) in getCarouselItems" :index="index" key="index")
           v-touch(tag="ul" daraggable="true" @swipeleft="nextItem" @swiperight="prevItem" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-            router-link(tag="li" to="/view" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
+            router-link(tag="li" :to="{ name: 'View', params: { id: getCarouselItems[index].key }}" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
               a(href)
                 img(:src="item.contents[0]" :alt="item.country_kr")
                 p.content {{ item.country_kr }}
@@ -109,6 +109,9 @@
       font-size: 23px;
       color: #fff;
       background-color: rgba(10, 9, 8, 0.4);
+      white-space : nowrap;
+			overflow : hidden;
+			text-overflow : ellipsis;
     }
   }
 </style>
