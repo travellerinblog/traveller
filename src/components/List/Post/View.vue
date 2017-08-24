@@ -9,9 +9,8 @@
 <script>
 import {mapGetters} from 'vuex'
 export default {
-  data () {
-    return {
-    }
+  mounted () {
+    this.$store.commit('gotoBlogView', this.$route.params.id)
   },
   computed: {
     ...mapGetters(['getBlogViewItem'])

@@ -1,15 +1,10 @@
 <template lang="pug">
   .list-container
+    h1 당신의 다음 목적지는 어디인가요?
     ul.grid
-      router-link.blog-list(v-show="defaultList" tag="li" to="/view" v-for="(list, index) in firstData" key="firstData[index].key" @click.native="gotoBlogView(firstData[index].key)" )
+      router-link.blog-list(tag="li" :to="{ name: 'View', params: { id: getFilteredList[index].key }}" v-for="(list, index) in getFilteredList" key="getFilteredList[index].key" @click.native="gotoBlogView(getFilteredList[index].key)" )
         a(href)
-            img(:src="list.contents[0]")
-            .list-item
-              p.title {{ list.title }}
-              p.content {{ list.write_date }} | {{ list.country_kr }} | {{ list.name}}
-      router-link.blog-list(v-show="!defaultList" tag="li" to="/view" v-for="(list, index) in getFilteredList" key="getFilteredList[index].key" @click.native="gotoBlogView(getFilteredList[index].key)" )
-        a(href)
-            img(:src="list.contents[0]")
+            img.list-img(:src="list.contents[0]")
             .list-item
               p.title {{ list.title }}
               p.content {{ list.write_date }} | {{ list.country_kr}} | {{ list.name}}
@@ -19,10 +14,10 @@
 import {mapGetters, mapMutations} from 'vuex'
 export default {
   mounted () {
-    this.$store.dispatch('setListsData')
+    this.$store.dispatch('setListsData', this.$route.params.id)
   },
   computed: {
-    ...mapGetters(['getFilteredList', 'firstData', 'defaultList'])
+    ...mapGetters(['getFilteredList'])
   },
   methods: {
     ...mapMutations(['gotoBlogView'])
