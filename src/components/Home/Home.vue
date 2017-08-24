@@ -16,7 +16,7 @@
       THeader, TMain, TFooter
     },
     created: function () {
-      this.$store.commit('getDatabase')
+      this.$store.dispatch('getListsFromFireBase')
     }
   }
 </script>

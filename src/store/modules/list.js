@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
   state: {
     // 필터하지 않은 모든 blog 글 목록
@@ -74,20 +73,16 @@ export default {
   },
   actions: {
     setListsData (context, payload) {
-      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
-      axios.get(api).then((response) => {
-        window.localStorage.setItem('lists', JSON.stringify(response.data))
-        if (payload === 'all') {
-          context.commit('setAllBlogList')
-        } else {
-          var lists = JSON.parse(localStorage.getItem('lists'))
-          for (var prop in lists) {
-            if (lists[prop].country === payload) {
-              context.commit('filterCountryList', payload)
-            }
+      if (payload === 'all') {
+        context.commit('setAllBlogList')
+      } else {
+        var lists = JSON.parse(localStorage.getItem('lists'))
+        for (var prop in lists) {
+          if (lists[prop].country === payload) {
+            context.commit('filterCountryList', payload)
           }
         }
-      }).catch(error => console.log(error.message))
+      }
     }
   }
 }

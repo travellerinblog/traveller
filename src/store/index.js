@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 import firebase from './../firebase'
 import header from './modules/header'
 import visual from './modules/visual'
@@ -22,25 +23,17 @@ export const store = new Vuex.Store({
     header, visual, blogList, countryList, recommendation, list, memberLeave, mypage, post, signin, signup
   },
   state: {
-    // firebase의 모든 데이터
-    firebase_data: null
   },
   getters: {
-    firebaseAlldata (state) {
-      return state.firebase_data
-    }
   },
   actions: {
+    getListsFromFireBase () {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        window.localStorage.setItem('lists', JSON.stringify(response.data))
+      }).catch(error => console.log(error.message))
+    }
   },
   mutations: {
-// -------------------------------------------
-// Firebase
-// -------------------------------------------
-    // firebase에 등록되어 있는 모든 데이터들 가지고 와서 State의 값을 변경한다.
-    getDatabase (state) {
-      firebase.database.ref('/').on('value', snapshot => {
-        state.firebase_data = snapshot.val()
-      })
-    }
   }
 })

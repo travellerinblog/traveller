@@ -34,7 +34,6 @@ export default {
   }
   .blog-list{
     display: flex;
-    
     img{
       margin: -5px;
     }
