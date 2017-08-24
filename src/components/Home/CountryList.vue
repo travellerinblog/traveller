@@ -6,7 +6,7 @@
         i.icon-next
     .country-body
       v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
-        router-link( to="/list" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+        router-link( :to="{ name: 'List', params: { id: item.country }}" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
           a(href)
             figure
               div

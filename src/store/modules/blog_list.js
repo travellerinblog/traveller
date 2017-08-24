@@ -2,8 +2,7 @@ import axios from 'axios'
 export default {
   state: {
     // 모든 blog 글 목록
-    lists: [],
-    all_blog_list: []
+    lists: []
   },
   getters: {
     get_BlogList (state) {
@@ -12,13 +11,14 @@ export default {
   },
   mutations: {
     mu_BlogList (state, payload) {
-      state.lists = payload
-      let lists = state.lists
-      state.all_blog_list = []
-      for (var prop in lists) {
-        state.all_blog_list.push(lists[prop])
+      var item = {}
+      state.lists = []
+      for (var prop in payload) {
+        item = payload[prop]
+        item.key = prop
+        item.write_date = payload[prop].write_date.substring(0, 10).split('-').join('.')
+        state.lists.push(item)
       }
-      state.lists = state.all_blog_list.slice()
     },
     swipeBlogList (state, payload) {
       switch (payload) {
