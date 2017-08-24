@@ -1,5 +1,18 @@
 <template lang="pug">
   .countrylist
+    .country-title
+      h1 어디로 갈래?
+      router-link.country-more(tag="a" to="/list" @click.native="setAllBlogList") 더보기
+        i.icon-next
+    .country-body
+      v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
+        router-link( :to="{ name: 'List', params: { id: item.country }}" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+          a(href)
+            figure
+              div
+                img(:src="item.src" :alt="item.alt") 
+              figcaption
+                strong {{ item.content }}
 </template>
 
 <script scoped>

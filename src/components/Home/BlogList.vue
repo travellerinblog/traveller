@@ -8,14 +8,14 @@
       button.btn_prev.icon-up(type="button" @click="clickBtn") 이전
       button.btn_next.icon-down(type="button" @click="clickBtn") 다음
       v-touch(tag="ul" daraggable="true" @swipeleft="listNext" @swiperight="listPrev" :swipe-options="{ direction: 'horizontal'}")
-        router-link(@dragstart.native="dragStart" @dragend.native="dragEnd" v-for="(list, index) in get_BlogList" :index="index" key="index" to="/view" tag="li")
-          a(href @click.native="gotoBlogView(key)")
+        router-link(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(list.key)" v-for="(list, index) in get_BlogList" :index="index" :key="index" :to="{ name: 'View', params: { id: list.key }}" tag="li")
+          a(href)
             figure
               div
                 img(:src="list.contents[0]" :alt="list.title" title="이미지에 대한 상세 설명은 하단 내용 참조")
               figcaption
                 strong {{ list.title }}
-                span {{ list.write_date.substr(0,9) }}
+                span {{ list.write_date }}
                 em {{ list.country_kr }} | {{ list.name }}
                   i.icon-next
 </template>
