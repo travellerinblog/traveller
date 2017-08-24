@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import firebase from './../firebase'
 import header from './modules/header'
 import visual from './modules/visual'
+import blogList from './modules/blog_list'
 import countryList from './modules/country_list'
 import recommendation from './modules/recommendation'
 import list from './modules/list'
@@ -18,7 +19,7 @@ Vue.use(firebase)
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   modules: {
-    header, visual, countryList, recommendation, list, memberLeave, mypage, post, signin, signup
+    header, visual, blogList, countryList, recommendation, list, memberLeave, mypage, post, signin, signup
   },
   state: {
     // firebase의 모든 데이터

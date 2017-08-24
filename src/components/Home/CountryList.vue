@@ -1,177 +1,288 @@
 <template lang="pug">
-.country-list
-  .country-header.grid
-    h1.country-title.col.col-m-2.col-t-2.col-d-2 어디로 갈래?
-    router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기
-      i.icon-next
-  v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" :to="{ name: 'List', params: { id: item.country }}" tag="li" v-for="(item, index) in getCountryListItems" :key="item.country") 
-      a(href)
-        img(:src="item.src" :alt="item.alt") 
-        p.country-content.col {{ item.content }}
+  .countrylist
 </template>
 
-<script>
-import {mapGetters} from 'vuex'
-export default {
-  data () {
-    return {
-      drag_start_point: null
-    }
-  },
-  computed: {
-    ...mapGetters(['getCountryListItems', 'getScreenSize'])
-  },
-  methods: {
-    dragStart () {
-      this.drag_start_point = event.clientX
+<script scoped>
+  import {mapGetters} from 'vuex'
+  export default {
+    data () {
+      return {
+        drag_start_point: null
+      }
     },
-    dragEnd () {
-      this.drag_start_point > event.clientX ? this.next() : this.prev()
+    computed: {
+      ...mapGetters(['getCountryListItems'])
     },
-    filterCountryList (country) {
-      this.$store.commit('filterCountryList', country)
-    },
-    setAllBlogList () {
-      this.$store.commit('setAllBlogList')
-    },
-    next (event) {
-      this.$store.commit('swipeCountryList', 'next')
-    },
-    prev () {
-      this.$store.commit('swipeCountryList', 'prev')
+    methods: {
+      dragStart () {
+        this.drag_start_point = event.clientX
+      },
+      dragEnd () {
+        this.drag_start_point > event.clientX ? this.next() : this.prev()
+      },
+      filterCountryList (country) {
+        this.$store.commit('filterCountryList', country)
+      },
+      setAllBlogList () {
+        this.$store.commit('setAllBlogList')
+      },
+      next (event) {
+        this.$store.commit('swipeCountryList', 'next')
+      },
+      prev () {
+        this.$store.commit('swipeCountryList', 'prev')
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-@import '../../sass/App';
-
-.country-list{
-   @extend %maxwidth;
-   .country-title{
-     font-weight: bold;
-     color: rgb(10,9,8);
-   }
-   .country-more{
-    text-align: right;
-    color: rgba(10, 9, 8, 0.5);
-   }
-  a {
-    text-decoration: none;
+  @import '../../sass/App';
+  .countrylist {
+    margin-top: 20px;
+    @extend %maxwidth;
   }
-  .item-container{
-    display: flex;
-    overflow: hidden;
-    .country-item{
-      position: relative;
+  
+  .country-title {
+    @include clearfix;
+    h1 {
+      float: left;
+      margin-bottom: 8px;
+      color: #0a0908;
+      font-weight: 700;
     }
-    img{
-      user-drag: none; 
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-drag: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-    p{
-      width: 200%;
-      position: absolute;
-      bottom: 0;
-      color: #fff;
-      box-sizing: border-box;
-    }
-    .country-content{
-      padding-left: 15px;
-      left: 0;
-      background-color: rgba(10, 9, 8, 0.4);
+    a {
+      float: right;
+      display: block;
+      color: rgba(#000, .5);
+      text-decoration: none;
+      i {
+        vertical-align: -2px;
+        margin-left: 8px;
+      }
     }
   }
-}
-.icon-next{
-  position: relative;
-  top: 2px;
-}
-@include mobile{
-  .country-list{
-     margin: 32px 0 12px 10px;
-  }
-  .country-more{
-    padding-right: 16px;
-  }
-  .item-container{
-    margin: 8px 0 0 0;
-  }
-  img{
-    height: 100%;
-  }
-}
-@include tablet{
-  .country-list{
-    margin: 44px 0 12px 15px;
-  }
-  .country-more{
-    padding-right: 27px;
-  }
-  .item-container{
-    margin: 6px 0 0 0;
-  }
-  img{
+  
+  .country-body {
     position: relative;
-    top: -50%;
-    height: 200%;
+    margin-bottom: 16px;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    ul {
+      @include clearfix;
+      li {
+        float: left;
+        box-sizing: border-box;
+        height: 480px;
+        a {
+          position: relative;
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+        figure {
+          div {
+            width: 100%;
+            overflow: hidden;
+            img {
+              height: 100%;
+              width: auto;
+              user-drag: none;
+              user-select: none;
+              -moz-user-select: none;
+              -webkit-user-drag: none;
+              -webkit-user-select: none;
+              -ms-user-select: none;
+            }
+          }
+          figcaption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 58px;
+            box-sizing: border-box;
+            background: rgba(#000, .4);
+            color: #fff;
+            strong {
+              font-size: 22px;
+              height: 58px;
+              line-height: 58px;
+            }
+          }
+        }
+      }
+    }
   }
-}
-@include desktop{
-  .country-list{
-    margin: 64px 0 16px 20px;
+  
+  @include mobile {
+    .country-title {
+      padding: 0 10px;
+      height: 42px;
+      line-height: 42px;
+      h1 {
+        font-size: 18px;
+        height: 42px;
+        line-height: 42px;
+      }
+      a {
+        font-size: 14px;
+        i {
+          font-size: 12px;
+        }
+      }
+    }
+    .country-body {
+      height: 254px;
+      ul {
+        padding: 0 10px;
+        li {
+          width: 80%;
+          a {
+            height: 254px;
+            figure {
+              height: 254px;
+              div {
+                height: 254px;
+                img {
+                  width: 100%;
+                  height: auto;
+                }
+              }
+              figcaption {
+                padding: 0 10px;
+                strong {
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+        }
+        li:nth-child(2) {
+          opacity: 0.5;
+          width: 20%;
+          a {
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
-  .country-title{
-    font-size: 28px;
+  
+  @include tablet {
+    .country-title {
+      padding: 0 15px;
+      height: 42px;
+      line-height: 42px;
+      h1 {
+        font-size: 18px;
+        height: 42px;
+        line-height: 42px;
+      }
+      a {
+        font-size: 14px;
+        i {
+          font-size: 12px;
+        }
+      }
+    }
+    .country-body {
+      height: 340px;
+      ul {
+        padding: 0 15px;
+        li {
+          width: 45%;
+          a {
+            height: 340px;
+            figure {
+              height: 340px;
+              div {
+                height: 340px;
+              }
+              figcaption {
+                padding: 0 15px;
+                strong {
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+        }
+        li:nth-child(3) {
+          opacity: 0.5;
+          width: 10%;
+          a {
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
-  .country-more{
-    padding-right: 40px;
-    font-size: 16px;
+  
+  @include desktop {
+    .country-title {
+      padding: 0 20px;
+      height: 60px;
+      line-height: 60px;
+      h1 {
+        font-size: 28px;
+        height: 60px;
+        line-height: 60px;
+      }
+      a {
+        font-size: 16px;
+        i {
+          font-size: 14px;
+        }
+      }
+    }
+    .country-body {
+      height: 480px;
+      ul {
+        padding-left: 20px;
+        padding-right: 20px;
+        li {
+          width: 30%;
+          figure {
+            height: 680px;
+            div {
+              height: 680px;
+            }
+            figcaption {
+              padding: 0 20px;
+            }
+          }
+        }
+        li:nth-child(4) {
+          opacity: 0.5;
+          width: 10%;
+          a {
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
-  .item-container{
-    margin: 25px 0 0 0;
-    height: 480px;
-  }
-  .col-d-6{
-    width: 48%;
-  }
-  p{
-    padding-top: 28px;
-    height: 72px;
-    font-size: 24px;
-  }
-  .country-item:nth-child(3) {
-    opacity: 0.4;
-    z-index: -1;
-  }
-  img{
-    height: 100%;
-  }
-}
-@include breakpoint(0px, 1199px){
-  .country-title{
-    font-size: 18px;
-  }
-  .country-more{
-    font-size: 14px;
-  }
-  .item-container{
-    height: 254px;
-  }
-  .country-item:nth-child(2) {
-    opacity: 0.4;
-    z-index: -1;
-  }
-  p{
-    padding-top: 19px;
-    height: 52px;
-    font-size: 15px;
-  }
-}
 </style>

@@ -15,96 +15,101 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex'
-import VisualCarousel from './VisualCarousel.vue'
-import VisualCarouselItem from './VisualCarouselItem.vue'
-export default {
-  name: 'Visual',
-  data () {
-    return {
-      drag_start_point: null
+  import {mapGetters, mapMutations} from 'vuex'
+  import VisualCarousel from './VisualCarousel.vue'
+  import VisualCarouselItem from './VisualCarouselItem.vue'
+  export default {
+    name: 'Visual',
+    data () {
+      return {
+        drag_start_point: null
+      }
+    },
+    components: {
+      VisualCarousel, VisualCarouselItem
+    },
+    beforeCreate () {
+      this.$store.dispatch('setCarouselItem')
+    },
+    mounted () {
+      // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
+      this.$nextTick(function () {
+        // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
+        window.addEventListener('resize', this.getWindowWidth)
+        // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행.
+        this.getWindowWidth()
+      })
+    },
+    computed: {
+      ...mapGetters([
+        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems'
+      ])
+    },
+    methods: {
+      getWindowWidth () {
+        let width = document.documentElement.clientWidth
+        this.$store.dispatch('setScreenSize', width)
+      },
+      dragStart () {
+        this.drag_start_point = event.clientX
+      },
+      dragEnd () {
+        this.drag_start_point > event.clientX ? this.$store.commit('nextItem') : this.$store.commit('prevItem')
+      },
+      ...mapMutations(['gotoBlogView', 'prevItem', 'nextItem'])
     }
-  },
-  components: {
-    VisualCarousel, VisualCarouselItem
-  },
-  beforeCreate () {
-    this.$store.dispatch('setCarouselItem')
-  },
-  mounted () {
-    // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행
-    this.$nextTick(function () {
-      // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
-      window.addEventListener('resize', this.getWindowWidth)
-      // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행.
-      this.getWindowWidth()
-    })
-  },
-  computed: {
-    ...mapGetters([
-      'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems'
-    ])
-  },
-  methods: {
-    getWindowWidth () {
-      let width = document.documentElement.clientWidth
-      this.$store.dispatch('setScreenSize', width)
-    },
-    dragStart () {
-      this.drag_start_point = event.clientX
-    },
-    dragEnd () {
-      this.drag_start_point > event.clientX ? this.$store.commit('nextItem') : this.$store.commit('prevItem')
-    },
-    ...mapMutations(['gotoBlogView', 'prevItem', 'nextItem'])
   }
-}
 </script>
 
 <style lang="scss" scoped>
-@import '../../sass/App';
-@include desktop{
-  .video{
-  position: relative;
-  width: 100%;
-  height: 720px;
-  overflow: hidden;
-    video{
+  @import '../../sass/App';
+  .visual-container {
+    overflow: hidden;
+  }
+  
+  @include desktop {
+    .video {
+      position: relative;
       width: 100%;
-      height: auto;
+      height: 720px;
+      overflow: hidden;
+      video {
+        width: 100%;
+        height: auto;
+      }
+      .video-content {
+        position: absolute;
+        left: 242px;
+        bottom: 214px;
+        font-size: 56px;
+        color: #fff
+      }
     }
-    .video-content{
+  }
+  
+  @include breakpoint(0px, 1199px) {
+    img {
+      width: 125%;
+      transform: translateY(-10%);
+      user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    .content {
       position: absolute;
-      left: 242px;
-      bottom: 214px;
-      font-size: 56px;
-      color: #fff
+      padding-top: 20px;
+      padding-left: 40px;
+      left: 0px;
+      bottom: 0px;
+      width: 125%;
+      height: 76px;
+      font-size: 23px;
+      color: #fff;
+      background-color: rgba(10, 9, 8, 0.4);
     }
   }
-}
-@include breakpoint(0px, 1199px){
-  img {
-    width: 125%;
-    transform: translateY(-10%);
-    user-drag: none; 
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-  }
-  .content {
-    position: absolute;
-    padding-top: 20px;
-    padding-left: 40px;
-    left: 0px;
-    bottom: 0px;
-    width: 125%;
-    height: 76px;
-    font-size: 23px;
-    color: #fff;
-    background-color: rgba(10,9,8,0.4);
-  }
-}
 </style>
 
