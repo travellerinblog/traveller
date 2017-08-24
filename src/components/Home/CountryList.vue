@@ -5,7 +5,7 @@
     router-link.country-more.col.col-m-1.col-m-push-1.col-t-1.col-t-push-5.col-d-2.col-d-push-8(to="/list" @click.native="setAllBlogList") 더보기
       i.icon-next
   v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}").item-container.grid
-    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" to="/list" tag="li" v-for="(item, index) in getCountryListItems" :key="item.country") 
+    router-link.country-item.col.col-m-3.col-t-6.col-d-6(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="filterCountryList(item.country)" :to="{ name: 'List', params: { id: item.country }}" tag="li" v-for="(item, index) in getCountryListItems" :key="item.country") 
       a(href)
         img(:src="item.src" :alt="item.alt") 
         p.country-content.col {{ item.content }}
