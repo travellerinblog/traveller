@@ -1,3 +1,4 @@
+import axios from 'axios'
 export default {
   state: {
     // 필터하지 않은 모든 blog 글 목록
@@ -7,7 +8,13 @@ export default {
     // 나라 이름으로 필터된 item들
     filtered_country_list: [],
     // 글 상세 내용으로 보일 list item
-    blog_view_item: null
+    blog_view_item: null,
+    // 나라와 도시 정보가 들어간 배열
+    country_and_city_name: [],
+    // 지금 보고 있는 페이지
+    active_page: 1,
+    show_amount: 12,
+    page_amount: 10
   },
   getters: {
     // list에 뿌려줄 item들
@@ -24,9 +31,35 @@ export default {
     // 블로그 내용에 해당하는 item
     getBlogViewItem (state) {
       return state.blog_view_item
+    },
+    // 나라와 도시 이름을 오름차순으로 정렬한다.
+    getCountryAndCityName (state) {
+      return state.country_and_city_name
+    },
+    startShowItme (state) {
+      return state.active_page === 1 ? 1 : (state.active_page - 1) * state.show_amount
+    },
+    endShowItem (state) {
+      return (state.active_page * state.show_amount)
+    },
+    pageAmount (state) {
+      return state.page_amount
     }
   },
   mutations: {
+    makePageNumber (state, payload) {
+      let width = document.documentElement.clientWidth
+      if (width < 768) {
+        state.show_amount = 4
+        state.page_amount = Math.ceil(payload / 4)
+      } else if (width >= 768 && width < 1200) {
+        state.show_amount = 8
+        state.page_amount = Math.ceil(payload / 8)
+      } else {
+        state.show_amount = 12
+        state.page_amount = Math.ceil(payload / 12)
+      }
+    },
     filterCountryList (state, payload) {
       // countrylist.vue로 부터 나라 이름을 전달 받아, 같은 나라의 글 목록만 필터링하는 메소드
       // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
@@ -47,6 +80,7 @@ export default {
     },
     setAllBlogList (state) {
       // 모든 blog 글 목록을 구하는 메소드
+      console.log('set all')
       var lists = JSON.parse(localStorage.getItem('lists'))
       var item = {}
       state.all_blog_list = []
@@ -57,6 +91,46 @@ export default {
         state.all_blog_list.push(item)
       }
       state.filter_by = 'all'
+    },
+    setCountryAndCity (state, payload) {
+      state.country_and_city_name = []
+      var countryItems = {}
+      var citiesName = []
+      var country = ''
+      for (var prop in payload) {
+        country = payload[prop]
+        for (var countryProp in country) {
+          if (country.hasOwnProperty(countryProp) && country[countryProp].city) {
+            citiesName.push(country[countryProp].city)
+          }
+        }
+        countryItems.country = country.country
+        countryItems.city = citiesName
+        state.country_and_city_name.push(countryItems)
+        countryItems = {}
+        citiesName = []
+      }
+      // 나라 이름과 도시 이름을 오름차순 정렬
+      state.country_and_city_name.sort((a, b) => {
+        if (a.country > b.country) {
+          return 1
+        }
+        if (a.country < b.country) {
+          return -1
+        }
+        return 0
+      })
+      for (var i = state.country_and_city_name.length; i--;) {
+        state.country_and_city_name[i].city.sort((a, b) => {
+          if (a > b) {
+            return 1
+          }
+          if (a < b) {
+            return -1
+          }
+          return 0
+        })
+      }
     },
     gotoBlogView (state, key) {
       // 블로그 글 내용으로 가는 메소드.
@@ -83,6 +157,12 @@ export default {
           }
         }
       }
+    },
+    setCountryAndCity (context) {
+      let api = 'https://traveller-in-blog.firebaseio.com/locations.json'
+      axios.get(api).then((response) => {
+        context.commit('setCountryAndCity', response.data)
+      }).catch(error => console.log(error.message))
     }
   }
 }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .carousel(:class="getScreenSize")
+  .carousel
     slot
     .button-group(role="group" v-if="isTabletScreen")
       button.carousel-button.prev(type="button" aria-label="previous content" @click="prevItem") 
