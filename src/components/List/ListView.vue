@@ -1,8 +1,7 @@
 <template lang="pug">
   .list-view.grid
     ul.col
-      p {{ $route.params.id }}
-      router-link.blog-list(tag="li" :to="{ name: 'View', params: { id: getFilteredList[index].key }}" v-for="(list, index) in getFilteredList" v-if="startShowItme <= index && index <= endShowItem" key="getFilteredList[index].key" @click.native="gotoBlogView(getFilteredList[index].key)" )
+      router-link.blog-list(tag="li" :to="{ name: 'View', params: { id: getFilteredList[index].key }}" v-for="(list, index) in getFilteredList" v-if="startShowItme <= index && index < endShowItem" key="getFilteredList[index].key" @click.native="gotoBlogView(getFilteredList[index].key)" )
         a(href)
           figure
             img.list-img(:src="list.contents[0]")

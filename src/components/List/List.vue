@@ -4,24 +4,24 @@
     h1.list-title 당신의 다음 목적지는 어디인가요?
     ul.list-filter
       li 
-        a(href) 최신순
+        a(href) {{ selectedFilter }}
         ul.new-and-popular-filter
-          router-link( :to="{ name: 'ListView', params: { id: 'new' }}" tag="li")
+          router-link( :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
             a(href) 최신순
-          router-link( :to="{ name: 'ListView', params: { id: 'popular' }}" tag="li")
+          router-link( :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li" @click.native="popularListFilter")
             a(href) 인기순
       li 
-        a(href) 나라별
+        a(href) {{ selectedCountryFilter }}
         ul.country-and-city-filter
           router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setAllBlogList")
             a(href) 나라전체
-          router-link( :to="{ name: 'ListView', params: { id: country.country }}" tag="li" v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
+          li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
             a(href) {{country.country}} 
             ul.city-filter
-              router-link( :to="{ name: 'ListView', params: { id: 'allcity' }}" tag="li")
+              router-link( :to="{ name: 'ListView', params: { id: country.countryKey }}" tag="li" @click.native="filterCountryList(country.countryKey)")
                 a(href) 지역전체
-              router-link( :to="{ name: 'ListView', params: { id: city }}" tag="li" v-for="(city, index) in country.city" :key="'city' + index")
-                a(href) {{ city }}
+              router-link( :to="{ name: 'ListView', params: { id: citygroup.key }}" tag="li" v-for="(citygroup, index) in country.citygroup" :key="'city' + index" @click.native="filterCityList(citygroup.key)")
+                a(href) {{ citygroup.city }}
               hr
     router-view
     .goto-write
@@ -45,14 +45,14 @@ export default {
     this.$store.dispatch('setCountryAndCity')
   },
   computed: {
-    ...mapGetters(['getFilteredList', 'getCountryAndCityName'])
+    ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter'])
   },
   methods: {
     setAllBlogList () {
       this.$store.commit('setAllBlogList')
       this.$store.commit('makePageNumber', this.getFilteredList.length)
     },
-    ...mapMutations(['gotoBlogView'])
+    ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'filterCountryList', 'filterCityList'])
   }
 }
 </script>
