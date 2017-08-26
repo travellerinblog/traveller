@@ -10,13 +10,13 @@
               p.content {{ list.write_date }} | {{ list.country_kr}} | {{ list.name}}
   
     .page
-      a(href) 처음페이지
-      a(href) 마지막페이지
-      a(href) 이전
-      a(href) 다음
+      a(href @click.prevent="changePagePosition('first')") 처음페이지
+      a(href @click.prevent="changePagePosition('last')") 마지막페이지
+      a(href @click.prevent="changePagePosition('prev')") 이전
+      a(href @click.prevent="changePagePosition('next')") 다음
       ul.page-number
-        li(v-for="page in pageAmount") 
-          a(href) {{ page }}      
+        li(v-for="(page, index) in pageAmount") 
+          a(href @click.prevent="changePageNumber(index + 1)" :class="{'active-page': activePage === index}") {{ page }}     
 </template>
 
 <script>
@@ -33,17 +33,26 @@ export default {
     })
   },
   computed: {
-    ...mapGetters(['getFilteredList', 'startShowItme', 'endShowItem', 'pageAmount'])
+    ...mapGetters(['getFilteredList', 'startShowItme', 'endShowItem', 'pageAmount', 'activePage'])
   },
   methods: {
     makePageNumber () {
       this.$store.commit('makePageNumber', this.getFilteredList.length)
     },
-    ...mapMutations(['gotoBlogView'])
+    ...mapMutations(['gotoBlogView', 'changePageNumber', 'changePagePosition'])
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '../../sass/App';
 
+  a {
+    color: inherit
+  }
+  .active-page{
+    background-color: yellow;
+    color: blue;
+    font-weight: bold;
+  }
 </style>

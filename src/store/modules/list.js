@@ -16,8 +16,11 @@ export default {
     city_name_group: [],
     // 지금 보고 있는 페이지
     active_page: 1,
+    // 보여질 리스트의 개수(화면 크기에 따라 달라진다)
     show_amount: 12,
+    // 페이지 수
     page_amount: 10,
+    // 선택된 필터의 종류
     selected_filter: null,
     selected_country_filter: null
   },
@@ -44,13 +47,16 @@ export default {
       return state.country_and_city_name
     },
     startShowItme (state) {
-      return state.active_page === 1 ? 0 : (state.active_page - 1) * state.show_amount
+      return (state.active_page - 1) * state.show_amount
     },
     endShowItem (state) {
-      return (state.active_page * state.show_amount)
+      return state.active_page * state.show_amount
     },
     pageAmount (state) {
       return state.page_amount
+    },
+    activePage (state) {
+      return state.active_page - 1
     },
     selectedFilter (state) {
       return state.selected_filter === 'popular' ? '인기순' : '최신순'
@@ -65,12 +71,40 @@ export default {
       if (width < 768) {
         state.show_amount = 4
         state.page_amount = Math.ceil(payload / 4)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
       } else if (width >= 768 && width < 1200) {
         state.show_amount = 8
         state.page_amount = Math.ceil(payload / 8)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
       } else {
         state.show_amount = 12
         state.page_amount = Math.ceil(payload / 12)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
+      }
+    },
+    changePageNumber (state, payload) {
+      state.active_page = payload
+    },
+    changePagePosition (state, payload) {
+      switch (payload) {
+        case 'first':
+          state.active_page = 1
+          break
+        case 'last':
+          state.active_page = state.page_amount
+          break
+        case 'prev':
+          state.active_page === 1 ? 1 : state.active_page--
+          break
+        case 'next':
+          state.active_page === state.page_amount ? state.page_amount : state.active_page++
+          break
       }
     },
     filterCountryList (state, payload) {
@@ -193,9 +227,21 @@ export default {
       }
     },
     popularListFilter (state) {
+      // 지금 필터링 되어있는 항목의 state를 정렬해준다.
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'city':
+          state.filtered_city_list.sort((a, b) => {
             if (a.view < b.view) {
               return 1
             }
@@ -223,6 +269,17 @@ export default {
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
+            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+              return 1
+            }
+            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'city':
+          state.filtered_city_list.sort((a, b) => {
             if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
               return 1
             }
