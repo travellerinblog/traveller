@@ -1,9 +1,9 @@
 <template lang="pug">
   main#content.grid
-    Visual
-    CountryList
+    visual
+    country-list
     blog-list
-    Recommendation
+    recommendation
 </template>
 
 <script>

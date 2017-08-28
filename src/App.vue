@@ -2,14 +2,21 @@
   #app(v-cloak)
     .wrapper
       a.a11y-hidden(href="#content") 본문 바로가기 링크
+      t-header
       router-view
+      t-footer
 </template>
 
 <script>
+  import THeader from './components/Home/THeader.vue'
+  import TFooter from './components/Home/TFooter.vue'
   export default {
     name: 'app',
     data () {
       return {}
+    },
+    components: {
+      THeader, TFooter
     }
   }
 </script>

@@ -60,7 +60,7 @@ export default new Router({
       ]
     },
     {
-      path: '/view',
+      path: '/view/:id',
       component: View,
       name: 'View',
       props: true

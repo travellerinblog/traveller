@@ -2,11 +2,11 @@
   .countrylist
     .country-title
       h1 어디로 갈래?
-      router-link.country-more(tag="a" to="/list" @click.native="setAllBlogList") 더보기
+      router-link.country-more(tag="a" :to="{ name: 'List', params: { id: 'all' }}" @click.native="setAllBlogList") 더보기
         i.icon-next
     .country-body
       v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
-        router-link( to="/list" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+        router-link( :to="{ name: 'List', params: { id: item.country }}" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
           a(href)
             figure
               div
@@ -34,7 +34,7 @@
         this.drag_start_point > event.clientX ? this.next() : this.prev()
       },
       filterCountryList (country) {
-        this.$store.commit('filterCountryList', country)
+        this.$store.dispatch('setListsData', country)
       },
       setAllBlogList () {
         this.$store.commit('setAllBlogList')
