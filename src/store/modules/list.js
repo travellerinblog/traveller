@@ -26,7 +26,8 @@ export default {
     // 필터 토글
     show_filter: false,
     show_country: false,
-    show_city: false
+    show_city: false,
+    blog_view_item_contents: []
   },
   getters: {
     // list에 뿌려줄 item들
@@ -79,6 +80,9 @@ export default {
     },
     showCity (state) {
       return state.show_city
+    },
+    getBlogViewItemContents (state) {
+      return state.blog_view_item_contents
     }
   },
   mutations: {
@@ -307,6 +311,18 @@ export default {
       state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
       state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
     }
+    // gotoBlogViewContent (state, key) {
+    //   // 블로그 이미지와 텍스트를 가져오는 곳
+    //   var lists = JSON.parse(localStorage.getItem('lists'))
+    //   for (var prop in lists) {
+    //     if (lists.hasOwnProperty(prop)) {
+    //       if (prop === key) {
+    //         state.blog_view_item = lists[prop]
+    //       }
+    //     }
+    //   }
+    //   // console.log(state.blog_view_item.contents)
+    // }
   },
   actions: {
     setListsData (context, payload) {
