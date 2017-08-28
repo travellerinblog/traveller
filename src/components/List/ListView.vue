@@ -4,12 +4,12 @@
       router-link.blog-list.col.col-d-4.col-t-4(tag="li" :to="{ name: 'View', params: { id: getFilteredList[index].key }}" v-for="(list, index) in getFilteredList" v-if="startShowItem <= index && index < endShowItem" key="getFilteredList[index].key" @click.native="gotoBlogView(getFilteredList[index].key)" )
         a(href)
           figure
-            img.list-img(:src="list.contents[0]")
+            img.list-img(:src="list.title_img")
             figcaption.list-item
               p.title {{ list.title }}
               p.content {{ list.write_date }} | {{ list.country_kr}} | {{ list.name}}
                 i.icon-next
-      p(v-show="listNotFound") 선택한 지역에 대한 정보가 존재하지 않습니다.
+      p.listNotFound(v-show="listNotFound") 선택한 지역에 대한 글이 존재하지 않습니다.
     .page
       a.first-page.page-btn(href @click.prevent="changePagePosition('first')") 처음페이지
       a.last-page.page-btn(href @click.prevent="changePagePosition('last')") 마지막페이지
@@ -64,6 +64,9 @@ export default {
   img {
     position: relative;
   }
+  .listNotFound{
+    text-align: center;
+  }
   .list-item {
     position: absolute;
     left: 0;
@@ -86,31 +89,49 @@ export default {
     }
   }
   .page {
-    margin: 0 auto;
+    margin: 40px auto 0 auto;
     display: flex;
     justify-content: center;
     .page-btn{
+      position: relative;
       margin: 0 10px 0 0; 
-      width: 50px;
-      height: 50px;
+      box-sizing: border-box;
       border: 1px solid rgba(10,9,8,0.4);
       overflow: hidden;
     }
     .first-page{
       order: 1;
     }
+    .first-page::after {
+      content: '\66';
+      position: absolute;
+      transform: rotate(-90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
+    }
+    .first-page::before {
+      content: '\66';
+      position: absolute;
+      transform: rotate(-90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
+    }
     .prev-page{
       order: 2;
+    }
+    .prev-page::before {
+      content: '\66';
+      position: absolute;
+      transform: rotate(-90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
     }
     .page-number{
       order: 3;
       li {
         float: left;
         margin: 0 10px 0 0; 
-        width: 50px;
-        height: 50px;
         text-align: center;
-        line-height: 50px;
         color: rgba(10,9,8,0.7);
         border: 1px solid rgba(10,9,8,0.4);
       }
@@ -124,15 +145,34 @@ export default {
       a::after{
         content: '';
         position: relative;
-        top: -50px;
-        padding: 25px;
       }
     }
     .next-page{
       order: 4;
     }
+    .next-page::before {
+      content: '\66';
+      position: absolute;
+      transform: rotate(90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
+    }
     .last-page{
       order: 5;
+    }
+    .last-page::after {
+      content: '\66';
+      position: absolute;
+      transform: rotate(90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
+    }
+    .last-page::before {
+      content: '\66';
+      position: absolute;
+      transform: rotate(90deg);
+      font-family: "travelericon";
+      color: rgba(10,9,8,0.4);
     }
   }
 
@@ -169,6 +209,7 @@ export default {
   .list-item{
     padding: 16px 23px 16px 16px;
   }
+
 }
 @include desktop {
   .list-view{
@@ -184,6 +225,10 @@ export default {
   img {
     width: 200%;
     height: auto;
+  }
+  .listNotFound{
+    margin: 100px 0;
+    font-size: 22px;
   }
   .list-item {
     padding: 24px;
@@ -202,8 +247,58 @@ export default {
       font-size: 20px;
     }
   }
+  .page-btn {
+    padding-top: 50px;
+    width: 50px;
+    height: 50px;
+  }
+  .page-number li{
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+  }
+  .first-page{
+    font-size: 24px;
+  }
+  .first-page::before {
+    top: 12px;
+    left: 8px;
+  }
+  .first-page::after {
+    top: 12px;
+    left: 18px;
+  }
+  .prev-page{
+    font-size: 24px;
+  }
+  .prev-page::before {
+    top: 12px;
+    left: 14px;
+  }
+  .next-page{
+    font-size: 24px;
+  }
+  .next-page::before {
+    top: 12px;
+    left: 8px;
+  }
+  .last-page{
+    font-size: 24px;
+  }
+  .last-page::before {
+    top: 12px;
+    right: 8px;
+  }
+  .last-page::after {
+    top: 12px;
+    right: 18px;
+  }
 }
 @include breakpoint(0px, 1199px){
+  .listNotFound{
+    margin: 50px 0;
+    font-size: 18px;
+  }
   .list-view{
     margin: 40px 0 0 0;
   }
@@ -223,8 +318,56 @@ export default {
       font-size: 18px;
     }
   }
-  .page-number{
-    
+  .page-btn {
+    padding-top: 30px;
+    width: 30px;
+    height: 30px;
   }
+  .page-number li{
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+  a::after{
+    top: -20px;
+    padding: 15px;
+  }
+  .first-page{
+    font-size: 15px;
+  }
+  .first-page::before {
+    top: 7px;
+    left: 4px;
+  }
+  .first-page::after {
+    top: -8px;
+    left: -5px;
+  }
+  .prev-page{
+    font-size: 15px;
+  }
+  .prev-page::before {
+    top: 7px;
+    left: 8px;
+  }
+  .next-page{
+    font-size: 15px;
+  }
+  .next-page::before {
+    top: 7px;
+    right: 8px;
+  }
+  .last-page{
+    font-size: 15px;
+  }
+  .last-page::before {
+    top: 7px;
+    right: 4px;
+  }
+  .last-page::after {
+    top: -8px;
+    right: -5px;
+  }
+  
 }
 </style>

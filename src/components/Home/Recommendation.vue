@@ -4,7 +4,7 @@
       h1.header.col.col-m-2.col-t-2.col-d-2 우리가 강추한다!
     .content.grid
       router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-image.col.col-d-7.col-t-5
-        img(:src="getItemImgSrc")
+        img(:src="getRecommendItemImgSrc")
       router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-text.col.col-d-5.col-m-4.col-t-3
         h2.title {{getRecommendItem.title}}
         p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
@@ -31,7 +31,7 @@
       this.setEllipsisText()
     },
     computed: {
-      ...mapGetters(['getScreenSize', 'getRecommendItem', 'getConvertedDate', 'getEllipsisText', 'getItemImgSrc'])
+      ...mapGetters(['getScreenSize', 'getRecommendItem', 'getConvertedDate', 'getEllipsisText', 'getRecommendItemImgSrc'])
     },
     methods: {
       gotoBlogView (key) {

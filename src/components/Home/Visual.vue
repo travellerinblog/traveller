@@ -10,7 +10,7 @@
           v-touch(tag="ul" daraggable="true" @swipeleft="nextItem" @swiperight="prevItem" :swipe-options="{ direction: 'horizontal'}").item-container.grid
             router-link(tag="li" :to="{ name: 'View', params: { id: getCarouselItems[index].key }}" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
               a(href)
-                img(:src="item.contents[0]" :alt="item.country_kr")
+                img(:src="item.title_img" :alt="item.country_kr")
                 p.content {{ item.country_kr }}
 </template>
 
