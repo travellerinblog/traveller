@@ -73,7 +73,7 @@ export default {
     setCarouselItem (state, payload) {
       state.carousel_items = []
       for (var prop in payload) {
-        if (payload.hasOwnProperty(prop) && payload[prop].star === 5) {
+        if (payload.hasOwnProperty(prop) && payload[prop].view > 20) {
           var item = payload[prop]
           item.key = prop
           state.carousel_items.push(item)

@@ -2,7 +2,7 @@
   .bloglist
     .bloglist-title
       h1 나 여기 왔다 갔다!
-      router-link.more(tag="a" :to="{ name: 'List', params: { id: 'all' }}" @click="setAllBlogList") 더보기
+      router-link.more(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click="setAllBlogList") 더보기
         i.icon-next
     .bloglist-body
       button.btn_prev.icon-up(type="button" @click="clickBtn") 이전

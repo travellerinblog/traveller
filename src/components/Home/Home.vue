@@ -12,7 +12,8 @@
       TMain
     },
     created: function () {
-      this.$store.commit('getDatabase')
+      this.$store.dispatch('getListsFromFireBase')
+      this.$store.dispatch('getCountryAndCityFromFireBase')
     }
   }
 </script>

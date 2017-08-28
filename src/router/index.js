@@ -7,6 +7,7 @@ import SignIn from '../components/SignIn/SignIn.vue'
 import MemberLeave from '../components/MemberLeave/MemberLeave.vue'
 import MyPage from '../components/MyPage/MyPage.vue'
 import List from '../components/List/List.vue'
+import ListView from '../components/List/ListView.vue'
 import Maps from '../components/List/Maps.vue'
 import View from '../components/List/Post/View.vue'
 import Write from '../components/List/Post/Write.vue'
@@ -48,6 +49,11 @@ export default new Router({
       ]
     },
     {
+      path: '/write/:id',
+      component: Write,
+      name: 'Write'
+    },
+    {
       path: '/view/:id',
       component: View,
       name: 'View',
@@ -55,7 +61,6 @@ export default new Router({
     },
     {
       path: '/list/:id',
-      name: 'List',
       components: {
         default: List,
         gnb: Navigation
@@ -63,14 +68,14 @@ export default new Router({
       props: true,
       children: [
         {
+          path: '',
+          component: ListView,
+          name: 'ListView'
+        },
+        {
           path: '/maps',
           component: Maps,
           name: 'Maps'
-        },
-        {
-          path: '/write/:id',
-          component: Write,
-          name: 'Write'
         },
         {
           path: '/delete/:id',

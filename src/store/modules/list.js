@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
   state: {
     // 필터하지 않은 모든 blog 글 목록
@@ -7,8 +6,27 @@ export default {
     filter_by: 'all',
     // 나라 이름으로 필터된 item들
     filtered_country_list: [],
+    // 도시 이름으로 필터된 item들
+    filtered_city_list: [],
     // 글 상세 내용으로 보일 list item
     blog_view_item: null,
+    // 나라와 도시 정보가 들어간 배열
+    country_and_city_name: [],
+    city_name_group: [],
+    // 지금 보고 있는 페이지
+    active_page: 1,
+    // 보여질 리스트의 개수(화면 크기에 따라 달라진다)
+    show_amount: 12,
+    // 페이지 수
+    page_amount: 10,
+    // 선택된 필터의 종류
+    selected_filter: null,
+    selected_country_filter: null,
+    selected_country_key: null,
+    // 필터 토글
+    show_filter: false,
+    show_country: false,
+    show_city: false,
     blog_view_item_contents: []
   },
   getters: {
@@ -19,6 +37,8 @@ export default {
       switch (state.filter_by) {
         case 'country':
           return state.filtered_country_list
+        case 'city':
+          return state.filtered_city_list
         case 'all':
           return state.all_blog_list
       }
@@ -27,16 +47,93 @@ export default {
     getBlogViewItem (state) {
       return state.blog_view_item
     },
+    // 나라와 도시 이름을 오름차순으로 정렬한다.
+    getCountryAndCityName (state) {
+      return state.country_and_city_name
+    },
+    startShowItem (state) {
+      return (state.active_page - 1) * state.show_amount
+    },
+    endShowItem (state) {
+      return state.active_page * state.show_amount
+    },
+    pageAmount (state) {
+      return state.page_amount
+    },
+    activePage (state) {
+      return state.active_page - 1
+    },
+    selectedFilter (state) {
+      return state.selected_filter === 'popular' ? '인기순' : '최신순'
+    },
+    selectedCountryFilter (state) {
+      return state.selected_country_filter === null ? '나라별' : state.selected_country_filter
+    },
+    selectedCountryKey (state) {
+      return state.selected_country_key
+    },
+    showFilter (state) {
+      return state.show_filter
+    },
+    showCountry (state) {
+      return state.show_country
+    },
+    showCity (state) {
+      return state.show_city
+    },
     getBlogViewItemContents (state) {
       return state.blog_view_item_contents
     }
   },
   mutations: {
+    makePageNumber (state, payload) {
+      let width = document.documentElement.clientWidth
+      if (width < 768) {
+        state.show_amount = 4
+        state.page_amount = Math.ceil(payload / 4)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
+      } else if (width >= 768 && width < 1200) {
+        state.show_amount = 8
+        state.page_amount = Math.ceil(payload / 8)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
+      } else {
+        state.show_amount = 12
+        state.page_amount = Math.ceil(payload / 12)
+        if (state.active_page > state.page_amount) {
+          state.active_page = state.page_amount
+        }
+      }
+    },
+    changePageNumber (state, payload) {
+      state.active_page = payload
+    },
+    changePagePosition (state, payload) {
+      switch (payload) {
+        case 'first':
+          state.active_page = 1
+          break
+        case 'last':
+          state.active_page = state.page_amount
+          break
+        case 'prev':
+          state.active_page === 1 ? 1 : state.active_page--
+          break
+        case 'next':
+          state.active_page === state.page_amount ? state.page_amount : state.active_page++
+          break
+      }
+    },
     filterCountryList (state, payload) {
       // countrylist.vue로 부터 나라 이름을 전달 받아, 같은 나라의 글 목록만 필터링하는 메소드
       // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
       var lists = JSON.parse(localStorage.getItem('lists'))
+      var countryNameList = JSON.parse(localStorage.getItem('country_and_city'))
       var item = {}
+      var countryKr = ''
       state.filtered_country_list = []
       for (var prop in lists) {
         if (payload === lists[prop].country) {
@@ -47,8 +144,48 @@ export default {
           state.filtered_country_list.push(item)
         }
       }
+      // 필터를 선택하였을 때, 선택된 도시 이름이 표시 되도록 한다.
+      for (var i = countryNameList.length; i--;) {
+        if (countryNameList[i].countryKey === payload) {
+          countryKr = countryNameList[i].country
+        }
+      }
       // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
       state.filter_by = 'country'
+      state.selected_country_filter = countryKr
+      state.show_city = false
+      state.show_country = false
+    },
+    filterCityList (state, payload) {
+      var lists = JSON.parse(localStorage.getItem('lists'))
+      var item = {}
+      var cityNameList = JSON.parse(localStorage.getItem('city_group'))
+      var cityKr = ''
+      state.filtered_city_list = []
+      for (var prop in lists) {
+        for (var i = lists[prop].city.length; i--;) {
+          if (payload === lists[prop].city[i]) {
+            // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
+            item = lists[prop]
+            item.key = prop
+            item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
+            state.filtered_city_list.push(item)
+          }
+        }
+      }
+      // 필터를 선택하였을 때, 선택된 도시 이름이 표시 되도록 한다.
+      for (var j = cityNameList.length; j--;) {
+        for (var k = cityNameList[j].length; k--;) {
+          if (cityNameList[j][k].key === payload) {
+            cityKr = cityNameList[j][k].city
+          }
+        }
+      }
+      // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
+      state.filter_by = 'city'
+      state.selected_country_filter = cityKr
+      state.show_city = false
+      state.show_country = false
     },
     setAllBlogList (state) {
       // 모든 blog 글 목록을 구하는 메소드
@@ -62,6 +199,87 @@ export default {
         state.all_blog_list.push(item)
       }
       state.filter_by = 'all'
+      state.selected_country_filter = '나라전체'
+      state.show_country = false
+    },
+    popularListFilter (state) {
+      // 지금 필터링 되어있는 항목의 state를 정렬해준다.
+      switch (state.filter_by) {
+        case 'country':
+          state.filtered_country_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'city':
+          state.filtered_city_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'all':
+          state.all_blog_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
+      }
+      state.selected_filter = 'popular'
+      state.show_filter = false
+    },
+    newListFilter (state) {
+      switch (state.filter_by) {
+        case 'country':
+          state.filtered_country_list.sort((a, b) => {
+            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+              return 1
+            }
+            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'city':
+          state.filtered_city_list.sort((a, b) => {
+            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+              return 1
+            }
+            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'all':
+          state.all_blog_list.sort((a, b) => {
+            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+              return 1
+            }
+            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+              return -1
+            }
+            return 0
+          })
+          break
+      }
+      state.selected_filter = 'new'
+      state.show_filter = false
     },
     gotoBlogView (state, key) {
       // 블로그 글 내용으로 가는 메소드.
@@ -74,6 +292,24 @@ export default {
           }
         }
       }
+    },
+    toggleFilter (state, payload) {
+      switch (payload) {
+        case 'filter':
+          state.show_filter = !state.show_filter
+          break
+        case 'country':
+          state.show_country = !state.show_country
+          break
+        default :
+          state.selected_country_key = payload
+          state.show_city = !state.show_city
+          break
+      }
+    },
+    setCountryAndCityData (state) {
+      state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
+      state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
     }
     // gotoBlogViewContent (state, key) {
     //   // 블로그 이미지와 텍스트를 가져오는 곳
@@ -90,20 +326,22 @@ export default {
   },
   actions: {
     setListsData (context, payload) {
-      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
-      axios.get(api).then((response) => {
-        window.localStorage.setItem('lists', JSON.stringify(response.data))
-        if (payload === 'all') {
-          context.commit('setAllBlogList')
-        } else {
-          var lists = JSON.parse(localStorage.getItem('lists'))
-          for (var prop in lists) {
-            if (lists[prop].country === payload) {
-              context.commit('filterCountryList', payload)
+      if (payload === 'all') {
+        context.commit('setAllBlogList')
+      } else {
+        var lists = JSON.parse(localStorage.getItem('lists'))
+        for (var prop in lists) {
+          if (lists[prop].country === payload) {
+            context.commit('filterCountryList', payload)
+          } else {
+            for (var i = lists[prop].city.length; i--;) {
+              if (lists[prop].city[i] === payload) {
+                context.commit('filterCityList', payload)
+              }
             }
           }
         }
-      }).catch(error => console.log(error.message))
+      }
     }
   }
 }

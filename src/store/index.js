@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 import firebase from './../firebase'
 import header from './modules/header'
 import visual from './modules/visual'
@@ -22,25 +23,74 @@ export const store = new Vuex.Store({
     header, visual, blogList, countryList, recommendation, list, memberLeave, mypage, post, signin, signup
   },
   state: {
-    // firebase의 모든 데이터
-    firebase_data: null
   },
   getters: {
-    firebaseAlldata (state) {
-      return state.firebase_data
-    }
   },
   actions: {
+    getListsFromFireBase () {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        window.localStorage.setItem('lists', JSON.stringify(response.data))
+      }).catch(error => console.log(error.message))
+    },
+    getCountryAndCityFromFireBase (context) {
+      let api = 'https://traveller-in-blog.firebaseio.com/locations.json'
+      axios.get(api).then((response) => {
+        context.commit('setCountryAndCity', response.data)
+      }).catch(error => console.log(error.message))
+    }
   },
   mutations: {
-// -------------------------------------------
-// Firebase
-// -------------------------------------------
-    // firebase에 등록되어 있는 모든 데이터들 가지고 와서 State의 값을 변경한다.
-    getDatabase (state) {
-      firebase.database.ref('/').on('value', snapshot => {
-        state.firebase_data = snapshot.val()
+    setCountryAndCity (state, payload) {
+      // 전체 리스트에서 필요한 부분만 빼오기. v-for 사용하기 쉽게
+      var countryAndCityName = []
+      var cityNameGroup = []
+      var countryItems = {}
+      var city = []
+      var countryKye = ''
+      var country = ''
+      for (var prop in payload) {
+        country = payload[prop]
+        countryKye = prop
+        for (var countryProp in country) {
+          if (countryProp !== 'country') {
+            var cityitem = []
+            cityitem = country[countryProp]
+            cityitem.key = countryProp
+            city.push(cityitem)
+          }
+        }
+        countryItems.country = country.country
+        countryItems.countryKey = countryKye
+        countryItems.citygroup = city
+        countryAndCityName.push(countryItems)
+        cityNameGroup.push(city)
+        countryItems = {}
+        city = []
+      }
+      // 나라 이름과 도시 이름을 오름차순 정렬
+      countryAndCityName.sort((a, b) => {
+        if (a.country > b.country) {
+          return 1
+        }
+        if (a.country < b.country) {
+          return -1
+        }
+        return 0
       })
+      for (var i = countryAndCityName.length; i--;) {
+        countryAndCityName[i].citygroup.sort((a, b) => {
+          if (a.city > b.city) {
+            return 1
+          }
+          if (a.city < b.city) {
+            return -1
+          }
+          return 0
+        })
+      }
+      window.localStorage.setItem('country_and_city', JSON.stringify(countryAndCityName))
+      window.localStorage.setItem('city_group', JSON.stringify(cityNameGroup))
     }
   }
 })
