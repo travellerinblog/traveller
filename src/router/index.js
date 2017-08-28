@@ -49,6 +49,11 @@ export default new Router({
       ]
     },
     {
+      path: '/write/:id',
+      component: Write,
+      name: 'Write'
+    },
+    {
       path: '/view/:id',
       component: View,
       name: 'View',
@@ -71,11 +76,6 @@ export default new Router({
           path: '/maps',
           component: Maps,
           name: 'Maps'
-        },
-        {
-          path: '/write/:id',
-          component: Write,
-          name: 'Write'
         },
         {
           path: '/delete/:id',

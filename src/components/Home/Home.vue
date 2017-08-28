@@ -17,6 +17,7 @@
     },
     created: function () {
       this.$store.dispatch('getListsFromFireBase')
+      this.$store.dispatch('getCountryAndCityFromFireBase')
     }
   }
 </script>

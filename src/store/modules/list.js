@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
   state: {
     // 필터하지 않은 모든 blog 글 목록
@@ -22,7 +21,12 @@ export default {
     page_amount: 10,
     // 선택된 필터의 종류
     selected_filter: null,
-    selected_country_filter: null
+    selected_country_filter: null,
+    selected_country_key: null,
+    // 필터 토글
+    show_filter: false,
+    show_country: false,
+    show_city: false
   },
   getters: {
     // list에 뿌려줄 item들
@@ -46,7 +50,7 @@ export default {
     getCountryAndCityName (state) {
       return state.country_and_city_name
     },
-    startShowItme (state) {
+    startShowItem (state) {
       return (state.active_page - 1) * state.show_amount
     },
     endShowItem (state) {
@@ -63,6 +67,18 @@ export default {
     },
     selectedCountryFilter (state) {
       return state.selected_country_filter === null ? '나라별' : state.selected_country_filter
+    },
+    selectedCountryKey (state) {
+      return state.selected_country_key
+    },
+    showFilter (state) {
+      return state.show_filter
+    },
+    showCountry (state) {
+      return state.show_country
+    },
+    showCity (state) {
+      return state.show_city
     }
   },
   mutations: {
@@ -111,7 +127,7 @@ export default {
       // countrylist.vue로 부터 나라 이름을 전달 받아, 같은 나라의 글 목록만 필터링하는 메소드
       // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
       var lists = JSON.parse(localStorage.getItem('lists'))
-      var countryNameList = state.country_and_city_name
+      var countryNameList = JSON.parse(localStorage.getItem('country_and_city'))
       var item = {}
       var countryKr = ''
       state.filtered_country_list = []
@@ -133,11 +149,13 @@ export default {
       // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
       state.filter_by = 'country'
       state.selected_country_filter = countryKr
+      state.show_city = false
+      state.show_country = false
     },
     filterCityList (state, payload) {
       var lists = JSON.parse(localStorage.getItem('lists'))
       var item = {}
-      var cityNameList = state.city_name_group
+      var cityNameList = JSON.parse(localStorage.getItem('city_group'))
       var cityKr = ''
       state.filtered_city_list = []
       for (var prop in lists) {
@@ -162,6 +180,8 @@ export default {
       // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
       state.filter_by = 'city'
       state.selected_country_filter = cityKr
+      state.show_city = false
+      state.show_country = false
     },
     setAllBlogList (state) {
       // 모든 blog 글 목록을 구하는 메소드
@@ -176,55 +196,7 @@ export default {
       }
       state.filter_by = 'all'
       state.selected_country_filter = '나라전체'
-    },
-    setCountryAndCity (state, payload) {
-      // 전체 리스트에서 필요한 부분만 빼오기. v-for 사용하기 쉽게
-      state.country_and_city_name = []
-      state.city_name_group = []
-      var countryItems = {}
-      var city = []
-      var countryKye = ''
-      var country = ''
-      for (var prop in payload) {
-        country = payload[prop]
-        countryKye = prop
-        for (var countryProp in country) {
-          if (countryProp !== 'country') {
-            var cityitem = []
-            cityitem = country[countryProp]
-            cityitem.key = countryProp
-            city.push(cityitem)
-          }
-        }
-        countryItems.country = country.country
-        countryItems.countryKey = countryKye
-        countryItems.citygroup = city
-        state.country_and_city_name.push(countryItems)
-        state.city_name_group.push(city)
-        countryItems = {}
-        city = []
-      }
-      // 나라 이름과 도시 이름을 오름차순 정렬
-      state.country_and_city_name.sort((a, b) => {
-        if (a.country > b.country) {
-          return 1
-        }
-        if (a.country < b.country) {
-          return -1
-        }
-        return 0
-      })
-      for (var i = state.country_and_city_name.length; i--;) {
-        state.country_and_city_name[i].citygroup.sort((a, b) => {
-          if (a.city > b.city) {
-            return 1
-          }
-          if (a.city < b.city) {
-            return -1
-          }
-          return 0
-        })
-      }
+      state.show_country = false
     },
     popularListFilter (state) {
       // 지금 필터링 되어있는 항목의 state를 정렬해준다.
@@ -264,6 +236,7 @@ export default {
           break
       }
       state.selected_filter = 'popular'
+      state.show_filter = false
     },
     newListFilter (state) {
       switch (state.filter_by) {
@@ -302,6 +275,7 @@ export default {
           break
       }
       state.selected_filter = 'new'
+      state.show_filter = false
     },
     gotoBlogView (state, key) {
       // 블로그 글 내용으로 가는 메소드.
@@ -314,6 +288,24 @@ export default {
           }
         }
       }
+    },
+    toggleFilter (state, payload) {
+      switch (payload) {
+        case 'filter':
+          state.show_filter = !state.show_filter
+          break
+        case 'country':
+          state.show_country = !state.show_country
+          break
+        default :
+          state.selected_country_key = payload
+          state.show_city = !state.show_city
+          break
+      }
+    },
+    setCountryAndCityData (state) {
+      state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
+      state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
     }
   },
   actions: {
@@ -334,12 +326,6 @@ export default {
           }
         }
       }
-    },
-    setCountryAndCity (context) {
-      let api = 'https://traveller-in-blog.firebaseio.com/locations.json'
-      axios.get(api).then((response) => {
-        context.commit('setCountryAndCity', response.data)
-      }).catch(error => console.log(error.message))
     }
   }
 }
