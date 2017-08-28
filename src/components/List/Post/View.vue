@@ -12,8 +12,6 @@
     .content-body
       .cover
         .contents
-          p {{getBlogViewItem.contents}}
-          hr
           p.text {{getBlogViewItem.contents[1]}}
           img(:src="getBlogViewItem.contents[2]")
           img(:src="getBlogViewItem.contents[3]")

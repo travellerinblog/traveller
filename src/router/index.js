@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../components/Home/Home.vue'
-import THeader from '../components/Home/THeader.vue'
 import Navigation from '../components/Home/Navigation.vue'
-import TFooter from '../components/Home/TFooter.vue'
 import SignUp from '../components/SignUp/SignUp.vue'
 import SignIn from '../components/SignIn/SignIn.vue'
 import MemberLeave from '../components/MemberLeave/MemberLeave.vue'
@@ -27,16 +25,6 @@ export default new Router({
         gnb: Navigation
       },
       children: [
-        {
-          path: '',
-          component: THeader,
-          name: 'THeader'
-        },
-        {
-          path: '',
-          component: TFooter,
-          name: 'TFooter'
-        },
         {
           path: 'sign-up',
           component: SignUp,
@@ -66,12 +54,13 @@ export default new Router({
       props: true
     },
     {
-      path: '/list',
+      path: '/list/:id',
       name: 'List',
       components: {
         default: List,
         gnb: Navigation
       },
+      props: true,
       children: [
         {
           path: '/maps',
@@ -79,12 +68,12 @@ export default new Router({
           name: 'Maps'
         },
         {
-          path: '/:id/write',
+          path: '/write/:id',
           component: Write,
           name: 'Write'
         },
         {
-          path: '/:id/delete',
+          path: '/delete/:id',
           component: Delete,
           name: 'Delete'
         }
