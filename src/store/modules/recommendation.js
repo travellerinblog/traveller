@@ -11,7 +11,7 @@ export default {
     getRecommendItem (state) {
       return state.recommend_item
     },
-    getItemImgSrc (state) {
+    getRecommendItemImgSrc (state) {
       return state.item_img_src
     },
     getConvertedDate (state) {
@@ -24,8 +24,8 @@ export default {
   mutations: {
     setRecommendItem (state, payload) {
       state.recommend_item = payload.list1
-      state.item_img_src = payload.list1.contents[0]
-      state.contents = payload.list1.contents[1]
+      state.item_img_src = payload.list1.title_img
+      state.contents = payload.list1.contents[1].value
       state.write_date = payload.list1.write_date
     },
     setEllipsisText (state) {

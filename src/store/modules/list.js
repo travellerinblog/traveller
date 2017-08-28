@@ -51,27 +51,32 @@ export default {
     getCountryAndCityName (state) {
       return state.country_and_city_name
     },
+    // 화면 표시해줄 첫번째 아이템 (v-for에서 사용)
     startShowItem (state) {
       return (state.active_page - 1) * state.show_amount
     },
+    // 화면 표시해줄 마지막 아이템 (v-for에서 사용)
     endShowItem (state) {
       return state.active_page * state.show_amount
     },
+    // 페이지 넘버링 관련
     pageAmount (state) {
       return state.page_amount
     },
     activePage (state) {
       return state.active_page - 1
     },
+    // 선택된 필터를 표시하기 위한 값.
     selectedFilter (state) {
       return state.selected_filter === 'popular' ? '인기순' : '최신순'
     },
     selectedCountryFilter (state) {
-      return state.selected_country_filter === null ? '나라별' : state.selected_country_filter
+      return state.selected_country_filter === null ? '보고싶은 나라를 선택하세요.' : state.selected_country_filter
     },
     selectedCountryKey (state) {
       return state.selected_country_key
     },
+    // 필터 토글 관련
     showFilter (state) {
       return state.show_filter
     },
@@ -87,31 +92,40 @@ export default {
   },
   mutations: {
     makePageNumber (state, payload) {
+      // 화면 크기에 따라 표시하는 아이템 수와 페이지 수를 설정.
       let width = document.documentElement.clientWidth
       if (width < 768) {
         state.show_amount = 4
         state.page_amount = Math.ceil(payload / 4)
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
+        } else if (state.active_page === 0) {
+          state.active_page = 1
         }
       } else if (width >= 768 && width < 1200) {
         state.show_amount = 8
         state.page_amount = Math.ceil(payload / 8)
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
+        } else if (state.active_page === 0) {
+          state.active_page = 1
         }
       } else {
         state.show_amount = 12
         state.page_amount = Math.ceil(payload / 12)
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
+        } else if (state.active_page === 0) {
+          state.active_page = 1
         }
       }
     },
     changePageNumber (state, payload) {
+      // 페이지 숫자를 눌렀을 때 active_page 변경.
       state.active_page = payload
     },
     changePagePosition (state, payload) {
+      // 페이지 버튼을 눌렀을 때 active_page의 변경.
       switch (payload) {
         case 'first':
           state.active_page = 1
@@ -203,7 +217,7 @@ export default {
       state.show_country = false
     },
     popularListFilter (state) {
-      // 지금 필터링 되어있는 항목의 state를 정렬해준다.
+      // 현재 어떤 필터가 선택되어 있는지를 확인하여 state의 배열을 정렬한다.
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
@@ -243,6 +257,7 @@ export default {
       state.show_filter = false
     },
     newListFilter (state) {
+      // 현재 어떤 필터가 선택되어 있는지를 확인하여 state의 배열을 정렬한다.
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
@@ -293,6 +308,7 @@ export default {
         }
       }
     },
+    // 필터 클릭했을 때 토글. 어떤 필터를 눌렀는지 값을 받아서, 필터에 따라서 state 값을 변경한다.
     toggleFilter (state, payload) {
       switch (payload) {
         case 'filter':
@@ -300,14 +316,27 @@ export default {
           break
         case 'country':
           state.show_country = !state.show_country
+          if (state.show_country === false) {
+            // country 필터가 fasle가 되면 city도 flase가 되어야 다시 열었을 때 첫 화면에 도시 이름들이 보이지 않는다.
+            state.show_city = false
+          }
           break
         default :
-          state.selected_country_key = payload
-          state.show_city = !state.show_city
+          if (payload === state.selected_country_key) {
+            // 같은 나라 이름을 눌렀을 때 토글.
+            state.show_city = !state.show_city
+          } else {
+            // 열려있는 나라와 다른 나라를 눌렀을 때는 값을 반전시키면
+            // 클릭한 나라의 값이 열리지않고 보이고 있던 나라가 닫혀버리기만 하기 때문에 true값을 준다.
+            state.show_city = true
+            // 현재 보이고 있는 나라의 값을 변경해준다.
+            state.selected_country_key = payload
+          }
           break
       }
     },
     setCountryAndCityData (state) {
+      // 로컬에 저장된 나라이름 도시 이름을 state에 추가
       state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
       state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
     }
