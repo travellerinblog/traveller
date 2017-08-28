@@ -8,7 +8,8 @@ export default {
     // 나라 이름으로 필터된 item들
     filtered_country_list: [],
     // 글 상세 내용으로 보일 list item
-    blog_view_item: null
+    blog_view_item: null,
+    blog_view_item_contents: []
   },
   getters: {
     // list에 뿌려줄 item들
@@ -25,6 +26,9 @@ export default {
     // 블로그 내용에 해당하는 item
     getBlogViewItem (state) {
       return state.blog_view_item
+    },
+    getBlogViewItemContents (state) {
+      return state.blog_view_item_contents
     }
   },
   mutations: {
@@ -71,6 +75,18 @@ export default {
         }
       }
     }
+    // gotoBlogViewContent (state, key) {
+    //   // 블로그 이미지와 텍스트를 가져오는 곳
+    //   var lists = JSON.parse(localStorage.getItem('lists'))
+    //   for (var prop in lists) {
+    //     if (lists.hasOwnProperty(prop)) {
+    //       if (prop === key) {
+    //         state.blog_view_item = lists[prop]
+    //       }
+    //     }
+    //   }
+    //   // console.log(state.blog_view_item.contents)
+    // }
   },
   actions: {
     setListsData (context, payload) {
