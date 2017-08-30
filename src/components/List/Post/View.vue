@@ -2,9 +2,11 @@
   div(v-cloak)
     .content-head
       .title-img
-        img(:src="getBlogViewItem.contents[0]")
+        img(:src="getBlogViewItem.title_img")
       .title
         h1 {{getBlogViewItem.title}}
+        p
+          em(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="index") {{ item }}
         p 
           strong by. {{getBlogViewItem.name}}
           b |
@@ -12,102 +14,91 @@
     .content-body
       .cover
         .contents
-          p.text {{getBlogViewItem.contents[1]}}
-          img(:src="getBlogViewItem.contents[2]")
-          img(:src="getBlogViewItem.contents[3]")
-          p.text {{getBlogViewItem.contents[4]}}
-          img(:src="getBlogViewItem.contents[5]")
-          img(:src="getBlogViewItem.contents[6]")
-          img(:src="getBlogViewItem.contents[7]")
-          p.text {{getBlogViewItem.contents[8]}}
-          img(:src="getBlogViewItem.contents[9]")
-          img(:src="getBlogViewItem.contents[10]")
-          p.text {{getBlogViewItem.contents[11]}}
-          img(:src="getBlogViewItem.contents[12]")
-          p.text {{getBlogViewItem.contents[13]}}
-          img(:src="getBlogViewItem.contents[14]")
-          img(:src="getBlogViewItem.contents[15]")
-          img(:src="getBlogViewItem.contents[16]")
-          img(:src="getBlogViewItem.contents[17]")
-          img(:src="getBlogViewItem.contents[18]")
-          p.text {{getBlogViewItem.contents[19]}}
-          img(:src="getBlogViewItem.contents[20]")
-          p.text {{getBlogViewItem.contents[21]}}
-          img(:src="getBlogViewItem.contents[22]")
-          p.text {{getBlogViewItem.contents[23]}}
-          img(:src="getBlogViewItem.contents[24]")
+          ul
+            li(v-for="(item, index) in getBlogViewItemContents" :index="index" :key="index")
+              p(v-if="item.key === 'text' ") {{ item.value }}
+              img(v-else :src="item.value")
         .reply
           .reply-write
             h1 댓글 작성
             div
-              textarea
-              button(type="button") 저장
+              textarea(@input="detectEventBinding('name', $event)" :value="reply.reply_text")
+              button(type="button" @click="submitText(index)") 저장
           .reply-list
             ul
-              li
+              li(v-for="(item, index) in getBlogViewItemReply" :index="index" :key="index")
                 .reply-list-title
                   .title
-                    strong by. {{getBlogViewItem.reply.reply1.name}}
+                    strong by. {{item.name}}
                   .btns
-                    span {{getBlogViewItem.reply.reply1.date}}
-                    button.btn-edit(type="button") 수정
-                    button.btn-delete(type="button") 삭제
+                    span {{item.date}}
+                    //- button.btn-save(v-if="item.clickedBtnEdit" type="button" @click="replyEdit(index), updateText(index)" :class="index") 저장
+                    //- button.btn-edit(v-else type="button" @click="replyEdit(index)" :class="index") 수정
+                    //- button.btn-delete(type="button") 삭제
                 .reply-list-content
-                  p {{getBlogViewItem.reply.reply1.reply_text}}
-              li
-                .reply-list-title
-                  .title
-                    strong by. {{getBlogViewItem.reply.reply1.name}}
-                  .btns
-                    span {{getBlogViewItem.reply.reply1.date}}
-                    button.btn-save(type="button") 저장
-                    button.btn-delete(type="button") 삭제
-                .reply-list-content
-                 textarea {{getBlogViewItem.reply.reply1.reply_text}}
-              li
-                .reply-list-title
-                  .title
-                    strong by. {{getBlogViewItem.reply.reply2.name}}
-                  .btns
-                    span {{getBlogViewItem.reply.reply2.date}}
-                .reply-list-content
-                  p {{getBlogViewItem.reply.reply2.reply_text}}
-
-              li
-                .reply-list-title
-                  .title
-                    strong by. {{getBlogViewItem.reply.reply3.name}}
-                  .btns
-                    span {{getBlogViewItem.reply.reply3.date}}
-                .reply-list-content
-                  p {{getBlogViewItem.reply.reply3.reply_text}}
-
-              li
-                .reply-list-title
-                  .title
-                    strong by. {{getBlogViewItem.reply.reply4.name}}
-                  .btns
-                    span {{getBlogViewItem.reply.reply4.date}}
-                .reply-list-content
-                  p {{getBlogViewItem.reply.reply4.reply_text}}
-              li
-                .reply-list-title
-                  .title
-                    strong by. {{getBlogViewItem.reply.reply5.name}}
-                  .btns
-                    span {{getBlogViewItem.reply.reply5.date}}
-                .reply-list-content
-                  p {{getBlogViewItem.reply.reply5.reply_text}}
+                  //- textarea(v-if="item.clickedBtnEdit" :class="index" @input="detectEventBinding('name', $event)" :value="reply.reply_text" v-text="item.reply_text")
+                  p(:class="index") {{item.reply_text}}
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
   export default {
+    data () {
+      return {
+        clickedBtnEdit: true,
+        reply: {
+          date: '2016.3.12',
+          id: 'Nigel@ruth.biz',
+          name: 'serom',
+          reply_text: '',
+          clickedBtnEdit: false
+        }
+      }
+    },
     beforeCreate () {
       this.$store.commit('gotoBlogView', this.$route.params.id)
+      this.$store.commit('gotoBlogViewContent', this.$route.params.id)
+      this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+      this.$store.commit('gotoBlogViewTag', this.$route.params.id)
     },
     computed: {
-      ...mapGetters(['getBlogViewItem'])
+      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag'])
+    },
+    methods: {
+      replyEdit (index) {
+        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '/clickedBtnEdit.json'
+        this.$http.update(URL, this.reply.clickedBtnEdit)
+                  .then(function (response) {
+                    console.log(response)
+                  })
+                  .catch(function (error) {
+                    console.error(error.massage)
+                  })
+      },
+      submitText (index) {
+        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply.json'
+        this.$http.post(URL, this.reply)
+                  .then(function (response) {
+                    console.log('response:', response)
+                    this.reply.reply_text = ''
+                  })
+                  .catch(function (error) {
+                    console.error(error.massage)
+                  })
+      },
+      updateText (index) {
+        // let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '.json'
+        // this.$http.update(URL, this.clickedBtnEdit)
+        //           .then(function (response) {
+        //             console.log(response)
+        //           })
+        //           .catch(function (error) {
+        //             console.error(error.massage)
+        //           })
+      },
+      detectEventBinding (target, e) {
+        // this.reply.reply_text = e.target.value
+      }
     }
   }
 </script>
@@ -120,8 +111,8 @@
     font-size: 14px;
   }
   .content-head{
-    // position: fixed;
-    // z-index: -1;
+    position: fixed;
+    z-index: -1;
     width: 100vw;
     height: 700px;
     overflow: hidden;
@@ -147,16 +138,28 @@
       z-index: 1;
       width: 100%;
       max-width: 1220px;
-      margin: -150px auto 0 auto;
       box-sizing: border-box;
       h1{
         font-size: 40px;
         color: #fff;
         margin-bottom: 10px;
-        padding: 0 20px;
       }
       p{
-        padding: 0 20px;
+        em{
+          font-size: 20px;
+          color: #fff;
+          height: 30px;
+          line-height: 30px;
+          margin-right: 10px;
+          // &::before{
+          //   content: "#";
+          //   height: 30px;
+          //   font-size: 20px;
+          //   color: #fff;
+          //   line-height: 30px;
+          //   margin-right: 5px;
+          // }
+        }
         strong {
           font-size: 20px;
           color: #fff;
@@ -183,15 +186,14 @@
     z-index: 1;
     width: 100%;
     overflow: hidden;
-    // padding-top: 700px;
     .cover{
       background: #fff;
+      padding-top: 50px;
       padding-bottom: 100px;
       .contents{
         max-width: 1220px;
         margin: 0 auto;
         box-sizing: border-box;
-        padding: 0 20px;
         img{
           width: 100%;
         }
@@ -205,9 +207,7 @@
         max-width: 1220px;
         margin: 0 auto;
         box-sizing: border-box;
-        padding: 0 20px;
         .reply-write{
-          padding: 20px 0;
           h1{
             font-size: 20px;
             margin-bottom: 10px;
@@ -217,16 +217,16 @@
             textarea{
               box-sizing: border-box;
               float: left;
-              width: 90%;
               height: 100px;
               border: 1px solid rgba( #000, 0.4);
               border-radius: 4px 0 0 4px;
+              font-size: 18px;
+              line-height: 1.8em;
             }
             button{
               box-sizing: border-box;
               float: left;
               display: block;
-              width: 10%;
               height: 100px;
               background: #f4430b;
               border-radius: 0 4px 4px 0;
@@ -239,6 +239,7 @@
         }
       }
       .reply-list{
+        margin-top: 20px;
         ul{
           li{
             border: 1px solid rgba(#f4430b, .5);
@@ -246,7 +247,6 @@
             border-radius: 4px;
             .reply-list-title{
               @include clearfix;
-              padding: 20px;
               border-bottom: 1px solid rgba(#f4430b, .5);
               .title{
                 display: block;
@@ -255,7 +255,6 @@
                 line-height: 30px;
                 b{
                   display: inline-block;
-                  padding: 0 10px;
                   height: 30px;
                   line-height: 30px;
                   font-size: 14px;
@@ -289,12 +288,203 @@
               }
             }
             .reply-list-content{
-              padding: 20px;
               font-size: 18px;
               line-height: 1.8em;
               textarea{
                 width: 100%;
-                height: 100%;
+                height: auto;
+                border: 0 none;
+                font-size: 18px;
+                line-height: 1.8em;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  @include mobile {
+    .content-head{
+      height: 100vh;
+      .title-img{
+        height: 100vh;
+        img{
+          width: auto;
+          height: 100%;
+        }
+        &::after{
+          height: 100vh;
+        }
+      }
+      .title{
+        margin: -200px auto 0 auto;
+        h1{
+          padding: 0 10px;
+        }
+        p{
+          padding: 0 10px;
+        }
+      }
+    }
+    .content-body{
+      padding-top: 100vh;
+      .cover{
+        .contents{
+          padding: 0 10px;
+        }
+        .reply{
+          padding: 0 10px;
+          .reply-write{
+            div{
+              textarea{
+                width: 80%;
+                padding: 10px;
+              }
+              button{
+                width: 20%;
+              }
+            }
+          }
+        }
+        .reply-list{
+          ul{
+            li{
+              .reply-list-title{
+                padding: 10px;
+                .title{
+                  b{
+                    padding: 0 10px;
+                  }
+                }
+              }
+              .reply-list-content{
+                padding: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  @include tablet {
+    .content-head{
+      height: 100vh;
+      .title-img{
+        height: 100vh;
+        img{
+          width: auto;
+          height: 100%;
+        }
+        &::after{
+          height: 100vh;
+        }
+      }
+      .title{
+        margin: -200px auto 0 auto;
+        h1{
+          padding: 0 15px;
+        }
+        p{
+          padding: 0 15px;
+        }
+      }
+    }
+    .content-body{
+      padding-top: 100vh;
+      .cover{
+        .contents{
+          padding: 0 15px;
+        }
+        .reply{
+          padding: 0 15px;
+          .reply-write{
+            div{
+              textarea{
+                width: 85%;
+                padding: 15px;
+              }
+              button{
+                width: 15%;
+              }
+            }
+          }
+        }
+        .reply-list{
+          ul{
+            li{
+              .reply-list-title{
+                padding: 10px;
+                .title{
+                  b{
+                    padding: 0 15px;
+                  }
+                }
+              }
+              .reply-list-content{
+                padding: 15px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  @include desktop {
+    .content-head{
+      height: 700px;
+      .title-img{
+        height: 700px;
+        img{
+          width: 100%;
+          height: auto;
+        }
+        &::after{
+          height: 700px;
+        }
+      }
+      .title{
+        margin: -150px auto 0 auto;
+        h1{
+          padding: 0 20px;
+        }
+        p{
+          padding: 0 20px;
+        }
+      }
+    }
+    .content-body{
+      padding-top: 700px;
+      .cover{
+        .contents{
+          padding: 0 20px;
+        }
+        .reply{
+          padding: 0 20px;
+          .reply-write{
+            div{
+              textarea{
+                width: 90%;
+                padding: 20px;
+              }
+              button{
+                width: 10%;
+              }
+            }
+          }
+        }
+        .reply-list{
+          ul{
+            li{
+              .reply-list-title{
+                padding: 10px;
+                .title{
+                  b{
+                    padding: 0 20px;
+                  }
+                }
+              }
+              .reply-list-content{
+                padding: 20px;
               }
             }
           }
