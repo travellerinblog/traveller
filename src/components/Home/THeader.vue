@@ -246,7 +246,7 @@
   @include breakpoint(0px, 427px) {
     .btn-open-search {
       span {
-        max-width: 98px;
+        max-width: 90px;
       }
     }
   }

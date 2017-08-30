@@ -27,7 +27,12 @@ export default {
     show_filter: false,
     show_country: false,
     show_city: false,
-    blog_view_item_contents: []
+    // 블로그 상세페이지 이미지 / 텍스트 리스트
+    blog_view_item_contents: [],
+    // 블로그 상세페이지 리플
+    blog_view_item_reply: [],
+    // 블로그 상세페이지 태그
+    blog_view_item_tag: []
   },
   getters: {
     // list에 뿌려줄 item들
@@ -86,8 +91,17 @@ export default {
     showCity (state) {
       return state.show_city
     },
+    // 블로그 상세페이지 이미지 / 텍스트 리스트
     getBlogViewItemContents (state) {
       return state.blog_view_item_contents
+    },
+    // 블로그 상세페이지 리플 리스트
+    getBlogViewItemReply (state) {
+      return state.blog_view_item_reply
+    },
+    // 태그 리스트
+    getBlogViewItemTag (state) {
+      return state.blog_view_item_tag
     }
   },
   mutations: {
@@ -339,19 +353,40 @@ export default {
       // 로컬에 저장된 나라이름 도시 이름을 state에 추가
       state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
       state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
+    },
+    gotoBlogViewContent (state, key) {
+      // 블로그 이미지와 텍스트를 가져오는 곳
+      var lists = JSON.parse(localStorage.getItem('lists'))
+      for (var prop in lists) {
+        if (lists.hasOwnProperty(prop)) {
+          if (prop === key) {
+            state.blog_view_item_contents = lists[prop].contents
+          }
+        }
+      }
+    },
+    gotoBlogViewReply (state, key) {
+      // 블로그 이미지와 텍스트를 가져오는 곳
+      var lists = JSON.parse(localStorage.getItem('lists'))
+      for (var prop in lists) {
+        if (lists.hasOwnProperty(prop)) {
+          if (prop === key) {
+            state.blog_view_item_reply = lists[prop].reply
+          }
+        }
+      }
+    },
+    gotoBlogViewTag (state, key) {
+      // 블로그 이미지와 텍스트를 가져오는 곳
+      var lists = JSON.parse(localStorage.getItem('lists'))
+      for (var prop in lists) {
+        if (lists.hasOwnProperty(prop)) {
+          if (prop === key) {
+            state.blog_view_item_tag = lists[prop].tag
+          }
+        }
+      }
     }
-    // gotoBlogViewContent (state, key) {
-    //   // 블로그 이미지와 텍스트를 가져오는 곳
-    //   var lists = JSON.parse(localStorage.getItem('lists'))
-    //   for (var prop in lists) {
-    //     if (lists.hasOwnProperty(prop)) {
-    //       if (prop === key) {
-    //         state.blog_view_item = lists[prop]
-    //       }
-    //     }
-    //   }
-    //   // console.log(state.blog_view_item.contents)
-    // }
   },
   actions: {
     setListsData (context, payload) {

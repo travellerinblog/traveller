@@ -5,14 +5,14 @@
       router-link.more(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click="setAllBlogList") 더보기
         i.icon-next
     .bloglist-body
-      button.btn_prev.icon-up(type="button" @click="clickBtn") 이전
-      button.btn_next.icon-down(type="button" @click="clickBtn") 다음
+      button.btn-prev.icon-up(type="button" @click="clickBtn") 이전
+      button.btn-next.icon-down(type="button" @click="clickBtn") 다음
       v-touch(tag="ul" daraggable="true" @swipeleft="listNext" @swiperight="listPrev" :swipe-options="{ direction: 'horizontal'}")
         router-link(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(list.key)" v-for="(list, index) in get_BlogList" :index="index" :key="index" :to="{ name: 'View', params: { id: list.key }}" tag="li")
           a(href)
             figure
               div
-                img(:src="list.contents[0]" :alt="list.title" title="이미지에 대한 상세 설명은 하단 내용 참조")
+                img(:src="list.title_img" :alt="list.title" title="이미지에 대한 상세 설명은 하단 내용 참조")
               figcaption
                 strong {{ list.title }}
                 span {{ list.write_date }}
@@ -43,9 +43,9 @@
       },
       clickBtn () {
         let classListString = event.target.classList.value
-        if (classListString.indexOf('btn_prev') === 0) {
+        if (classListString.indexOf('btn-prev') === 0) {
           return this.listPrev()
-        } else if (classListString.indexOf('btn_next') === 0) {
+        } else if (classListString.indexOf('btn-next') === 0) {
           return this.listNext()
         }
       },
@@ -97,7 +97,7 @@
     margin-bottom: 16px;
     width: 100%;
     overflow: hidden;
-    .btn_prev, .btn_next{
+    .btn-prev, .btn-next{
       position: absolute;
       top: 50%;
       z-index: 1;
@@ -121,12 +121,12 @@
         font-weight: bold;
       }
     }
-    .btn_prev{
+    .btn-prev{
       &::before{
         transform: rotate(-90deg);
       }
     }
-    .btn_next{
+    .btn-next{
       &::before{
         transform: rotate(-90deg);
       }
@@ -211,10 +211,10 @@
     }
     .bloglist-body {
       height: 254px;
-      .btn_prev{
+      .btn-prev{
         left: 15px;
       }
-      .btn_next{
+      .btn-next{
         right: 15px;
       }
       ul{
@@ -279,10 +279,10 @@
     }
     .bloglist-body {
       height: 340px;
-      .btn_prev{
+      .btn-prev{
         left: 20px;
       }
-      .btn_next{
+      .btn-next{
         right: 20px;
       }
       ul{
@@ -345,10 +345,10 @@
     }
     .bloglist-body {
       height: 680px;
-      .btn_prev{
+      .btn-prev{
         left: 25px;
       }
-      .btn_next{
+      .btn-next{
         right: 25px;
       }
       ul{

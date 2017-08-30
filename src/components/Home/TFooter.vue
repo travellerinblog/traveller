@@ -76,7 +76,7 @@
   
   @include mobile {
     footer {
-      height: 74px;
+      height: auto;
     }
     .logo a {
       margin-left: 10px;
@@ -94,7 +94,7 @@
   
   @include tablet {
     footer {
-      height: 78px;
+      height: auto;
     }
     .logo a {
       margin-left: 15px;
