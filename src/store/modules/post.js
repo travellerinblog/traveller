@@ -3,7 +3,6 @@ export default {
   state: {
     write_title_value: '제목을 입력하세요',
     write_tag_value: '태그를 입력하세요',
-    write_tag_array: [],
     title_img_url: '',
     title_editable: false,
     tag_editable: false,
@@ -49,13 +48,15 @@ export default {
     },
     setTitleValue (state, payload) {
       state.write_title_value = payload
+      state.temp_write_data.title = payload
     },
     setTitleImgUrl (state, payload) {
       state.title_img_url = payload
+      state.temp_write_data.title_img = payload
     },
     setTagValue (state, payload) {
       state.write_tag_value = payload
-      state.write_tag_array = payload.split(' ')
+      state.temp_write_data.tag = payload.split(' ')
     }
   },
   actions: {
@@ -69,6 +70,9 @@ export default {
       if (payload.event.keyCode === 13) {
         commit('enterDetect', payload.sort)
       }
+    },
+    toggleWriteCountryCity ({commit}) {
+      commit('toggleWriteCountryCity')
     },
     setTitleImageToStorage ({commit}, payload) {
       var storageRef = firebase.storage.ref('/Write_temp/' + payload.name)
