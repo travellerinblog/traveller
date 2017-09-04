@@ -32,7 +32,8 @@ export default {
     // 블로그 상세페이지 리플
     blog_view_item_reply: [],
     // 블로그 상세페이지 태그
-    blog_view_item_tag: []
+    blog_view_item_tag: [],
+    blog_view_all_data: {}
   },
   getters: {
     // list에 뿌려줄 item들
@@ -367,7 +368,7 @@ export default {
     },
     gotoBlogViewReply (state, key) {
       // 블로그 이미지와 텍스트를 가져오는 곳
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = state.blog_view_all_data
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
           if (prop === key) {
@@ -386,9 +387,15 @@ export default {
           }
         }
       }
+    },
+    getReplyFireBase (state, payload) {
+      state.blog_view_all_data = payload
     }
   },
   actions: {
+    getReplyFireBase ({commit}, payload) {
+      commit('getReplyFireBase', payload.data)
+    },
     setListsData (context, payload) {
       if (payload === 'all') {
         context.commit('setAllBlogList')

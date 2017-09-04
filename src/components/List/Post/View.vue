@@ -57,6 +57,12 @@
       }
     },
     beforeCreate () {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        this.$store.dispatch('getReplyFireBase', response).then(response => {
+          this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+        })
+      }).catch(error => console.log(error.message))
       this.$store.commit('gotoBlogView', this.$route.params.id)
       this.$store.commit('gotoBlogViewReply', this.$route.params.id)
       this.$store.commit('gotoBlogViewTag', this.$route.params.id)
@@ -77,17 +83,21 @@
             })
       },
       submitText () {
-        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply.json'
+        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
         console.log('this', this.reply)
         axios.post(URL, this.reply)
             .then(response => {
               console.log('response:', response)
               this.reply.reply_text = ''
-              this.$store.dispatch('getListsFromFireBase')
+              let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+              axios.get(api).then((response) => {
+                this.$store.dispatch('getReplyFireBase', response).then(response => {
+                  this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+                })
+              }).catch(error => console.log(error.message))
             })
             .catch(function (error) {
               console.log('error', error)
-              console.log('오류다오류')
             })
       },
       updateText (index) {
