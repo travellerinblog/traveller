@@ -33,6 +33,13 @@ export const store = new Vuex.Store({
         window.localStorage.setItem('lists', JSON.stringify(response.data))
       }).catch(error => console.log(error.message))
     },
+    getReplyFireBase ({commit}) {
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        window.localStorage.setItem('lists', JSON.stringify(response.data))
+      }).catch(error => console.log(error.message))
+      commit('gotoBlogViewReply', this.$route.params.id)
+    },
     getCountryAndCityFromFireBase (context) {
       let api = 'https://traveller-in-blog.firebaseio.com/locations.json'
       axios.get(api).then((response) => {

@@ -23,7 +23,7 @@
             h1 댓글 작성
             div
               textarea(@input="detectEventBinding('name', $event)" :value="reply.reply_text")
-              button(type="button" @click="submitText(index)") 저장
+              button(type="button" @click="submitText()") 저장
           .reply-list
             ul
               li(v-for="(item, index) in getBlogViewItemReply" :index="index" :key="index")
@@ -42,14 +42,15 @@
 
 <script>
   import {mapGetters} from 'vuex'
+  import axios from 'axios'
   export default {
     data () {
       return {
         clickedBtnEdit: true,
         reply: {
-          date: '2016.3.12',
-          id: 'Nigel@ruth.biz',
-          name: 'serom',
+          date: '',
+          id: '아이디',
+          name: '네임',
           reply_text: '',
           clickedBtnEdit: false
         }
@@ -57,9 +58,9 @@
     },
     beforeCreate () {
       this.$store.commit('gotoBlogView', this.$route.params.id)
-      this.$store.commit('gotoBlogViewContent', this.$route.params.id)
       this.$store.commit('gotoBlogViewReply', this.$route.params.id)
       this.$store.commit('gotoBlogViewTag', this.$route.params.id)
+      this.$store.commit('gotoBlogViewContent', this.$route.params.id)
     },
     computed: {
       ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag'])
@@ -67,24 +68,27 @@
     methods: {
       replyEdit (index) {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '/clickedBtnEdit.json'
-        this.$http.update(URL, this.reply.clickedBtnEdit)
-                  .then(function (response) {
-                    console.log(response)
-                  })
-                  .catch(function (error) {
-                    console.error(error.massage)
-                  })
+        axios.update(URL, this.reply.clickedBtnEdit)
+            .then(function (response) {
+              console.log(response)
+            })
+            .catch(function (error) {
+              console.error(error.massage)
+            })
       },
-      submitText (index) {
+      submitText () {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply.json'
-        this.$http.post(URL, this.reply)
-                  .then(function (response) {
-                    console.log('response:', response)
-                    this.reply.reply_text = ''
-                  })
-                  .catch(function (error) {
-                    console.error(error.massage)
-                  })
+        console.log('this', this.reply)
+        axios.post(URL, this.reply)
+            .then(response => {
+              console.log('response:', response)
+              this.reply.reply_text = ''
+              this.$store.dispatch('getListsFromFireBase')
+            })
+            .catch(function (error) {
+              console.log('error', error)
+              console.log('오류다오류')
+            })
       },
       updateText (index) {
         // let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '.json'
@@ -97,7 +101,15 @@
         //           })
       },
       detectEventBinding (target, e) {
-        // this.reply.reply_text = e.target.value
+        this.reply.reply_text = e.target.value
+        let times = new Date()
+        let month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString()
+        let day = times.getDate() < 10 ? '0' + times.getDate() : times.getDate()
+        let hours = times.getHours() < 10 ? '0' + times.getHours() : times.getHours()
+        let minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes()
+        let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
+        this.reply.date = times.getFullYear() + month + day + hours + minute + second
+        console.log(this.reply.date)
       }
     }
   }
