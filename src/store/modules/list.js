@@ -46,6 +46,8 @@ export default {
           return state.filtered_city_list
         case 'all':
           return state.all_blog_list
+        case 'default':
+          return state.all_blog_list
       }
     },
     // 블로그 내용에 해당하는 item
@@ -215,7 +217,7 @@ export default {
       state.show_city = false
       state.show_country = false
     },
-    setAllBlogList (state) {
+    setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드
       var lists = JSON.parse(localStorage.getItem('lists'))
       var item = {}
@@ -226,8 +228,8 @@ export default {
         item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
         state.all_blog_list.push(item)
       }
-      state.filter_by = 'all'
-      state.selected_country_filter = '나라전체'
+      payload === 'default' ? state.filter_by = 'default' : state.filter_by = 'all'
+      payload === 'default' ? state.selected_country_filter = null : state.selected_country_filter = '나라전체'
       state.show_country = false
     },
     popularListFilter (state) {
@@ -390,10 +392,13 @@ export default {
   },
   actions: {
     setListsData (context, payload) {
+      var lists = JSON.parse(localStorage.getItem('lists'))
       if (payload === 'all') {
         context.commit('setAllBlogList')
+      } else if (payload === 'default') {
+        context.commit('setAllBlogList', payload)
+        context.commit('makePageNumber', lists.length)
       } else {
-        var lists = JSON.parse(localStorage.getItem('lists'))
         for (var prop in lists) {
           if (lists[prop].country === payload) {
             context.commit('filterCountryList', payload)
