@@ -32,13 +32,11 @@ div
 </template>
 <script>
 import {mapGetters, mapMutations} from 'vuex'
-import THeader from './../Home/THeader.vue'
-import TFooter from './../Home/TFooter.vue'
 import ListView from './ListView.vue'
 export default {
   name: 'list',
   components: {
-    THeader, TFooter, ListView
+    ListView
   },
   mounted () {
     this.$store.dispatch('setListsData', this.$route.params.id)

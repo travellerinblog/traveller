@@ -1,12 +1,11 @@
 <template lang="pug">
   .write
-    .write-title-container
+    .write-title-container(:style=" 'background-image:url(' + wirteTitleImgUrl + ')' ")
       h1.write-title(:contenteditable="writeTitleEditable" @click="changeEditable('title')" @focus="changeEditable('title')" :value="writeTitleValue" @input="setTitleValue" @keydown="enterDetect('title')" tabindex="0") 제목을 입력하세요
       p.write-tag(:contenteditable="writeTagEditable" @click="changeEditable('tag')"  @focus="changeEditable('tag')" :value="writeTagValue" @input="setTagValue" @keydown="enterDetect('tag')" tabindex="0") 태그를 입력하세요
       form.title-image
         label(for="title-image") 대표이미지를 등록하세요
         input#title-image.a11y-hidden(type="file" name="title-image" @change="titleImageUpload")
-      img(:src="img")
     .write-contents-container
       form.contents-image
         label(for="contents-image") 이미지를 추가하세요
@@ -24,12 +23,7 @@
 import {mapGetters, mapMutations, mapActions} from 'vuex'
 export default {
   computed: {
-    ...mapGetters(['writeTitleEditable', 'writeTitleValue', 'writeTagEditable', 'writeTagValue'])
-  },
-  data () {
-    return {
-      img: ''
-    }
+    ...mapGetters(['writeTitleEditable', 'writeTitleValue', 'writeTagEditable', 'writeTagValue', 'wirteTitleImgUrl'])
   },
   methods: {
     ...mapMutations(['changeEditable']),
@@ -45,7 +39,7 @@ export default {
       this.$store.dispatch('enterDetect', payload)
     },
     titleImageUpload () {
-      this.img = event.target.value
+      this.$store.dispatch('setTitleImageToStorage', event.target.files[0])
     }
   }
 }
