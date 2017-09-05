@@ -31,27 +31,38 @@ div
     router-link.write-link(:to="{name: 'Write', params: {id: 'wirte'}}") 여행 일지 쓰기
 </template>
 <script>
+const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
+const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
 import {mapGetters, mapMutations} from 'vuex'
 import ListView from './ListView.vue'
+import axios from 'axios'
 export default {
   name: 'list',
   components: {
     ListView
   },
   mounted () {
-    this.$store.dispatch('setListsData', this.$route.params.id)
-    this.$store.commit('setCountryAndCityData', this.$route.params.id)
+    axios.get(listApi).then(response => {
+      let payload = { 'data': response.data, 'id': this.$route.params.id }
+      this.$store.dispatch('setListsData', payload).then(response => {
+        this.$store.commit('makePageNumber', this.getFilteredList.length)
+      })
+    }).catch(error => console.log(error.message))
+    axios.get(locationApi).then(response => {
+      this.$store.dispatch('setCountryAndCity', response.data)
+    }).catch(error => console.log(error.message))
   },
   computed: {
     ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey'])
   },
   methods: {
     setAllBlogList () {
-      this.$store.commit('setAllBlogList')
+      this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
       this.$store.commit('makePageNumber', this.getFilteredList.length)
     },
     // 필터를 선택하면 보여지는 글의 개수가 달라지기 때문에, makePageNumber 실행 필요.
     filterCountryList (country) {
+      this.$store.commit('setCountryAndCityData')
       this.$store.commit('filterCountryList', country)
       this.$store.commit('makePageNumber', this.getFilteredList.length)
     },
@@ -100,7 +111,7 @@ a {
     }
     .filter-container {
       position: absolute;
-      z-index: 100;
+      z-index: 50;
       overflow: hidden;
       background-color: #fff;
       border: 1px solid rgba(10, 9, 8, 0.34);
@@ -110,7 +121,7 @@ a {
     }
     .country-and-city-filter{
       position: absolute;
-      z-index: 100;
+      z-index: 50;
       overflow-Y: scroll;
     }
     .city-filter{

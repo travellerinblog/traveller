@@ -32,8 +32,7 @@ export default {
     // 블로그 상세페이지 리플
     blog_view_item_reply: [],
     // 블로그 상세페이지 태그
-    blog_view_item_tag: [],
-    blog_view_all_data: {}
+    blog_view_item_tag: []
   },
   getters: {
     // list에 뿌려줄 item들
@@ -161,8 +160,8 @@ export default {
     filterCountryList (state, payload) {
       // countrylist.vue로 부터 나라 이름을 전달 받아, 같은 나라의 글 목록만 필터링하는 메소드
       // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
-      var lists = JSON.parse(localStorage.getItem('lists'))
-      var countryNameList = JSON.parse(localStorage.getItem('country_and_city'))
+      var lists = state.all_blog_list
+      var countryNameList = state.country_and_city_name
       var item = {}
       var countryKr = ''
       state.filtered_country_list = []
@@ -188,9 +187,9 @@ export default {
       state.show_country = false
     },
     filterCityList (state, payload) {
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = state.all_blog_list
       var item = {}
-      var cityNameList = JSON.parse(localStorage.getItem('city_group'))
+      var cityNameList = state.city_name_group
       var cityKr = ''
       state.filtered_city_list = []
       for (var prop in lists) {
@@ -220,7 +219,7 @@ export default {
     },
     setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = payload.data ? payload.data : state.all_blog_list
       var item = {}
       state.all_blog_list = []
       for (var prop in lists) {
@@ -229,8 +228,9 @@ export default {
         item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
         state.all_blog_list.push(item)
       }
-      payload === 'default' ? state.filter_by = 'default' : state.filter_by = 'all'
-      payload === 'default' ? state.selected_country_filter = null : state.selected_country_filter = '나라전체'
+      if (payload.id === null) { return }
+      payload.id === 'default' ? state.filter_by = 'default' : state.filter_by = 'all'
+      payload.id === 'default' ? state.selected_country_filter = null : state.selected_country_filter = '나라전체'
       state.show_country = false
     },
     popularListFilter (state) {
@@ -316,10 +316,10 @@ export default {
     gotoBlogView (state, key) {
       // 블로그 글 내용으로 가는 메소드.
       // 전체 글 목록에서 Recommendation.vue에서 전달받은 key값과 같은 key를 갖는 list를 state에 넣어준다.
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
-          if (prop === key) {
+          if (lists[prop].key === key) {
             state.blog_view_item = lists[prop]
           }
         }
@@ -352,17 +352,20 @@ export default {
           break
       }
     },
-    setCountryAndCityData (state) {
+    setCountryAndCityData (state, payload) {
       // 로컬에 저장된 나라이름 도시 이름을 state에 추가
-      state.country_and_city_name = JSON.parse(localStorage.getItem('country_and_city'))
-      state.city_name_group = JSON.parse(localStorage.getItem('city_group'))
+      if (!payload) {
+        return
+      }
+      state.country_and_city_name = payload.countryAndCityName
+      state.city_name_group = payload.cityNameGroup
     },
     gotoBlogViewContent (state, key) {
       // 블로그 이미지와 텍스트를 가져오는 곳
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
-          if (prop === key) {
+          if (lists[prop].key === key) {
             state.blog_view_item_contents = lists[prop].contents
           }
         }
@@ -370,10 +373,10 @@ export default {
     },
     gotoBlogViewReply (state, key) {
       // 블로그 이미지와 텍스트를 가져오는 곳
-      var lists = state.blog_view_all_data
+      var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
-          if (prop === key) {
+          if (lists[prop].key === key) {
             state.blog_view_item_reply = lists[prop].reply
           }
         }
@@ -381,43 +384,91 @@ export default {
     },
     gotoBlogViewTag (state, key) {
       // 블로그 이미지와 텍스트를 가져오는 곳
-      var lists = JSON.parse(localStorage.getItem('lists'))
+      var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
-          if (prop === key) {
+          if (lists[prop].key === key) {
             state.blog_view_item_tag = lists[prop].tag
           }
         }
       }
-    },
-    getReplyFireBase (state, payload) {
-      state.blog_view_all_data = payload
     }
   },
   actions: {
-    getReplyFireBase ({commit}, payload) {
-      commit('getReplyFireBase', payload.data)
-    },
     setListsData (context, payload) {
-      var lists = JSON.parse(localStorage.getItem('lists'))
-      if (payload === 'all') {
-        context.commit('setAllBlogList')
-      } else if (payload === 'default') {
+      var lists = payload.data
+      if (payload.id === 'all') {
         context.commit('setAllBlogList', payload)
-        context.commit('makePageNumber', lists.length)
+      } else if (payload.id === 'default') {
+        context.commit('setAllBlogList', payload)
+        context.commit('makePageNumber', Object.keys(lists).length)
+      } else if (payload.id === null) {
+        context.commit('setAllBlogList', payload)
       } else {
         for (var prop in lists) {
-          if (lists[prop].country === payload) {
-            context.commit('filterCountryList', payload)
+          if (lists[prop].country === payload.id) {
+            context.commit('setAllBlogList', payload)
+            context.commit('filterCountryList', payload.id)
           } else {
             for (var i = lists[prop].city.length; i--;) {
-              if (lists[prop].city[i] === payload) {
-                context.commit('filterCityList', payload)
+              if (lists[prop].city[i] === payload.id) {
+                context.commit('setAllBlogList', payload)
+                context.commit('filterCityList', payload.id)
               }
             }
           }
         }
       }
+    },
+    setCountryAndCity ({commit}, payload) {
+      // 전체 리스트에서 필요한 부분만 빼오기. v-for 사용하기 쉽게
+      var countryAndCityName = []
+      var cityNameGroup = []
+      var countryItems = {}
+      var city = []
+      var countryKye = ''
+      var country = ''
+      for (var prop in payload) {
+        country = payload[prop]
+        countryKye = prop
+        for (var countryProp in country) {
+          if (countryProp !== 'country') {
+            var cityitem = []
+            cityitem = country[countryProp]
+            cityitem.key = countryProp
+            city.push(cityitem)
+          }
+        }
+        countryItems.country = country.country
+        countryItems.countryKey = countryKye
+        countryItems.citygroup = city
+        countryAndCityName.push(countryItems)
+        cityNameGroup.push(city)
+        countryItems = {}
+        city = []
+      }
+      // 나라 이름과 도시 이름을 오름차순 정렬
+      countryAndCityName.sort((a, b) => {
+        if (a.country > b.country) {
+          return 1
+        }
+        if (a.country < b.country) {
+          return -1
+        }
+        return 0
+      })
+      for (var i = countryAndCityName.length; i--;) {
+        countryAndCityName[i].citygroup.sort((a, b) => {
+          if (a.city > b.city) {
+            return 1
+          }
+          if (a.city < b.city) {
+            return -1
+          }
+          return 0
+        })
+      }
+      commit('setCountryAndCityData', {'countryAndCityName': countryAndCityName, 'cityNameGroup': cityNameGroup})
     }
   }
 }
