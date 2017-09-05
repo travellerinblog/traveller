@@ -15,10 +15,13 @@
 
 <script scoped>
   import {mapGetters} from 'vuex'
+  import axios from 'axios'
   export default {
     beforeCreate () {
-      this.$store.dispatch('setRecommendItem')
-      this.$store.dispatch('setListsData')
+      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      axios.get(api).then((response) => {
+        this.$store.dispatch('setRecommendItem', response.data)
+      }).catch(error => console.log(error.message))
     },
     mounted () {
       // next Tick을 통해 데이터 갱신후 UI까지 완성되었을 때, callback 함수 실행

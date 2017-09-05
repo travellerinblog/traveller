@@ -1,4 +1,3 @@
-import axios from 'axios'
 export default {
   state: {
     recommend_item: {},
@@ -55,11 +54,8 @@ export default {
     }
   },
   actions: {
-    setRecommendItem (context) {
-      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
-      axios.get(api).then((response) => {
-        context.commit('setRecommendItem', response.data)
-      }).catch(error => console.log(error.message))
+    setRecommendItem (context, payload) {
+      context.commit('setRecommendItem', payload)
     }
   }
 }

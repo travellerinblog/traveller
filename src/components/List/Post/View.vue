@@ -41,6 +41,7 @@
 </template>
 
 <script>
+  let listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
   import {mapGetters} from 'vuex'
   import axios from 'axios'
   export default {
@@ -57,16 +58,15 @@
       }
     },
     beforeCreate () {
-      let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
-      axios.get(api).then((response) => {
-        this.$store.dispatch('getReplyFireBase', response).then(response => {
+      axios.get(listApi).then((response) => {
+        let payload = { 'data': response.data, 'id': null }
+        this.$store.dispatch('setListsData', payload).then(response => {
+          this.$store.commit('gotoBlogView', this.$route.params.id)
           this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+          this.$store.commit('gotoBlogViewTag', this.$route.params.id)
+          this.$store.commit('gotoBlogViewContent', this.$route.params.id)
         })
       }).catch(error => console.log(error.message))
-      this.$store.commit('gotoBlogView', this.$route.params.id)
-      this.$store.commit('gotoBlogViewReply', this.$route.params.id)
-      this.$store.commit('gotoBlogViewTag', this.$route.params.id)
-      this.$store.commit('gotoBlogViewContent', this.$route.params.id)
     },
     computed: {
       ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag'])
@@ -79,19 +79,17 @@
               console.log(response)
             })
             .catch(function (error) {
-              console.error(error.massage)
+              console.error(error.message)
             })
       },
       submitText () {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
-        console.log('this', this.reply)
         axios.post(URL, this.reply)
             .then(response => {
-              console.log('response:', response)
               this.reply.reply_text = ''
-              let api = 'https://traveller-in-blog.firebaseio.com/lists.json'
-              axios.get(api).then((response) => {
-                this.$store.dispatch('getReplyFireBase', response).then(response => {
+              axios.get(listApi).then((response) => {
+                let payload = { 'data': response.data, 'id': null }
+                this.$store.dispatch('setListsData', payload).then(response => {
                   this.$store.commit('gotoBlogViewReply', this.$route.params.id)
                 })
               }).catch(error => console.log(error.message))
@@ -119,7 +117,6 @@
         let minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes()
         let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
         this.reply.date = times.getFullYear() + month + day + hours + minute + second
-        console.log(this.reply.date)
       }
     }
   }

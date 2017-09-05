@@ -12,8 +12,8 @@
       TMain
     },
     created: function () {
-      this.$store.dispatch('getListsFromFireBase')
-      this.$store.dispatch('getCountryAndCityFromFireBase')
+      // this.$store.dispatch('getListsFromFireBase')
+      // this.$store.dispatch('getCountryAndCityFromFireBase')
     }
   }
 </script>

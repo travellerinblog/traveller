@@ -1,18 +1,78 @@
 <template lang="pug">
-  div
-    h1 블로그 작성 페이지
+  .write
+    .write-title-container
+      h1.write-title(:contenteditable="writeTitleEditable" @click="changeEditable('title')" @focus="changeEditable('title')" :value="writeTitleValue" @input="setTitleValue" @keydown="enterDetect('title')" tabindex="0") 제목을 입력하세요
+      p.write-tag(:contenteditable="writeTagEditable" @click="changeEditable('tag')"  @focus="changeEditable('tag')" :value="writeTagValue" @input="setTagValue" @keydown="enterDetect('tag')" tabindex="0") 태그를 입력하세요
+      form.title-image
+        label(for="title-image-input") 대표이미지를 등록하세요
+        input#title-image-input.a11y-hidden(type="file" name="title-image" @change="titleImageUpload")
+      img.title-image-view(:src="wirteTitleImgUrl")
+    .write-contents-container
+      .country-and-city
+        .selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity" :class="{'default-filter-msg': selectedWriteCountryCity === '여행지를 선택하세요.'}") {{ selectedWriteCountryCity }}
+          i.icon-down
+        .filter-container(v-show="showCountry")  
+          ul.country-and-city-filter
+            li
+              a(href @click.prevent="setAllBlogList") 나라전체
+            li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
+              a(href @click.prevent="toggleFilter(country.countryKey)") {{country.country}} 
+              ul.city-filter(v-if="selectedCountryKey===country.countryKey" v-show="showCity")
+                li
+                  input(type="checkbox" id="all-city")
+                  label(for="all-city") 지역전체
+                li(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
+                  input(type="checkbox" :id="'city'+index")
+                  label(for="'city'+index")
+        form.date-update
+          input(type="date")
+          input(type="date")
+      form.contents-image
+        label(for="contents-image") 이미지를 추가하세요
+        input#contents-image.a11y-hidden(type="file" name="contents-image")
+      form.contents-text
+        label(for="contents-text") 텍스트를 추가하세요
+        input#contents-text(type="text" name="contents-text" v-show="false")
+      .write-contents-view
+    form.write-button
+      router-link.save-btn(to="/view/list1" tag="button") 저장
+      router-link.save-btn(to="/list/default" tag="button" @click="setListsData('default')") 취소
 </template>
 
 <script>
+import {mapGetters, mapMutations, mapActions} from 'vuex'
 export default {
-  data () {
-    return {
-
+  name: 'write',
+  computed: {
+    ...mapGetters(['writeTitleEditable', 'writeTitleValue', 'writeTagEditable', 'writeTagValue', 'wirteTitleImgUrl'])
+  },
+  methods: {
+    ...mapMutations(['changeEditable']),
+    ...mapActions(['setListsData']),
+    setTitleValue (event) {
+      this.$store.dispatch('setTitleValue', event)
+    },
+    setTagValue (event) {
+      this.$store.dispatch('setTagValue', event)
+    },
+    enterDetect (sort) {
+      var payload = {'event': event, 'sort': sort}
+      this.$store.dispatch('enterDetect', payload)
+    },
+    titleImageUpload () {
+      this.$store.dispatch('setTitleImageToStorage', event.target.files[0])
     }
   }
 }
 </script>
 
-<style lang="sass">
-
+<style lang="scss">
+  .write-title-container{
+    margin-top: 55px;
+  }
+  .title-image{
+    label {
+      cursor: pointer;
+    }
+  }
 </style>

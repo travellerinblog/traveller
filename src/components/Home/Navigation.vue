@@ -11,7 +11,7 @@
         a(href) 나 여기 왔다 갔다.
       router-link(to="/" tag="li" active-class="current-page") 
         a(href) 마이페이지
-    button.btn-write(type="button") 여행 일지 쓰기
+    router-link.btn-write(to="/write/1" tag="button") 여행 일지 쓰기
 </template>
 
 <script>
@@ -93,6 +93,7 @@
     display: block;
     width: 133px;
     height: 36px;
+    padding: 0;
     margin-top: 11px;
     background: #fff;
     border: 1px solid #000;
@@ -100,6 +101,7 @@
     line-height: 36px;
     color: #000;
     font-size: 16px;
+    cursor: pointer;
   }
   
   @include mobile {
