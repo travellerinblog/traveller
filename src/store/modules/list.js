@@ -1,3 +1,4 @@
+import axios from 'axios'
 export default {
   state: {
     // 필터하지 않은 모든 blog 글 목록
@@ -36,7 +37,9 @@ export default {
     blog_view_item_reply: [],
     blog_view_item_replys: [],
     // 블로그 상세페이지 태그
-    blog_view_item_tag: []
+    blog_view_item_tag: [],
+    // 조회수 기본 값
+    view_count: null
   },
   getters: {
     // list에 뿌려줄 item들
@@ -108,6 +111,9 @@ export default {
     // 태그 리스트
     getBlogViewItemTag (state) {
       return state.blog_view_item_tag
+    },
+    getViewCount (state) {
+      return state.view_count
     }
   },
   mutations: {
@@ -471,47 +477,24 @@ export default {
     },
     gotoBlogViewTag (state, key) {
       // 블로그 이미지와 텍스트를 가져오는 곳
-      var lists = state.all_blog_list
-      for (var prop in lists) {
+      let lists = state.all_blog_list
+      for (let prop in lists) {
         if (lists.hasOwnProperty(prop)) {
           if (lists[prop].key === key) {
             state.blog_view_item_tag = lists[prop].tag
           }
         }
       }
+    },
+    // 조회수 변경
+    changeViewCount (state, payload) {
+      state.view_count = payload + 1
     }
-    // ,
-    // dateChange (state, stateValue) {
-    //   // dateChange(blog_view_item_replys)
-    //   // replyAllCheckDate는 [{date: 12345677},{date: 12345677},{date: 12345677}] 이런식으로 들어가져 있다.
-    //   let replyAllCheckDate = state.stateValue
-    //   for (let i = 0, l = replyAllCheckDate.length; i < l; i++) {
-    //     // 숫자로 되어있는 것을 가져와요
-    //     let replyDate = replyAllCheckDate[i].date
-    //     // 년으로 자르기
-    //     let yearDate = replyDate.substr(0, 4)
-    //     // 월로 자르기
-    //     let monthDate = replyDate.substr(4, 2)
-    //     // 일로 자르기
-    //     let dayDate = replyDate.substr(6, 2)
-    //     // 시간으로 자르기
-    //     let hourDate = replyDate.substr(8, 2)
-    //     // 분으로 자르기
-    //     let minDate = replyDate.substr(10, 2)
-    //     let timeDate
-    //     if (hourDate < 12) {
-    //       timeDate = hourDate + ':' + minDate + ' AM'
-    //     } else {
-    //       timeDate = (hourDate - 12) + ':' + minDate + ' PM'
-    //     }
-    //     replyAllCheckDate[i].date = yearDate + '.' + monthDate + '.' + dayDate + ' | ' + timeDate
-    //   }
-    // }
   },
   actions: {
     // 통신은 액션에서 해야합니다.
     setListsData (context, payload) {
-      var lists = payload.data
+      let lists = payload.data
       if (payload.id === 'all') {
         context.commit('setAllBlogList', payload)
       } else if (payload.id === 'default') {
@@ -534,6 +517,20 @@ export default {
               }
             }
           }
+        }
+      }
+    },
+    // 조회수
+    setChangeViewCount (context, payload) {
+      let lists = payload.list
+      for (let list in lists) {
+        if (list === payload.id) {
+          context.commit('changeViewCount', lists[list].view)
+          let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.id + '.json'
+          axios.patch(URL, {'view': context.state.view_count})
+              .catch(function (error) {
+                console.log('error', error)
+              })
         }
       }
     },
