@@ -12,7 +12,7 @@
           b |
           span {{getBlogViewItem.write_date}}
           b |
-          span 조회수 {{getBlogViewItem.view}}
+          span 조회수 {{getViewCount}}
     .content-body
       .cover
         .contents
@@ -65,7 +65,7 @@
       axios.get(listApi).then((response) => {
         let payload = { 'data': response.data, 'id': null }
         this.$store.dispatch('setListsData', payload).then(response => {
-          this.$store.dispatch('setChangeViewCount', payload)
+          this.$store.dispatch('setChangeViewCount', { 'id': this.$route.params.id, 'list': payload.data })
           this.$store.commit('gotoBlogView', this.$route.params.id)
           this.$store.commit('gotoBlogViewReply', this.$route.params.id)
           this.$store.commit('gotoBlogViewTag', this.$route.params.id)
@@ -73,8 +73,12 @@
         })
       }).catch(error => console.log(error.message))
     },
+    // created () {
+    //   axios.get(listApi).then((response) => {
+    //   }).catch(error => console.log(error.message))
+    // },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag'])
+      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount'])
     },
     methods: {
       replyEdit (index) {
