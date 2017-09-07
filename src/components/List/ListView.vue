@@ -7,7 +7,7 @@
             img.list-img(:src="list.title_img")
             figcaption.list-item
               p.title {{ list.title }}
-              p.content {{ list.write_date }} | {{ list.country_kr}} | {{ list.name}}
+              p.content {{ list.write_date }} | {{ list.country_kr}} | {{ list.name}} | 조회수 {{ list.view}}
                 i.icon-next
       p.listNotFound(v-show="listNotFound") 선택한 지역에 대한 글이 존재하지 않습니다.
     .page

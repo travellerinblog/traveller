@@ -16,7 +16,7 @@
               figcaption
                 strong {{ list.title }}
                 span {{ list.write_date }}
-                em {{ list.country_kr }} | {{ list.name }}
+                em {{ list.country_kr }} | {{ list.name }} | 조회수 {{ list.view}}
                   i.icon-next
 </template>
 
