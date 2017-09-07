@@ -11,7 +11,7 @@
         a(href) 나 여기 왔다 갔다.
       router-link(to="/" tag="li" active-class="current-page") 
         a(href) 마이페이지
-    router-link.btn-write(to="/write/1" tag="button") 여행 일지 쓰기
+    router-link.btn-write(to="/write/user1" tag="button") 여행 일지 쓰기
 </template>
 
 <script>
