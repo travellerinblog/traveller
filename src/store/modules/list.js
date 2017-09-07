@@ -8,11 +8,14 @@ export default {
     filtered_country_list: [],
     // 도시 이름으로 필터된 item들
     filtered_city_list: [],
+    // 태그명으로 필터된 item들
+    filtered_tag_list: [],
     // 글 상세 내용으로 보일 list item
     blog_view_item: null,
     // 나라와 도시 정보가 들어간 배열
     country_and_city_name: [],
     city_name_group: [],
+    tag_name_group: [],
     // 지금 보고 있는 페이지
     active_page: 1,
     // 보여질 리스트의 개수(화면 크기에 따라 달라진다)
@@ -31,6 +34,7 @@ export default {
     blog_view_item_contents: [],
     // 블로그 상세페이지 리플
     blog_view_item_reply: [],
+    blog_view_item_replys: [],
     // 블로그 상세페이지 태그
     blog_view_item_tag: []
   },
@@ -99,7 +103,7 @@ export default {
     },
     // 블로그 상세페이지 리플 리스트
     getBlogViewItemReply (state) {
-      return state.blog_view_item_reply
+      return state.blog_view_item_replys
     },
     // 태그 리스트
     getBlogViewItemTag (state) {
@@ -217,6 +221,39 @@ export default {
       state.show_city = false
       state.show_country = false
     },
+    filterTagList (state, payload) {
+      // view.vue로 부터 태르명을 전달 받아, 같은 태그의 글 목록만 필터링하는 메소드
+      var lists = state.all_blog_list
+      var item = {}
+      var tagKr = ''
+      var tagNameList = state.tag_name_group
+      // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
+      state.filtered_tag_list = []
+      for (var prop in lists) {
+        for (var i = lists[prop].tag.length; i--;) {
+          if (payload === lists[prop].tag[i]) {
+            // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
+            item = lists[prop]
+            item.key = prop
+            item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
+            state.filtered_tag_list.push(item)
+          }
+        }
+      }
+      // 필터를 선택하였을 때, 선택된 도시 이름이 표시 되도록 한다.
+      for (var j = tagNameList.length; j--;) {
+        for (var k = tagNameList[j].length; k--;) {
+          if (tagNameList[j][k].key === payload) {
+            tagKr = tagNameList[j][k].tag
+          }
+        }
+      }
+      // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
+      state.filter_by = 'tag'
+      state.selected_country_filter = tagKr
+      state.show_tag = false
+      state.show_country = false
+    },
     setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드
       var lists = payload.data ? payload.data : state.all_blog_list
@@ -321,6 +358,15 @@ export default {
         if (lists.hasOwnProperty(prop)) {
           if (lists[prop].key === key) {
             state.blog_view_item = lists[prop]
+            // 숫자로 되어있는 것을 가져와요
+            let replyDate = state.blog_view_item.write_date
+            // 년으로 자르기
+            let yearDate = replyDate.substr(0, 4)
+            // 월로 자르기
+            let monthDate = replyDate.substr(4, 2)
+            // 일로 자르기
+            let dayDate = replyDate.substr(6, 2)
+            state.blog_view_item.write_date = yearDate + '.' + monthDate + '.' + dayDate
           }
         }
       }
@@ -372,12 +418,53 @@ export default {
       }
     },
     gotoBlogViewReply (state, key) {
-      // 블로그 이미지와 텍스트를 가져오는 곳
+      // 리플 가져오는 곳
       var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
           if (lists[prop].key === key) {
             state.blog_view_item_reply = lists[prop].reply
+            let replyAlls = state.blog_view_item_reply // {{},{}}
+            state.blog_view_item_replys = []
+            // 빈배열 만듬
+            let replyAllFind = state.blog_view_item_replys // [{},{}]
+            for (let index in replyAlls) {
+              // 빈배열에 객체를 순서대로 넣어줌
+              replyAllFind.push(replyAlls[index])
+              // 객체안의 찾을 값을 적음
+              let sortingDate = 'date'
+              // 객체안에서 date 값끼리 비교해서 오름차순으로 적용
+              replyAllFind.sort(
+                function (a, b) { // 오름차순
+                  return b[sortingDate] - a[sortingDate]
+                }
+              )
+            }
+            // replyAllCheckDate는 [{date: 12345677},{date: 12345677},{date: 12345677}] 이런식으로 들어가져 있다.
+            let replyAllCheckDate = state.blog_view_item_replys
+            for (let i = 0, l = replyAllCheckDate.length; i < l; i++) {
+              // 숫자로 되어있는 것을 가져와요
+              let replyDate = replyAllCheckDate[i].date
+              // 년으로 자르기
+              let yearDate = replyDate.substr(0, 4)
+              // 월로 자르기
+              let monthDate = replyDate.substr(4, 2)
+              // 일로 자르기
+              let dayDate = replyDate.substr(6, 2)
+              // 시간으로 자르기
+              let hourDate = replyDate.substr(8, 2)
+              // 분으로 자르기
+              let minDate = replyDate.substr(10, 2)
+              let timeDate
+              if (hourDate < 12) {
+                timeDate = hourDate + ':' + minDate + ' AM'
+              } else if (hourDate === 12) {
+                timeDate = hourDate + ':' + minDate + ' PM'
+              } else {
+                timeDate = '0' + (hourDate - 12) + ':' + minDate + ' PM'
+              }
+              replyAllCheckDate[i].date = yearDate + '.' + monthDate + '.' + dayDate + ' | ' + timeDate
+            }
           }
         }
       }
@@ -393,8 +480,36 @@ export default {
         }
       }
     }
+    // ,
+    // dateChange (state, stateValue) {
+    //   // dateChange(blog_view_item_replys)
+    //   // replyAllCheckDate는 [{date: 12345677},{date: 12345677},{date: 12345677}] 이런식으로 들어가져 있다.
+    //   let replyAllCheckDate = state.stateValue
+    //   for (let i = 0, l = replyAllCheckDate.length; i < l; i++) {
+    //     // 숫자로 되어있는 것을 가져와요
+    //     let replyDate = replyAllCheckDate[i].date
+    //     // 년으로 자르기
+    //     let yearDate = replyDate.substr(0, 4)
+    //     // 월로 자르기
+    //     let monthDate = replyDate.substr(4, 2)
+    //     // 일로 자르기
+    //     let dayDate = replyDate.substr(6, 2)
+    //     // 시간으로 자르기
+    //     let hourDate = replyDate.substr(8, 2)
+    //     // 분으로 자르기
+    //     let minDate = replyDate.substr(10, 2)
+    //     let timeDate
+    //     if (hourDate < 12) {
+    //       timeDate = hourDate + ':' + minDate + ' AM'
+    //     } else {
+    //       timeDate = (hourDate - 12) + ':' + minDate + ' PM'
+    //     }
+    //     replyAllCheckDate[i].date = yearDate + '.' + monthDate + '.' + dayDate + ' | ' + timeDate
+    //   }
+    // }
   },
   actions: {
+    // 통신은 액션에서 해야합니다.
     setListsData (context, payload) {
       var lists = payload.data
       if (payload.id === 'all') {
@@ -404,6 +519,8 @@ export default {
         context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === null) {
         context.commit('setAllBlogList', payload)
+      } else if (payload.id === 'tag') {
+        context.commit('filterTagList', payload)
       } else {
         for (var prop in lists) {
           if (lists[prop].country === payload.id) {

@@ -6,11 +6,13 @@
       .title
         h1 {{getBlogViewItem.title}}
         p
-          em(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="index") {{ item }}
+          router-link(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="item.tag" @click.native="gotoBlogView(list.key)" :to="{ name: 'ListView', params: { item }, query:{search: item } }" tag="a") {{ item }}
         p 
           strong by. {{getBlogViewItem.name}}
           b |
           span {{getBlogViewItem.write_date}}
+          b |
+          span 조회수 {{getBlogViewItem.view}}
     .content-body
       .cover
         .contents
@@ -22,8 +24,8 @@
           .reply-write
             h1 댓글 작성
             div
-              textarea(@input="detectEventBinding('name', $event)" :value="reply.reply_text")
-              button(type="button" @click="submitText()") 저장
+              textarea(@input="detectEventBinding('name', $event)" :value="reply.reply_text" @click="textReset()") 
+              button(type="button" @click="submitText()") 댓글 등록
           .reply-list
             ul
               li(v-for="(item, index) in getBlogViewItemReply" :index="index" :key="index")
@@ -38,6 +40,8 @@
                 .reply-list-content
                   //- textarea(v-if="item.clickedBtnEdit" :class="index" @input="detectEventBinding('name', $event)" :value="reply.reply_text" v-text="item.reply_text")
                   p(:class="index") {{item.reply_text}}
+        .btn-contents
+          router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
 </template>
 
 <script>
@@ -52,7 +56,7 @@
           date: '',
           id: '아이디',
           name: '네임',
-          reply_text: '',
+          reply_text: '댓글을 작성해주세요',
           clickedBtnEdit: false
         }
       }
@@ -61,6 +65,7 @@
       axios.get(listApi).then((response) => {
         let payload = { 'data': response.data, 'id': null }
         this.$store.dispatch('setListsData', payload).then(response => {
+          this.$store.dispatch('setChangeViewCount', payload)
           this.$store.commit('gotoBlogView', this.$route.params.id)
           this.$store.commit('gotoBlogViewReply', this.$route.params.id)
           this.$store.commit('gotoBlogViewTag', this.$route.params.id)
@@ -82,8 +87,21 @@
               console.error(error.message)
             })
       },
+      textReset () {
+        if (this.reply.reply_text === '댓글을 작성해주세요' || this.reply.reply_text === '댓글이 입력되지 않았습니다. 댓글을 입력해주세요') {
+          this.reply.reply_text = ''
+          return
+        }
+      },
       submitText () {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
+        let textCheck = this.reply.reply_text
+        textCheck = textCheck.trim()
+        textCheck = textCheck.length
+        if (textCheck === 0) {
+          this.reply.reply_text = '댓글이 입력되지 않았습니다. 댓글을 입력해주세요'
+          return
+        }
         axios.post(URL, this.reply)
             .then(response => {
               this.reply.reply_text = ''
@@ -117,6 +135,12 @@
         let minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes()
         let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
         this.reply.date = times.getFullYear() + month + day + hours + minute + second
+      },
+      setAllBlogList () {
+        this.$store.commit('setAllBlogList')
+      },
+      filterTagList (tag) {
+        this.$store.dispatch('setListsData', tag)
       }
     }
   }
@@ -130,13 +154,12 @@
     font-size: 14px;
   }
   .content-head{
-    position: fixed;
-    z-index: -1;
-    width: 100vw;
-    height: 700px;
-    overflow: hidden;
     .title-img{
+      position: fixed;
+      z-index: -1;
+      width: 100vw;
       height: 700px;
+      overflow: hidden;
       img{
         width: 100%;
         height: auto;
@@ -159,25 +182,28 @@
       max-width: 1220px;
       box-sizing: border-box;
       h1{
-        font-size: 40px;
+        font-size: 30px;
         color: #fff;
         margin-bottom: 10px;
       }
       p{
-        em{
+        a{
           font-size: 20px;
           color: #fff;
           height: 30px;
           line-height: 30px;
           margin-right: 10px;
-          // &::before{
-          //   content: "#";
-          //   height: 30px;
-          //   font-size: 20px;
-          //   color: #fff;
-          //   line-height: 30px;
-          //   margin-right: 5px;
-          // }
+          text-decoration: none;
+          &::before{
+            content: "#";
+            height: 30px;
+            font-size: 20px;
+            color: #fff;
+            line-height: 30px;
+          }
+          &:hover{
+            text-decoration: underline;
+          }
         }
         strong {
           font-size: 20px;
@@ -232,26 +258,25 @@
             margin-bottom: 10px;
           }
           div{
-            @include clearfix;
+            text-align: right;
             textarea{
               box-sizing: border-box;
-              float: left;
+              width: 100%;
               height: 100px;
               border: 1px solid rgba( #000, 0.4);
-              border-radius: 4px 0 0 4px;
+              border-radius: 4px;
               font-size: 18px;
               line-height: 1.8em;
             }
             button{
-              box-sizing: border-box;
-              float: left;
-              display: block;
-              height: 100px;
+              display: inline-block;
+              height: 30px;
+              line-height: 30px;
+              padding: 0 10px;
+              border: 1px solid #f4430b;
+              border-radius: 4px;
+              font-size: 16px;
               background: #f4430b;
-              border-radius: 0 4px 4px 0;
-              border: 1px solid rgba( #000, 0.4);
-              border-left: 0 none;
-              font-size: 18px;
               color: #fff;
             }
           }
@@ -261,12 +286,12 @@
         margin-top: 20px;
         ul{
           li{
-            border: 1px solid rgba(#f4430b, .5);
+            border: 1px solid rgba(#181818, .5);
             margin-bottom: 20px;
             border-radius: 4px;
             .reply-list-title{
               @include clearfix;
-              border-bottom: 1px solid rgba(#f4430b, .5);
+              border-bottom: 1px solid rgba(#181818, .5);
               .title{
                 display: block;
                 float: left;
@@ -320,6 +345,24 @@
           }
         }
       }
+      .btn-contents{
+        max-width: 1220px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        margin-top: 20px;
+        text-align: right;
+        .btn-gotolist{
+          display: inline-block;
+          height: 30px;
+          line-height: 30px;
+          padding: 0 10px;
+          border: 1px solid #f4430b;
+          border-radius: 4px;
+          font-size: 16px;
+          color: #f4430b;
+          text-decoration: none;
+        }
+      }
     }
   }
   @include mobile {
@@ -336,7 +379,8 @@
         }
       }
       .title{
-        margin: -200px auto 0 auto;
+        margin: 0 auto;
+        padding-top: 70vh;
         h1{
           padding: 0 10px;
         }
@@ -346,7 +390,6 @@
       }
     }
     .content-body{
-      padding-top: 100vh;
       .cover{
         .contents{
           padding: 0 10px;
@@ -356,11 +399,7 @@
           .reply-write{
             div{
               textarea{
-                width: 80%;
                 padding: 10px;
-              }
-              button{
-                width: 20%;
               }
             }
           }
@@ -382,6 +421,9 @@
             }
           }
         }
+        .btn-contents{
+          padding: 0 10px;
+        }
       }
     }
   }
@@ -399,7 +441,8 @@
         }
       }
       .title{
-        margin: -200px auto 0 auto;
+        margin: 0 auto;
+        padding-top: 75vh;
         h1{
           padding: 0 15px;
         }
@@ -409,7 +452,6 @@
       }
     }
     .content-body{
-      padding-top: 100vh;
       .cover{
         .contents{
           padding: 0 15px;
@@ -419,11 +461,7 @@
           .reply-write{
             div{
               textarea{
-                width: 85%;
                 padding: 15px;
-              }
-              button{
-                width: 15%;
               }
             }
           }
@@ -445,24 +483,17 @@
             }
           }
         }
+        .btn-contents{
+          padding: 0 15px;
+        }
       }
     }
   }
   @include desktop {
     .content-head{
-      height: 700px;
-      .title-img{
-        height: 700px;
-        img{
-          width: 100%;
-          height: auto;
-        }
-        &::after{
-          height: 700px;
-        }
-      }
       .title{
-        margin: -150px auto 0 auto;
+        margin: 0 auto;
+        padding: 550px 0 100px 0;
         h1{
           padding: 0 20px;
         }
@@ -472,7 +503,6 @@
       }
     }
     .content-body{
-      padding-top: 700px;
       .cover{
         .contents{
           padding: 0 20px;
@@ -482,11 +512,7 @@
           .reply-write{
             div{
               textarea{
-                width: 90%;
                 padding: 20px;
-              }
-              button{
-                width: 10%;
               }
             }
           }
@@ -507,6 +533,9 @@
               }
             }
           }
+        }
+        .btn-contents{
+          padding: 0 20px;
         }
       }
     }
