@@ -1,66 +1,103 @@
 <template lang="pug">
   .write
     .write-title-container
-      h1.write-title(:contenteditable="writeTitleEditable" @click="changeEditable('title')" @focus="changeEditable('title')" :value="writeTitleValue" @input="setTitleValue" @keydown="enterDetect('title')" tabindex="0") 제목을 입력하세요
-      p.write-tag(:contenteditable="writeTagEditable" @click="changeEditable('tag')"  @focus="changeEditable('tag')" :value="writeTagValue" @input="setTagValue" @keydown="enterDetect('tag')" tabindex="0") 태그를 입력하세요
+      label.a11y-hidden(for="write-title") 제목을 입력하세요.
+      input#write-title(:value="writeTitleValue" @click="clearInput('title')" @input="setTitleValue" @blur="inputValueCheck('title')")
+      label.a11y-hidden(for="write-tag") 태그를 입력하세요.
+      input#write-tag(:value="writeTagValue" @click="clearInput('tag')" @input="setTagValue" @blur="inputValueCheck('tag')") 
       form.title-image
         label(for="title-image-input") 대표이미지를 등록하세요
-        input#title-image-input.a11y-hidden(type="file" name="title-image" @change="titleImageUpload")
+        input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
       img.title-image-view(:src="wirteTitleImgUrl")
     .write-contents-container
       .country-and-city
-        .selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity" :class="{'default-filter-msg': selectedWriteCountryCity === '여행지를 선택하세요.'}") {{ selectedWriteCountryCity }}
+        .selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity('country')" :class="{'default-filter-msg': selectedWriteCity === '여행지를 선택하세요.'}") {{ selectedWriteCity }}
           i.icon-down
-        .filter-container(v-show="showCountry")  
-          ul.country-and-city-filter
-            li
-              a(href @click.prevent="setAllBlogList") 나라전체
+        .select-container(v-show="showWriteCountry")  
+          ul.country-and-city-select
             li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
-              a(href @click.prevent="toggleFilter(country.countryKey)") {{country.country}} 
-              ul.city-filter(v-if="selectedCountryKey===country.countryKey" v-show="showCity")
-                li
-                  input(type="checkbox" id="all-city")
-                  label(for="all-city") 지역전체
+              a(href @click.prevent="toggleWriteCountryCity(country.countryKey)") {{country.country}} 
+              ul.city-filter(v-if="selectedWriteCountryKey===country.countryKey" v-show="showWriteCity")
                 li(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
-                  input(type="checkbox" :id="'city'+index")
-                  label(for="'city'+index")
-        form.date-update
-          input(type="date")
-          input(type="date")
-      form.contents-image
-        label(for="contents-image") 이미지를 추가하세요
-        input#contents-image.a11y-hidden(type="file" name="contents-image")
-      form.contents-text
-        label(for="contents-text") 텍스트를 추가하세요
-        input#contents-text(type="text" name="contents-text" v-show="false")
-      .write-contents-view
+                  input(type="checkbox" :id="citygroup.city" @change="setSelectedItem")
+                  label(for="citygroup.city") {{ citygroup.city }}
+                li
+                  form
+                    button.city-save-btn(type="submit" @click.prevent="selectComplete(getCountryAndCityName)") 저장
+                    button.city-cancel-btn(type="submit" @click.prevent="toggleWriteCountryCity('cancel')") 취소
+        form.date-setting
+          .start-date(role="group")
+            label(for="start-date") 여행 시작 날짜 
+            input#start-date(type="date" @change="setDate('start')")
+          .end-date(role="group")
+            label(for="end-date") 여행 종료 날짜
+            input#end-date(type="date" @change="setDate('end')")
+          .date-btn
+            button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
+            button.date-save-btn(type="reset" @click="resetDate") 취소
+      .input-contents  
+        form.contents-image
+          label(for="contents-image") 이미지를 추가하세요
+          input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+        form.contents-text
+          label(for="contents-text") 텍스트를 추가하세요
+          button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
+        .write-contents-view(v-for="(content, index) in writeContentsData")
+          textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
+          img(v-else :src="content.value")
+          button(type="button" @click="deleteContent(index)") 삭제
     form.write-button
-      router-link.save-btn(to="/view/list1" tag="button") 저장
+      button(type="submit" @click.prevent="saveWriteData") 저장
       router-link.save-btn(to="/list/default" tag="button" @click="setListsData('default')") 취소
+    span.error-message(v-show="showWriteErrorMessage") {{  writeErrorMessage }}
 </template>
 
 <script>
+const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
 import {mapGetters, mapMutations, mapActions} from 'vuex'
+import axios from 'axios'
 export default {
   name: 'write',
+  mounted () {
+    axios.get(locationApi).then(response => {
+      this.$store.dispatch('setCountryAndCity', response.data)
+    }).catch(error => console.log(error.message))
+  },
   computed: {
-    ...mapGetters(['writeTitleEditable', 'writeTitleValue', 'writeTagEditable', 'writeTagValue', 'wirteTitleImgUrl'])
+    ...mapGetters(['getCountryAndCityName', 'writeTitleEditable', 'writeTitleValue', 'writeContentsData', 'writeTagEditable', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage'])
   },
   methods: {
-    ...mapMutations(['changeEditable']),
+    ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'saveDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent']),
     ...mapActions(['setListsData']),
+    clearInput (type) {
+      let payload = { 'value': event.target.value, 'type': type }
+      this.$store.commit('clearInput', payload)
+    },
     setTitleValue (event) {
-      this.$store.dispatch('setTitleValue', event)
+      this.$store.commit('setTitleValue', event.target.value)
     },
     setTagValue (event) {
-      this.$store.dispatch('setTagValue', event)
+      this.$store.commit('setTagValue', event.target.value)
     },
-    enterDetect (sort) {
-      var payload = {'event': event, 'sort': sort}
-      this.$store.dispatch('enterDetect', payload)
+    inputValueCheck (type) {
+      if (event.target.value === '') {
+        this.$store.commit('inputValueCheck', type)
+      }
     },
-    titleImageUpload () {
-      this.$store.dispatch('setTitleImageToStorage', event.target.files[0])
+    imageUpload (type) {
+      let payload = {'image': event.target.files[0], 'type': type, 'id': this.$route.params.id}
+      this.$store.dispatch('setImageToStorage', payload)
+    },
+    setSelectedItem () {
+      let payload = {'checked': event.target.checked, 'id': event.target.id}
+      this.$store.commit('setSelectedItem', payload)
+    },
+    setDate (sort) {
+      let payload = {'date': event.target.value, 'sort': sort}
+      this.$store.commit('setDate', payload)
+    },
+    saveWriteData () {
+      this.$store.dispatch('saveWriteData', this.$route.params.id)
     }
   }
 }
@@ -74,5 +111,8 @@ export default {
     label {
       cursor: pointer;
     }
+  }
+  .selected-country, [for="contents-text"]{
+    cursor: pointer;
   }
 </style>
