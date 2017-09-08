@@ -315,10 +315,10 @@ export default {
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
-            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) < Number(b.write_date)) {
               return 1
             }
-            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) > Number(b.write_date)) {
               return -1
             }
             return 0
@@ -326,10 +326,10 @@ export default {
           break
         case 'city':
           state.filtered_city_list.sort((a, b) => {
-            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) < Number(b.write_date)) {
               return 1
             }
-            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) > Number(b.write_date)) {
               return -1
             }
             return 0
@@ -337,10 +337,10 @@ export default {
           break
         case 'all':
           state.all_blog_list.sort((a, b) => {
-            if (Number(a.write_date.split('.').join('')) < Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) < Number(b.write_date)) {
               return 1
             }
-            if (Number(a.write_date.split('.').join('')) > Number(b.write_date.split('.').join(''))) {
+            if (Number(a.write_date) > Number(b.write_date)) {
               return -1
             }
             return 0

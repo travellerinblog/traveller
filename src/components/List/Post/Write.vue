@@ -35,6 +35,7 @@
           .date-btn
             button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
             button.date-save-btn(type="reset" @click="resetDate") 취소
+        span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
       .input-contents  
         form.contents-image
           label(for="contents-image") 이미지를 추가하세요
@@ -44,12 +45,13 @@
           button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
         .write-contents-view(v-for="(content, index) in writeContentsData")
           textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
-          img(v-else :src="content.value")
+          span(v-if="content.key === 'text' && content.value.length === 0") 텍스트를 입력해주세요.
+          img(v-if="content.key === 'img'" :src="content.value")
           button(type="button" @click="deleteContent(index)") 삭제
     form.write-button
       button(type="submit" @click.prevent="saveWriteData") 저장
       router-link.save-btn(to="/list/default" tag="button" @click="setListsData('default')") 취소
-    span.error-message(v-show="showWriteErrorMessage") {{  writeErrorMessage }}
+    span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
 </template>
 
 <script>
@@ -59,15 +61,16 @@ import axios from 'axios'
 export default {
   name: 'write',
   mounted () {
+    this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
     axios.get(locationApi).then(response => {
       this.$store.dispatch('setCountryAndCity', response.data)
     }).catch(error => console.log(error.message))
   },
   computed: {
-    ...mapGetters(['getCountryAndCityName', 'writeTitleEditable', 'writeTitleValue', 'writeContentsData', 'writeTagEditable', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage'])
+    ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage'])
   },
   methods: {
-    ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'saveDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent']),
+    ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent']),
     ...mapActions(['setListsData']),
     clearInput (type) {
       let payload = { 'value': event.target.value, 'type': type }
@@ -96,8 +99,12 @@ export default {
       let payload = {'date': event.target.value, 'sort': sort}
       this.$store.commit('setDate', payload)
     },
+    saveDate () {
+      this.$store.commit('saveDate', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
+    },
     saveWriteData () {
-      this.$store.dispatch('saveWriteData', this.$route.params.id)
+      let payload = { 'id': this.$route.params.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
+      this.$store.dispatch('saveWriteData', payload)
     }
   }
 }

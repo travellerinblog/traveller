@@ -1,4 +1,5 @@
 import firebase from './../../firebase'
+import router from './../../router/'
 import axios from 'axios'
 export default {
   state: {
@@ -13,8 +14,11 @@ export default {
     show_write_country: false,
     show_write_city: false,
     selected_write_country_key: '',
+    date_error_message: '',
+    show_date_error_message: false,
     write_error_message: '',
-    show_write_error_message: false
+    show_write_error_message: false,
+    error_check_before_post: {}
   },
   getters: {
     writeTitleEditable (state) {
@@ -46,6 +50,12 @@ export default {
     },
     selectedWriteCountryKey (state) {
       return state.selected_write_country_key
+    },
+    dateErrorMessage (state) {
+      return state.date_error_message
+    },
+    showDateErrorMessage (state) {
+      return state.show_date_error_message
     },
     writeErrorMessage (state) {
       return state.write_error_message
@@ -174,13 +184,40 @@ export default {
           break
       }
     },
-    saveDate (state) {
-      state.temp_write_data.start_date = state.temp_date.start
-      state.temp_write_data.end_date = state.temp_date.end
+    saveDate (state, payload) {
+      let today = new Date()
+      let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1).toString() : (today.getMonth() + 1).toString()
+      let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate()
+      today = today.getFullYear() + month + day
+      if (payload.start.value !== '' && payload.end.value !== '') {
+        if (payload.start.value <= payload.end.value) {
+          if (today >= payload.start.value.split('-').join('') && today >= payload.end.value.split('-').join('')) {
+            state.temp_write_data.start_date = state.temp_date.start
+            state.temp_write_data.end_date = state.temp_date.end
+            state.date_error_message = ''
+            state.show_date_error_message = false
+            state.error_check_before_post.date = true
+          } else {
+            state.date_error_message = '여행 날짜는 오늘 이후가 될 수 없습니다.'
+            state.show_date_error_message = true
+            state.error_check_before_post.date = false
+          }
+        } else {
+          state.date_error_message = '여행 시작날짜는 종료날짜의 이후가 될 수 없습니다.'
+          state.show_date_error_message = true
+          state.error_check_before_post.date = false
+        }
+      } else {
+        state.date_error_message = '여행 시작날짜와 종료 날짜를 모두 입력해주세요.'
+        state.show_date_error_message = true
+        state.error_check_before_post.date = false
+      }
     },
     resetDate (state) {
       state.temp_write_data.start_date = ''
       state.temp_write_data.end_date = ''
+      state.date_error_message = ''
+      state.show_date_error_message = false
     },
     setContentImgUrl (state, payload) {
       let contentImg = {key: 'img'}
@@ -190,6 +227,12 @@ export default {
       state.temp_write_data.contents = state.write_contents_data
     },
     setContentsText (state) {
+      let contents = state.write_contents_data
+      for (var i = contents.length; i--;) {
+        if (contents[i].key === 'text' && contents[i].value === '') {
+          return
+        }
+      }
       let contentText = {key: 'text'}
       contentText.value = ''
       state.write_contents_data.push(contentText)
@@ -216,22 +259,44 @@ export default {
       }
     },
     printErrorMessage (state, payload) {
+      console.log('printErrorMessage')
       let message = []
       if (payload === 'all') {
-        state.write_error_message = '내용을 입력 해주세요.'
+        state.write_error_message = '내용을 모두 입력 해주세요.'
+      } else if (payload === 'error') {
+        state.write_error_message = '규칙에 맞게 내용을 입력해주세요.'
       } else {
         for (var i = 0, l = payload.length; i < l; i++) {
           message.push(payload[i].print)
         }
-        state.write_error_message = '내용을 입력해주세요. ( ' + message.join(', ') + ' )'
+        state.write_error_message = '내용을 모두 입력해주세요. ( ' + message.join(', ') + ' )'
       }
       state.show_write_error_message = true
     },
     setRemainWriteInfo (state, payload) {
+      let times = new Date()
+      let month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString()
+      let day = times.getDate() < 10 ? '0' + times.getDate() : times.getDate()
+      let hours = times.getHours() < 10 ? '0' + times.getHours() : times.getHours()
+      let minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes()
+      let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
       state.temp_write_data.id = payload.id
       state.temp_write_data.name = payload.name
       state.temp_write_data.view = 0
-      // state.temp_write_data.write_date
+      state.temp_write_data.write_date = times.getFullYear() + month + day + hours + minute + second
+    },
+    resetTempData (state, payload) {
+      state.temp_write_data = {}
+      state.selected_write_city = []
+      state.write_contents_data = []
+      state.write_title_value = '제목을 입력하세요'
+      state.write_tag_value = '태그를 입력하세요'
+      state.title_img_url = ''
+      state.write_error_message = ''
+      state.error_check_before_post = {}
+      state.date_error_message = ''
+      payload.start.value = ''
+      payload.end.value = ''
     }
   },
   actions: {
@@ -247,22 +312,32 @@ export default {
     },
     saveWriteData (context, payload) {
       const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
-      // const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
+      const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
       let tempData = context.state.temp_write_data
       let requiredData = [{ 'key': 'title', 'print': '제목' }, { 'key': 'title_img', 'print': '대표 이미지' }, { 'key': 'tag', 'print': '태그' }, { 'key': 'city', 'print': '여행지' }, { 'key': 'start_date', 'print': '여행 시작 날짜' }, { 'key': 'end_date', 'print': '여행 종료 날짜' }, { 'key': 'contents', 'print': '블로그 본문' }]
-      axios.get(userApi).then(response => {
-        // user값을 저장하는 통신
-        for (let prop in response.data) {
-          if (prop === payload) {
-            context.commit('setUserInfo', response.data[prop])
-          }
+      let errorCheck = context.state.error_check_before_post
+      for (var prop in errorCheck) {
+        if (errorCheck[prop] === false) {
+          context.commit('printErrorMessage', 'error')
+          return
         }
-      }).then(response => {
-        // list에 저장하는 통신
-      }).catch(error => console.log(error.message))
+      }
       if (Object.keys(tempData).length === 11) {
-        // 통신할 때 user 정보 추가하여 저장.
-        // router.push(...) 로 라우터 연결
+        axios.get(userApi).then(response => {
+          // user값을 저장하는 통신
+          for (let prop in response.data) {
+            if (prop === payload.id) {
+              context.commit('setRemainWriteInfo', response.data[prop])
+            }
+          }
+        }).then(response => {
+          // list에 저장하는 통신
+          axios.post(listApi, context.state.temp_write_data).then(response => {
+            // router.push(...) 로 라우터 연결
+            router.push({name: 'View', params: { id: response.data.name }})
+          }).catch(error => console.log(error))
+          // context.commit('resetTempData', payload)
+        }).catch(error => console.log(error.message))
       } else if (Object.keys(tempData).length === 0) {
         context.commit('printErrorMessage', 'all')
       } else {
