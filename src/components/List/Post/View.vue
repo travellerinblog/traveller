@@ -6,7 +6,7 @@
       .title
         h1 {{getBlogViewItem.title}}
         p
-          router-link(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="item.tag" @click.native="gotoBlogView(list.key)" :to="{ name: 'ListView', params: { item }, query:{search: item } }" tag="a") {{ item }}
+          router-link(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="item.tag" :to="{ name: 'ListView', params: { id: 'tag' }, query:{search: item }}" @click.native="filterTagList(item)" tag="a") {{ item }}
         p 
           strong by. {{getBlogViewItem.name}}
           b |
@@ -46,7 +46,7 @@
 
 <script>
   let listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
   import axios from 'axios'
   export default {
     data () {
@@ -81,6 +81,7 @@
       ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount'])
     },
     methods: {
+      ...mapMutations(['filterTagList']),
       replyEdit (index) {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '/clickedBtnEdit.json'
         axios.update(URL, this.reply.clickedBtnEdit)
@@ -143,8 +144,8 @@
       setAllBlogList () {
         this.$store.commit('setAllBlogList')
       },
-      filterTagList (tag) {
-        this.$store.dispatch('setListsData', tag)
+      filterCountryList (country) {
+        this.$store.dispatch('setListsData', country)
       }
     }
   }

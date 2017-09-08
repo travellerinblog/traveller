@@ -145,8 +145,6 @@
             width: 100%;
             overflow: hidden;
             img {
-              height: 100%;
-              width: auto;
               user-drag: none; 
               user-select: none;
               -moz-user-select: none;
@@ -295,7 +293,8 @@
             div {
               height: 340px;
               img {
-                transform: translateX(-25%);
+                height: 100%;
+                width: auto;
               }
             }
             figcaption {
@@ -361,7 +360,8 @@
             div {
               height: 680px;
               img {
-                transform: translateX(-50%);
+                height: 100%;
+                width: auto;
               }
             }
             figcaption {
@@ -374,6 +374,24 @@
               }
               i {
                 margin-left: 40px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @include breakpoint(0px, 460px) {
+    .bloglist-body {
+      ul{
+        li {
+          figure {
+            div {
+              img {
+                width: auto;
+                height: auto;
+                transform: translate(-20%, -20%)
               }
             }
           }
