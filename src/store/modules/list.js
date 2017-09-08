@@ -262,6 +262,7 @@ export default {
     },
     setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드
+      console.log(payload)
       var lists = payload.data ? payload.data : state.all_blog_list
       var item = {}
       state.all_blog_list = []
@@ -375,6 +376,8 @@ export default {
             state.blog_view_item.write_date = yearDate + '.' + monthDate + '.' + dayDate
           }
         }
+        // if () {
+        // }
       }
     },
     // 필터 클릭했을 때 토글. 어떤 필터를 눌렀는지 값을 받아서, 필터에 따라서 state 값을 변경한다.

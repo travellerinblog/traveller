@@ -8,10 +8,8 @@ import MemberLeave from '../components/MemberLeave/MemberLeave.vue'
 import MyPage from '../components/MyPage/MyPage.vue'
 import List from '../components/List/List.vue'
 import ListView from '../components/List/ListView.vue'
-import Maps from '../components/List/Maps.vue'
 import View from '../components/List/Post/View.vue'
 import Write from '../components/List/Post/Write.vue'
-import Delete from '../components/List/Post/Delete.vue'
 
 Vue.use(Router)
 
@@ -60,7 +58,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/list/:id',
+      path: '/list',
       components: {
         default: List,
         gnb: Navigation
@@ -68,21 +66,14 @@ export default new Router({
       props: true,
       children: [
         {
-          path: '',
+          path: ':id',
           component: ListView,
           name: 'ListView'
-        },
-        {
-          path: '/maps',
-          component: Maps,
-          name: 'Maps'
-        },
-        {
-          path: '/delete/:id',
-          component: Delete,
-          name: 'Delete'
         }
       ]
     }
-  ]
+  ],
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
 })

@@ -27,7 +27,10 @@ export default {
     showMeSearch (state) {
       state.show_search = true
     },
-    closeMeSearch (state) {
+    closeMeSearch (state, paylord) {
+      if (paylord) {
+        state.show_search = false
+      }
       state.show_search = false
     }
   },

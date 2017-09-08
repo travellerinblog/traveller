@@ -1,17 +1,19 @@
 <template lang="pug">
-  nav.gnb
-    .gnb-header
-      //- button.btn-start(type="button") 시작하기
-      h1 싱숭생숭님
-      button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseModal") 닫기
-    ul
-      router-link(to="/" tag="li" active-class="current-page" exact) 
-        a(href) 어디로 갈래?
-      router-link(to="/" tag="li" active-class="current-page" exact) 
-        a(href) 나 여기 왔다 갔다.
-      router-link(to="/" tag="li" active-class="current-page") 
-        a(href) 마이페이지
-    router-link.btn-write(to="/write/user1" tag="button") 여행 일지 쓰기
+  nav
+    .gnb
+      .gnb-header
+        //- button.btn-start(type="button") 시작하기
+        h1 싱숭생숭님
+        button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseModal") 닫기
+      ul
+        //- router-link(to="/" tag="li" active-class="current-page" exact) 
+        //-   a(href) 어디로 갈래?
+        router-link( tag="li" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="searchBlogList" active-class="current-page" exact) 
+          a(href) 나 여기 왔다 갔다.
+        //- router-link(to="/" tag="li" active-class="current-page") 
+        //-   a(href) 마이페이지
+      router-link.btn-write(to="/write/user1" tag="button") 여행 일지 쓰기
+    .nav-background(@click="oncloseModal")
 </template>
 
 <script>
@@ -25,6 +27,10 @@
     methods: {
       oncloseModal () {
         this.$store.commit('closeMeModal')
+      },
+      searchBlogList () {
+        this.$store.commit('closeMeModal')
+        this.$store.commit('setAllBlogList')
       }
     }
   }
@@ -32,14 +38,21 @@
 
 <style lang="scss" scoped>
   @import '../../sass/App.scss';
-  nav.gnb {
+  .gnb {
     position: fixed;
     z-index: 100;
     height: 100vh;
     background: #fff;
     box-shadow: 0 5px 5px rgba(#000, 0.3)
   }
-  
+  .nav-background{
+    position: absolute;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+  }
   .gnb-header {
     @include clearfix;
     height: 56px;
@@ -105,7 +118,7 @@
   }
   
   @include mobile {
-    nav.gnb {
+    .gnb {
       width: 100%;
     }
     .btn-start,
@@ -123,7 +136,7 @@
   }
   
   @include tablet {
-    nav.gnb {
+    .gnb {
       width: 330px;
     }
     .btn-start,
@@ -141,7 +154,7 @@
   }
   
   @include desktop {
-    nav.gnb {
+    .gnb {
       width: 330px;
     }
     .btn-start,
