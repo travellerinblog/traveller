@@ -14,10 +14,19 @@ export default {
     show_write_country: false,
     show_write_city: false,
     selected_write_country_key: '',
+    title_error_message: '제목은 30자 이하로 작성해주세요.',
+    show_title_error_message: false,
+    tag_error_message: '태그 내용을 #으로 구분해주세요.',
+    show_tag_error_message: false,
     date_error_message: '',
     show_date_error_message: false,
     write_error_message: '',
+    content_error_message: '텍스트를 입력해주세요.',
+    show_content_error_message: false,
     show_write_error_message: false,
+    image_progress_message: '이미지를 업로드 하고있습니다.',
+    show_title_image_progress: false,
+    show_content_image_progress: false,
     error_check_before_post: {}
   },
   getters: {
@@ -51,6 +60,18 @@ export default {
     selectedWriteCountryKey (state) {
       return state.selected_write_country_key
     },
+    titleErrorMessage (state) {
+      return state.title_error_message
+    },
+    showTitleErrorMessage (state) {
+      return state.show_title_error_message
+    },
+    tagErrorMessage (state) {
+      return state.tag_error_message
+    },
+    showTagErrorMessage (state) {
+      return state.show_tag_error_message
+    },
     dateErrorMessage (state) {
       return state.date_error_message
     },
@@ -62,6 +83,21 @@ export default {
     },
     showWriteErrorMessage (state) {
       return state.show_write_error_message
+    },
+    contentErrorMessage (state) {
+      return state.content_error_message
+    },
+    showContentErrorMessage (state) {
+      return state.show_content_error_message
+    },
+    imageProgressMessage (state) {
+      return state.image_progress_message
+    },
+    showTitleImageProgress (state) {
+      return state.show_title_image_progress
+    },
+    showContentImageProgress (state) {
+      return state.show_content_image_progress
     }
   },
   mutations: {
@@ -76,8 +112,15 @@ export default {
       }
     },
     setTitleValue (state, payload) {
+      if (event.target.value.length > 30) {
+        state.show_title_error_message = true
+        state.error_check_before_post.title = false
+        return
+      }
       state.write_title_value = payload
       state.temp_write_data.title = payload
+      state.show_title_error_message = false
+      state.error_check_before_post.title = true
     },
     setTitleImgUrl (state, payload) {
       if (state.title_img_url !== '') {
@@ -113,6 +156,25 @@ export default {
       state.write_tag_value = payload
       state.temp_write_data.tag = payload.split('#')
       state.temp_write_data.tag.shift()
+      if (state.temp_write_data.tag.length === 0) {
+        state.show_tag_error_message = true
+        state.error_check_before_post.tag = false
+        return
+      } else if (event.target.value.slice(0, 1) !== '#') {
+        state.show_tag_error_message = true
+        state.error_check_before_post.tag = false
+        return
+      } else {
+        for (let i = state.temp_write_data.tag.length; i--;) {
+          if (state.temp_write_data.tag[i] === '') {
+            state.show_tag_error_message = true
+            state.error_check_before_post.tag = false
+            return
+          }
+        }
+        state.show_tag_error_message = false
+        state.error_check_before_post.tag = true
+      }
     },
     setSelectedItem (state, payload) {
       if (payload.checked) {
@@ -228,6 +290,7 @@ export default {
     },
     setContentsText (state) {
       let contents = state.write_contents_data
+      // 빈 텍스트 에리어가 있으면 새로운 텍스트 에리어가 추가되지 않는다.
       for (var i = contents.length; i--;) {
         if (contents[i].key === 'text' && contents[i].value === '') {
           return
@@ -235,10 +298,16 @@ export default {
       }
       let contentText = {key: 'text'}
       contentText.value = ''
+      state.show_content_error_message = true
+      state.error_check_before_post.content = false
       state.write_contents_data.push(contentText)
       state.temp_write_data.contents = state.write_contents_data
     },
     addContentsText (state, payload) {
+      if (event.target.value.length > 0) {
+        state.show_content_error_message = false
+        state.error_check_before_post.content = true
+      }
       state.write_contents_data[payload].value = event.target.value
       state.temp_write_data.contents = state.write_contents_data
     },
@@ -259,7 +328,6 @@ export default {
       }
     },
     printErrorMessage (state, payload) {
-      console.log('printErrorMessage')
       let message = []
       if (payload === 'all') {
         state.write_error_message = '내용을 모두 입력 해주세요.'
@@ -297,6 +365,17 @@ export default {
       state.date_error_message = ''
       payload.start.value = ''
       payload.end.value = ''
+    },
+    imageUploadProgress (state, payload) {
+      if (payload.type === 'title' && payload.state === 'progress') {
+        state.show_title_image_progress = true
+      } else if (payload.type === 'title' && payload.state === 'done') {
+        state.show_title_image_progress = false
+      } else if (payload.type === 'content' && payload.state === 'progress') {
+        state.show_content_image_progress = true
+      } else if (payload.type === 'content' && payload.state === 'done') {
+        state.show_content_image_progress = false
+      }
     }
   },
   actions: {
@@ -305,9 +384,11 @@ export default {
       date = date.getFullYear() + (date.getMonth() + 1).toString() + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds()
       var uploadName = payload.id + '_' + payload.type + '_' + date + '_' + payload.image.name
       var storageRef = firebase.storage.ref('/Write/' + uploadName)
+      commit('imageUploadProgress', {'state': 'progress', 'type': payload.type})
       storageRef.put(payload.image).then(snapshot => {
         let imgInfo = { 'url': snapshot.downloadURL, 'name': uploadName }
         payload.type === 'title' ? commit('setTitleImgUrl', imgInfo) : commit('setContentImgUrl', imgInfo)
+        commit('imageUploadProgress', {'state': 'done', 'type': payload.type})
       })
     },
     saveWriteData (context, payload) {
@@ -336,7 +417,6 @@ export default {
             // router.push(...) 로 라우터 연결
             router.push({name: 'View', params: { id: response.data.name }})
           }).catch(error => console.log(error))
-          // context.commit('resetTempData', payload)
         }).catch(error => console.log(error.message))
       } else if (Object.keys(tempData).length === 0) {
         context.commit('printErrorMessage', 'all')

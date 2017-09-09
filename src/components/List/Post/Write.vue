@@ -3,11 +3,14 @@
     .write-title-container
       label.a11y-hidden(for="write-title") 제목을 입력하세요.
       input#write-title(:value="writeTitleValue" @click="clearInput('title')" @input="setTitleValue" @blur="inputValueCheck('title')")
+      span(v-show="showTitleErrorMessage") {{ titleErrorMessage }}
       label.a11y-hidden(for="write-tag") 태그를 입력하세요.
-      input#write-tag(:value="writeTagValue" @click="clearInput('tag')" @input="setTagValue" @blur="inputValueCheck('tag')") 
+      input#write-tag(:value="writeTagValue" @click="clearInput('tag')" @input="setTagValue" @blur="inputValueCheck('tag')")
+      span(v-show="showTagErrorMessage") {{ tagErrorMessage }}
       form.title-image
         label(for="title-image-input") 대표이미지를 등록하세요
         input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
+      span(v-show="showTitleImageProgress") {{imageProgressMessage}}
       img.title-image-view(:src="wirteTitleImgUrl")
     .write-contents-container
       .country-and-city
@@ -43,9 +46,10 @@
         form.contents-text
           label(for="contents-text") 텍스트를 추가하세요
           button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
+        span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
         .write-contents-view(v-for="(content, index) in writeContentsData")
           textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
-          span(v-if="content.key === 'text' && content.value.length === 0") 텍스트를 입력해주세요.
+          span(v-show="showContentErrorMessage") {{ contentErrorMessage }}
           img(v-if="content.key === 'img'" :src="content.value")
           button(type="button" @click="deleteContent(index)") 삭제
     form.write-button
@@ -67,7 +71,7 @@ export default {
     }).catch(error => console.log(error.message))
   },
   computed: {
-    ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage'])
+    ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
   },
   methods: {
     ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent']),
