@@ -1,22 +1,25 @@
 <template lang="pug">
-  header.grid
-    div.col.col-d-10.col-t-6.col-m-3.cover
-      h1.logo
-        router-link(to="/" tag="a") 
-          a(href) Traveler
-      button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
-      .search
-        form#search-form(role="search")
-          fieldset 
-            legend.a11y-hidden 검색 폼
-            button.btn-open-search.icon-search(type="button" @click="onshowSearch") 
-              span 검색어를 입력하세요
-            .search-area.col.col-d-12.col-t8.col-m-4(v-show="showSearch")
-              label.icon-search.btn-search(for="search-keyword") 검색어 입력하세요
-              input#search-keyword(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요")
-              button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
-    .log.col.col-d-2.col-t-2.col-m-1
-      button.btn-start(type="button") 시작하기
+  header
+    .cover
+      .logo_search
+        h1.logo
+          router-link(to="/" tag="a") 
+            a(href) Traveler
+        button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
+        .search
+          form#search-form(role="search" v-on:submit.prevent="noop")
+            fieldset 
+              legend.a11y-hidden 검색 폼
+              label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 검색어 입력하세요
+              .search-area(v-show="showSearch")
+                .search-content
+                  input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search")
+                  //- p {{ search }}@blur="oncloseSearch"
+                  router-link(:to="`/list/all?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
+                  button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
+                .search-background(@click="oncloseSearch")
+      .log
+        button.btn-start(type="button") 시작하기
     Navigation(v-show="showNav")
 </template>
 
@@ -29,7 +32,7 @@
     },
     data () {
       return {
-
+        search: ''
       }
     },
     computed: {
@@ -45,9 +48,19 @@
       },
       onshowSearch () {
         this.$store.commit('showMeSearch')
+        this.search = ''
       },
       oncloseSearch () {
         this.$store.commit('closeMeSearch')
+      },
+      detectEventBinding (target, e) {
+        this.search = e.target.value
+      },
+      searchBlogList () {
+        console.log('안녕')
+        console.log(this.$route.query.search)
+        this.$store.commit('closeMeSearch')
+        this.$store.commit('setAllBlogList')
       }
     }
   }
@@ -71,8 +84,13 @@
   
   .cover {
     display: flex;
+    justify-content: space-between;
   }
-  
+
+  .logo_search{
+    display: flex;
+  }
+
   .logo {
     a {
       display: block;
@@ -135,21 +153,17 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 70px;
-    padding: 19px 0;
-    background: #fff;
     z-index: 10;
-    label {
-      float: left;
-      &::before {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        margin-right: 10px;
-        vertical-align: -5px;
-        font-size: 24px;
-      }
+    .search-content{
+      width: 100%;
+      height: 70px;
+      padding: 19px 0;
+      background: #fff;
+      box-sizing: border-box;
+      box-shadow: 0 5px 5px rgba(#000, 0.3);
+    }
+    .search-background{
+      height: 80vh;
     }
     input {
       float: left;
@@ -159,6 +173,15 @@
       line-height: 32px;
       background: #fff;
       border: 0 none;
+      &::before {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        margin-right: 10px;
+        vertical-align: -5px;
+        font-size: 24px;
+      }
     }
     .btn-close {
       float: right;
@@ -247,6 +270,20 @@
     .btn-open-search {
       span {
         max-width: 90px;
+      }
+    }
+  }
+
+  @include breakpoint(0px, 375px) {
+    .btn-open-search {
+      background: red;
+      span {
+        width: 1px;
+        height: 1px;
+        position: absolute;
+        z-index: -1;
+        left: -999;
+        top: -999;
       }
     }
   }

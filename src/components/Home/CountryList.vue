@@ -6,7 +6,7 @@
         i.icon-next
     .country-body
       v-touch(tag="ul" daraggable="true" @swipeleft="next" @swiperight="prev" :swipe-options="{ direction: 'horizontal'}")
-        router-link( :to="{ name: 'ListView', params: { id: item.country }}" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd"  v-for="(item, index) in getCountryListItems" :key="item.country")
+        router-link( :to="{ name: 'ListView', params: { id: item.country }}" tag="li" @click.native="filterCountryList(item.country)" @dragstart.native="dragStart" @dragend.native="dragEnd" v-for="(item, index) in getCountryListItems" :key="item.country")
           a(href)
             figure
               div
@@ -284,6 +284,25 @@
         li:nth-child(4) {
           opacity: 0.5;
           width: 10%;
+          a {
+            figure {
+              div {
+                img {
+                  width: auto;
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include breakpoint(0px, 500px) {
+    .country-body {
+      ul {
+        li {
           a {
             figure {
               div {
