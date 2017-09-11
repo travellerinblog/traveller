@@ -43,7 +43,8 @@ export default {
   },
   mounted () {
     axios.get(listApi).then(response => {
-      let payload = { 'data': response.data, 'id': this.$route.params.id }
+      let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
+      console.log(payload.search)
       this.$store.dispatch('setListsData', payload).then(response => {
         this.$store.commit('makePageNumber', this.getFilteredList.length)
       })

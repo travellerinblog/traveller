@@ -262,7 +262,6 @@ export default {
     },
     setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드
-      console.log(payload)
       var lists = payload.data ? payload.data : state.all_blog_list
       var item = {}
       state.all_blog_list = []
@@ -498,8 +497,63 @@ export default {
     // 통신은 액션에서 해야합니다.
     setListsData (context, payload) {
       let lists = payload.data
+      let searchData = payload.search
+      let keywordAll = []
+      if (searchData) {
+        for (let prop in lists) {
+          // 나라명 1개
+          let keywordCountry = lists[prop].country
+          // 지역명 배열
+          let keywordCity = lists[prop].city
+          // 지역명 배열을 문자열
+          let keywordCityAll = ''
+          for (let i = 0, l = keywordCity.length; i < l; i++) {
+            keywordCityAll = keywordCityAll + keywordCity[i]
+          }
+          // 여행 기간 (공백 및 . 제거)
+          let keywordEndDate = lists[prop].end_date
+          keywordEndDate = keywordEndDate.replace(/\s/g, '').replace(/\./g, '')
+          let keywordStartDate = lists[prop].start_date
+          keywordStartDate = keywordStartDate.replace(/\s/g, '').replace(/\./g, '')
+          // id
+          let keywordId = lists[prop].id
+          // name
+          let keywordName = lists[prop].name
+          // tag 배열
+          // let keywordTag = lists[prop].tag
+          // console.log(keywordTag.join(''))
+          // tag 배열을 문자열
+          // let keywordTagAll = ''
+          // for (let i = 0, l = keywordTag.length; i < l; i++) { // length를 못찾음 ;; 이상함 !!
+          //   keywordTagAll = keywordTagAll + keywordTag[i]
+          // }
+          // title
+          let keywordTitle = lists[prop].title
+          // title_img
+          let keywordTitleImg = lists[prop].title_img
+          // write_date
+          let keywordWriteDate = lists[prop].write_date
+          // contents
+          let keywordContents = lists[prop].contents
+          let keywordContentsAll = ''
+          for (let i = 0, l = keywordContents.length; i < l; i++) {
+            keywordContentsAll = keywordContentsAll + keywordContents[i].value
+          }
+          let keyword = keywordCityAll + keywordCountry + keywordStartDate + keywordEndDate + keywordWriteDate + keywordId + keywordName + keywordTitle + keywordTitleImg + keywordContentsAll
+          keyword = keyword.toLowerCase()
+          let keywordIndex = keyword.indexOf(searchData)
+          if (keywordIndex >= 0) {
+            keywordAll = keywordAll.push(prop)
+            console.log('이것은????', prop)
+          }
+        }
+      }
       if (payload.id === 'all') {
         context.commit('setAllBlogList', payload)
+        // if (keywordAll) {
+        //   context.commit('setAllBlogList', payload)
+        //   context.commit('filterCityList', payload.search)
+        // }
       } else if (payload.id === 'default') {
         context.commit('setAllBlogList', payload)
         context.commit('makePageNumber', Object.keys(lists).length)
@@ -508,7 +562,7 @@ export default {
       } else if (payload.id === 'tag') {
         context.commit('filterTagList', payload)
       } else {
-        for (var prop in lists) {
+        for (let prop in lists) {
           if (lists[prop].country === payload.id) {
             context.commit('setAllBlogList', payload)
             context.commit('filterCountryList', payload.id)
