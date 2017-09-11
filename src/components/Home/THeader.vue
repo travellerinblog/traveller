@@ -57,8 +57,6 @@
         this.search = e.target.value
       },
       searchBlogList () {
-        console.log('안녕')
-        console.log(this.$route.query.search)
         this.$store.commit('closeMeSearch')
         this.$store.commit('setAllBlogList')
       }
