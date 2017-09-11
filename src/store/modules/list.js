@@ -9,8 +9,8 @@ export default {
     filtered_country_list: [],
     // 도시 이름으로 필터된 item들
     filtered_city_list: [],
-    // 태그명으로 필터된 item들
-    filtered_tag_list: [],
+    // 검색어로 필터된 item들
+    filtered_search_list: [],
     // 글 상세 내용으로 보일 list item
     blog_view_item: null,
     // 나라와 도시 정보가 들어간 배열
@@ -55,6 +55,10 @@ export default {
           return state.all_blog_list
         case 'default':
           return state.all_blog_list
+        case 'search':
+          return state.filtered_search_list
+        case 'tag':
+          return state.filtered_tag_list
       }
     },
     // 블로그 내용에 해당하는 item
@@ -227,41 +231,85 @@ export default {
       state.show_city = false
       state.show_country = false
     },
-    filterTagList (state, payload) {
-      // view.vue로 부터 태르명을 전달 받아, 같은 태그의 글 목록만 필터링하는 메소드
-      var lists = state.all_blog_list
-      var item = {}
-      var tagKr = ''
-      var tagNameList = state.tag_name_group
-      // 배열을 비워주지 않으면, 그전에 넣어두었던 데이터까지 보여지게 된다.
-      state.filtered_tag_list = []
-      for (var prop in lists) {
-        for (var i = lists[prop].tag.length; i--;) {
-          if (payload === lists[prop].tag[i]) {
-            // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
-            item = lists[prop]
-            item.key = prop
-            item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
-            state.filtered_tag_list.push(item)
+    filterSearchList (state, payload) {
+      // 새로고침이 되었을때 payload.data가 비워지기 때문에 다시 넣어줌
+      var lists = payload.data ? payload.data : state.all_blog_list
+      // 이전 결과값을 비워줘야 합니다.
+      state.filtered_search_list = []
+      state.selected_country_filter = null
+      // 검색어 소문자로 변경
+      let searchData = payload.search
+      console.log('되니?', searchData)
+      searchData = searchData.toLowerCase()
+      console.log('되니?', searchData)
+      let keywordAll = []
+      let keywordOnce = {}
+      if (searchData) {
+        for (let prop in lists) {
+          // 나라명 1개
+          let keywordCountry = lists[prop].country
+          // 지역명 배열
+          let keywordCity = lists[prop].city
+          // 지역명 배열을 문자열
+          let keywordCityAll = ''
+          for (let i = 0, l = keywordCity.length; i < l; i++) {
+            keywordCityAll = keywordCityAll + keywordCity[i]
+          }
+          // 여행 기간 (공백 및 . 제거)
+          let keywordEndDate = lists[prop].end_date
+          keywordEndDate = keywordEndDate.replace(/\s/g, '').replace(/\./g, '')
+          let keywordStartDate = lists[prop].start_date
+          keywordStartDate = keywordStartDate.replace(/\s/g, '').replace(/\./g, '')
+          // id
+          let keywordId = lists[prop].id
+          // name
+          let keywordName = lists[prop].name
+          // tag 배열
+          let keywordTag = lists[prop].tag.join('')
+          // reply
+          let keywordReply = lists[prop].reply
+          let keywordReplyAll = ''
+          for (let prop in keywordReply) {
+            keywordReplyAll = keywordReplyAll + (keywordReply[prop].date + keywordReply[prop].id + keywordReply[prop].name + keywordReply[prop].reply_text)
+          }
+          // title
+          let keywordTitle = lists[prop].title
+          // title_img
+          // let keywordTitleImg = lists[prop].title_img
+          // write_date
+          let keywordWriteDate = lists[prop].write_date
+          // contents
+          let keywordContents = lists[prop].contents
+          let keywordContentsAll = ''
+          for (let i = 0, l = keywordContents.length; i < l; i++) {
+            if (keywordContents[i].key === 'text') {
+              keywordContentsAll = keywordContentsAll + keywordContents[i].value
+            }
+          }
+          // 모든 컨텐츠 합치기
+          let keyword = keywordCityAll + keywordCountry + keywordStartDate + keywordEndDate + keywordWriteDate + keywordId + keywordName + keywordTitle + keywordContentsAll + keywordTag + keywordReplyAll
+          // 대문자를 소문자로 통일
+          keyword = keyword.toLowerCase()
+          keywordOnce.key = prop
+          keywordOnce.value = keyword
+          keywordAll.push(keywordOnce)
+          keywordOnce = {}
+        }
+        // 키워드를 모두 한곳에 넣어둔 값중에 같은 리스트를 찾는다
+        for (let i in keywordAll) {
+          if (keywordAll[i].value.indexOf(searchData) >= 0) {
+            for (let prop in lists) {
+              if (lists[prop].key === keywordAll[i].key) {
+                state.filtered_search_list.push(lists[prop])
+              }
+            }
           }
         }
+        state.filter_by = 'search'
       }
-      // 필터를 선택하였을 때, 선택된 도시 이름이 표시 되도록 한다.
-      for (var j = tagNameList.length; j--;) {
-        for (var k = tagNameList[j].length; k--;) {
-          if (tagNameList[j][k].key === payload) {
-            tagKr = tagNameList[j][k].tag
-          }
-        }
-      }
-      // getter에서 어떤 목록을 보낼 것 인지 판단 할 수 있게, 필터링한 종류를 입력한다.
-      state.filter_by = 'tag'
-      state.selected_country_filter = tagKr
-      state.show_tag = false
-      state.show_country = false
     },
     setAllBlogList (state, payload) {
-      // 모든 blog 글 목록을 구하는 메소드
+      // 모든 blog 글 목록을 구하는 메소드 / 새로고침이 되었을때 payload.data가 비워지기 때문에 다시 넣어줌
       var lists = payload.data ? payload.data : state.all_blog_list
       var item = {}
       state.all_blog_list = []
@@ -375,8 +423,6 @@ export default {
             state.blog_view_item.write_date = yearDate + '.' + monthDate + '.' + dayDate
           }
         }
-        // if () {
-        // }
       }
     },
     // 필터 클릭했을 때 토글. 어떤 필터를 눌렀는지 값을 받아서, 필터에 따라서 state 값을 변경한다.
@@ -497,70 +543,21 @@ export default {
     // 통신은 액션에서 해야합니다.
     setListsData (context, payload) {
       let lists = payload.data
-      let searchData = payload.search
-      let keywordAll = []
-      if (searchData) {
-        for (let prop in lists) {
-          // 나라명 1개
-          let keywordCountry = lists[prop].country
-          // 지역명 배열
-          let keywordCity = lists[prop].city
-          // 지역명 배열을 문자열
-          let keywordCityAll = ''
-          for (let i = 0, l = keywordCity.length; i < l; i++) {
-            keywordCityAll = keywordCityAll + keywordCity[i]
-          }
-          // 여행 기간 (공백 및 . 제거)
-          let keywordEndDate = lists[prop].end_date
-          keywordEndDate = keywordEndDate.replace(/\s/g, '').replace(/\./g, '')
-          let keywordStartDate = lists[prop].start_date
-          keywordStartDate = keywordStartDate.replace(/\s/g, '').replace(/\./g, '')
-          // id
-          let keywordId = lists[prop].id
-          // name
-          let keywordName = lists[prop].name
-          // tag 배열
-          // let keywordTag = lists[prop].tag
-          // console.log(keywordTag.join(''))
-          // tag 배열을 문자열
-          // let keywordTagAll = ''
-          // for (let i = 0, l = keywordTag.length; i < l; i++) { // length를 못찾음 ;; 이상함 !!
-          //   keywordTagAll = keywordTagAll + keywordTag[i]
-          // }
-          // title
-          let keywordTitle = lists[prop].title
-          // title_img
-          let keywordTitleImg = lists[prop].title_img
-          // write_date
-          let keywordWriteDate = lists[prop].write_date
-          // contents
-          let keywordContents = lists[prop].contents
-          let keywordContentsAll = ''
-          for (let i = 0, l = keywordContents.length; i < l; i++) {
-            keywordContentsAll = keywordContentsAll + keywordContents[i].value
-          }
-          let keyword = keywordCityAll + keywordCountry + keywordStartDate + keywordEndDate + keywordWriteDate + keywordId + keywordName + keywordTitle + keywordTitleImg + keywordContentsAll
-          keyword = keyword.toLowerCase()
-          let keywordIndex = keyword.indexOf(searchData)
-          if (keywordIndex >= 0) {
-            keywordAll = keywordAll.push(prop)
-            console.log('이것은????', prop)
-          }
-        }
-      }
       if (payload.id === 'all') {
         context.commit('setAllBlogList', payload)
-        // if (keywordAll) {
-        //   context.commit('setAllBlogList', payload)
-        //   context.commit('filterCityList', payload.search)
-        // }
       } else if (payload.id === 'default') {
         context.commit('setAllBlogList', payload)
         context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === null) {
         context.commit('setAllBlogList', payload)
       } else if (payload.id === 'tag') {
+        context.commit('setAllBlogList', payload)
         context.commit('filterTagList', payload)
+        context.commit('makePageNumber', Object.keys(lists).length)
+      } else if (payload.id === 'search') {
+        context.commit('setAllBlogList', payload)
+        context.commit('filterSearchList', payload)
+        context.commit('makePageNumber', Object.keys(lists).length)
       } else {
         for (let prop in lists) {
           if (lists[prop].country === payload.id) {
