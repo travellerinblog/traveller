@@ -46,6 +46,7 @@ export default {
       let payload = { 'data': response.data, 'id': this.$route.params.id }
       this.$store.dispatch('setListsData', payload).then(response => {
         this.$store.commit('makePageNumber', this.getFilteredList.length)
+        this.$store.commit('newListFilter')
       })
     }).catch(error => console.log(error.message))
     axios.get(locationApi).then(response => {
