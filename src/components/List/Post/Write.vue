@@ -117,7 +117,7 @@
   }
 </script>
 
-<style lang="scss" sconped>
+<style lang="scss" scoped>
 @import '../../../sass/App';
 * {
   box-sizing: border-box;
