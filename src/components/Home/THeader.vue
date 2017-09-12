@@ -7,20 +7,20 @@
             a(href) Traveler
         button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
         .search
-          form#search-form(role="search" v-on:submit.prevent="noop")
+          form#search-form(role="search" v-on:submit.prevent="goTofilterList")
             fieldset 
               legend.a11y-hidden 검색 폼
               label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 검색어 입력하세요
               .search-area(v-show="showSearch")
                 .search-content
-                  input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search")
-                  //- p {{ search }}@blur="oncloseSearch"
+                  input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search" :keydown.enter.prevent="searchBlogList")
                   router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
                   button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
                 .search-background(@click="oncloseSearch")
       .log
-        button(type="button" @click="showSignModal").btn-start 시작하기
-      Sign.Sign-container(v-show="showSignContainer")
+         button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+         button.btn-out(type="button" @click="logout" v-if="userStatus === 'in'") 로그아웃
+      Sign(v-show="showSignContainer")
     Navigation(v-show="showNav")
 </template>
 
@@ -32,17 +32,27 @@
     components: {
       Navigation, Sign
     },
+    mounted () {
+      this.$store.dispatch('checkUserExist')
+    },
     data () {
       return {
         search: ''
       }
     },
     computed: {
-      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer'])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus'])
     },
     methods: {
+      goTofilterList () {
+        this.$router.push({name: 'ListView', params: {id: 'search'}, query: {search: this.search}})
+        this.$store.commit('closeMeSearch')
+        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
+        this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
+      },
       onshowModal () {
         this.$store.commit('showMeModal')
+        this.$store.commit('showUserName')
       },
       onshowSearch () {
         this.$store.commit('showMeSearch')
@@ -56,9 +66,10 @@
       },
       searchBlogList () {
         this.$store.commit('closeMeSearch')
-        this.$store.commit('setAllBlogList')
+        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
+        this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
       },
-      ...mapMutations(['showSignModal'])
+      ...mapMutations(['showSignModal', 'logout'])
     }
   }
 </script>
@@ -187,7 +198,7 @@
   
   .log {
     text-align: right;
-    .btn-start {
+    .btn-start, .btn-out {
       width: 82px;
       height: 32px;
       margin-top: 11px;
@@ -199,16 +210,6 @@
       font-size: 14px;
     }
   }
-
-  .Sign-container {
-    position: fixed;
-    top: 25%;
-    left: 25%;
-    width: 400px;
-    height: 500px;
-    background: #fff;
-  }
-  
   @include mobile {
     .btn-open-search {
       margin-left: 10px;

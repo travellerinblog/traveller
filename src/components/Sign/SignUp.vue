@@ -1,20 +1,23 @@
 <template lang="pug">
   .sign-up
-    h3 회원가입하기
-    button.google-sign-up(href="#" type="button" @click="signUpByGoogle()") Google계정으로 가입하기
-    button.facebook-sign-up(href="#" type="button") FaceBook 계정으로 가입하기
+    button.google-sign-up(href="#" type="button" @click.prevent="signUpByGoogle('up')") Google계정으로 시작하기
+    button.facebook-sign-up(href="#" type="button") FaceBook 계정으로 시작하기
+    p(v-show="showSignUpMessage") {{ SignUpMessage }}
+    button(v-show="showSignUpMessage" @click.prevent="signViewChange('in')").sign-in 로그인하기
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 export default {
-  data () {
-    return {
-
-    }
+  mounted () {
+    this.$store.dispatch('getUsersData')
+  },
+  computed: {
+    ...mapGetters(['SignUpMessage', 'showSignUpMessage'])
   },
   methods: {
-    ...mapMutations(['signUpByGoogle'])
+    ...mapActions(['signUpByGoogle']),
+    ...mapMutations(['signViewChange'])
   }
 }
 </script>
