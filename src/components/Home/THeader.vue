@@ -18,16 +18,22 @@
                   button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
                 .search-background(@click="oncloseSearch")
       .log
-        button.btn-start(type="button") 시작하기
+         button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+         button.btn-out(type="button" @click="logout" v-if="userStatus === 'in'") 로그아웃
+      Sign(v-show="showSignContainer")
     Navigation(v-show="showNav")
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
   import Navigation from './Navigation.vue'
+  import Sign from './../Sign/Sign.vue'
   export default {
     components: {
-      Navigation
+      Navigation, Sign
+    },
+    mounted () {
+      this.$store.dispatch('checkUserExist')
     },
     data () {
       return {
@@ -35,11 +41,7 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'showNav',
-        'showSearch',
-        'closeSearch'
-      ])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus'])
     },
     methods: {
       goTofilterList () {
@@ -50,6 +52,7 @@
       },
       onshowModal () {
         this.$store.commit('showMeModal')
+        this.$store.commit('showUserName')
       },
       onshowSearch () {
         this.$store.commit('showMeSearch')
@@ -62,12 +65,11 @@
         this.search = e.target.value
       },
       searchBlogList () {
-        console.log('check')
-        console.log(this.$route.query.search)
         this.$store.commit('closeMeSearch')
         this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
         this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
-      }
+      },
+      ...mapMutations(['showSignModal', 'logout'])
     }
   }
 </script>
@@ -196,7 +198,7 @@
   
   .log {
     text-align: right;
-    .btn-start {
+    .btn-start, .btn-out {
       width: 82px;
       height: 32px;
       margin-top: 11px;
@@ -208,7 +210,6 @@
       font-size: 14px;
     }
   }
-  
   @include mobile {
     .btn-open-search {
       margin-left: 10px;

@@ -3,7 +3,8 @@
     .gnb
       .gnb-header
         //- button.btn-start(type="button") 시작하기
-        h1 싱숭생숭님
+        h1 {{ userName }} 
+        button.btn-start(type="button" @click="startSign" v-if="userStatus === 'out'") 시작하기
         button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseModal") 닫기
       ul
         //- router-link(to="/" tag="li" active-class="current-page" exact) 
@@ -12,7 +13,7 @@
           a(href) 나 여기 왔다 갔다.
         //- router-link(to="/" tag="li" active-class="current-page") 
         //-   a(href) 마이페이지
-      router-link.btn-write(to="/write/user1" tag="button") 여행 일지 쓰기
+      router-link.btn-write(to="/write/user1" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
     .nav-background(@click="oncloseModal")
 </template>
 
@@ -21,10 +22,14 @@
   export default {
     computed: {
       ...mapGetters([
-        'showNav'
+        'showNav', 'userName', 'userStatus'
       ])
     },
     methods: {
+      startSign () {
+        this.$store.commit('closeMeModal')
+        this.$store.commit('showSignModal')
+      },
       oncloseModal () {
         this.$store.commit('closeMeModal')
       },
@@ -69,6 +74,7 @@
       border-radius: 4px;
       color: #f4430b;
       font-size: 14px;
+      cursor: pointer;
     }
     h1 {
       float: left;
