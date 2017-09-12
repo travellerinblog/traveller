@@ -6,7 +6,7 @@
       .title
         h1 {{getBlogViewItem.title}}
         p
-          router-link(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="item.tag" :to="{ name: 'ListView', params: { id: 'tag' }, query:{search: item }}" @click.native="filterTagList(item)" tag="a") {{ item }}
+          router-link(v-for="(item, index) in getBlogViewItemTag" :index="index" :key="item.tag" :to="{ name: 'ListView', params: { id: 'search' }, query:{search: item }}" @click.native="filterTagList(item)" tag="a") {{ item }}
         p 
           strong by. {{getBlogViewItem.name}}
           b |
