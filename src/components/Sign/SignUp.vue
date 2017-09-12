@@ -1,9 +1,8 @@
 <template lang="pug">
   .sign-up
     h3 회원가입하기
-    a.email-sign-up(href="#") Email로 가입하기
-    a.google-sign-up(href="#" @click="signUpByGoogle()") Google계정으로 가입하기
-    a.facebook-sign-up(href="#") FaceBook 계정으로 가입하기
+    button.google-sign-up(href="#" type="button" @click="signUpByGoogle()") Google계정으로 가입하기
+    button.facebook-sign-up(href="#" type="button") FaceBook 계정으로 가입하기
 </template>
 
 <script>

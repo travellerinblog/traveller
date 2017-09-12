@@ -15,20 +15,22 @@
                 .search-content
                   input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search")
                   //- p {{ search }}@blur="oncloseSearch"
-                  router-link(:to="`/list/all?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
+                  router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
                   button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
                 .search-background(@click="oncloseSearch")
       .log
-        button.btn-start(type="button") 시작하기
+        button(type="button" @click="showSignModal").btn-start 시작하기
+      Sign.Sign-container(v-show="showSignContainer")
     Navigation(v-show="showNav")
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
   import Navigation from './Navigation.vue'
+  import Sign from './../Sign/Sign.vue'
   export default {
     components: {
-      Navigation
+      Navigation, Sign
     },
     data () {
       return {
@@ -36,11 +38,7 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'showNav',
-        'showSearch',
-        'closeSearch'
-      ])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer'])
     },
     methods: {
       onshowModal () {
@@ -59,7 +57,8 @@
       searchBlogList () {
         this.$store.commit('closeMeSearch')
         this.$store.commit('setAllBlogList')
-      }
+      },
+      ...mapMutations(['showSignModal'])
     }
   }
 </script>
@@ -199,6 +198,15 @@
       color: #f4430b;
       font-size: 14px;
     }
+  }
+
+  .Sign-container {
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    width: 400px;
+    height: 500px;
+    background: #fff;
   }
   
   @include mobile {
