@@ -239,9 +239,7 @@ export default {
       state.selected_country_filter = null
       // 검색어 소문자로 변경
       let searchData = payload.search
-      console.log('되니?', searchData)
       searchData = searchData.toLowerCase()
-      console.log('되니?', searchData)
       let keywordAll = []
       let keywordOnce = {}
       if (searchData) {
@@ -550,10 +548,6 @@ export default {
         context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === null) {
         context.commit('setAllBlogList', payload)
-      } else if (payload.id === 'tag') {
-        context.commit('setAllBlogList', payload)
-        context.commit('filterTagList', payload)
-        context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === 'search') {
         context.commit('setAllBlogList', payload)
         context.commit('filterSearchList', payload)

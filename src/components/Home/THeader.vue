@@ -10,16 +10,19 @@
           form#search-form(role="search" v-on:submit.prevent="goTofilterList")
             fieldset 
               legend.a11y-hidden 검색 폼
-              label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 검색어 입력하세요
+              label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 
+                span 검색어 입력하세요
               .search-area(v-show="showSearch")
                 .search-content
-                  input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search" :keydown.enter.prevent="searchBlogList")
-                  router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
+                  label.icon-search(for="search-keyword") 검색어 입력하세요
+                  input#search-keyword(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search" :keydown.enter.prevent="searchBlogList")
+                  router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button").btn-search-inside 검색하기
                   button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
                 .search-background(@click="oncloseSearch")
       .log
-        button(type="button" @click="showSignModal").btn-start 시작하기
-      Sign.Sign-container(v-show="showSignContainer")
+         button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+         button.btn-out(type="button" @click="logout" v-if="userStatus === 'in'") 로그아웃
+      Sign(v-show="showSignContainer")
     Navigation(v-show="showNav")
 </template>
 
@@ -31,13 +34,16 @@
     components: {
       Navigation, Sign
     },
+    mounted () {
+      this.$store.dispatch('checkUserExist')
+    },
     data () {
       return {
         search: ''
       }
     },
     computed: {
-      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer'])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus'])
     },
     methods: {
       goTofilterList () {
@@ -48,6 +54,7 @@
       },
       onshowModal () {
         this.$store.commit('showMeModal')
+        this.$store.commit('showUserName')
       },
       onshowSearch () {
         this.$store.commit('showMeSearch')
@@ -60,11 +67,11 @@
         this.search = e.target.value
       },
       searchBlogList () {
-        console.log('check')
-        console.log(this.$route.query.search)
         this.$store.commit('closeMeSearch')
-        this.$store.commit('setAllBlogList')
-      }
+        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
+        this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
+      },
+      ...mapMutations(['showSignModal', 'logout'])
     }
   }
 </script>
@@ -160,10 +167,28 @@
     .search-content{
       width: 100%;
       height: 70px;
-      padding: 19px 0;
+      padding-top: 19px;
+      padding-bottom: 19px;
       background: #fff;
       box-sizing: border-box;
       box-shadow: 0 5px 5px rgba(#000, 0.3);
+      label{
+        overflow: hidden;
+        float: left;
+        display: block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 24px;
+        &::before {
+          display: block;
+          width: 32px;
+          height: 28px;
+          margin-top: 4px;
+          line-height: 32px;
+          font-size: 32px;
+        }
+      }
     }
     .search-background{
       height: 80vh;
@@ -176,15 +201,15 @@
       line-height: 32px;
       background: #fff;
       border: 0 none;
-      &::before {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        margin-right: 10px;
-        vertical-align: -5px;
-        font-size: 24px;
-      }
+    }
+    .btn-search-inside{
+      background: #fff;
+      border: 1px solid #f4430b;
+      border-radius: 4px;
+      height: 32px;
+      line-height: 32px;
+      color: #f4430b;
+      font-size: 14px;
     }
     .btn-close {
       float: right;
@@ -193,7 +218,7 @@
   
   .log {
     text-align: right;
-    .btn-start {
+    .btn-start, .btn-out {
       width: 82px;
       height: 32px;
       margin-top: 11px;
@@ -205,16 +230,6 @@
       font-size: 14px;
     }
   }
-
-  .Sign-container {
-    position: fixed;
-    top: 25%;
-    left: 25%;
-    width: 400px;
-    height: 500px;
-    background: #fff;
-  }
-  
   @include mobile {
     .btn-open-search {
       margin-left: 10px;
@@ -228,7 +243,13 @@
     .search-area {
       label {
         margin-left: 10px;
-        margin-right: 10px;
+      }
+      input{
+        margin-left: 10px;
+        width: 43vw;
+      }
+      .btn-search-inside{
+        margin-left: 10px;
       }
       .btn-close {
         margin-right: 10px;
@@ -251,6 +272,12 @@
         margin-left: 15px;
         margin-right: 15px;
       }
+      input{
+        margin-left: 15px;
+      }
+      .btn-search-inside{
+        margin-left: 15px;
+      }
       .btn-close {
         margin-right: 15px;
       }
@@ -270,7 +297,12 @@
     .search-area {
       label {
         margin-left: 20px;
-        margin-right: 20px;
+      }
+      input{
+        margin-left: 20px;
+      }
+      .btn-search-inside{
+        margin-left: 20px;
       }
       .btn-close {
         margin-right: 20px;
@@ -288,7 +320,6 @@
 
   @include breakpoint(0px, 375px) {
     .btn-open-search {
-      background: red;
       span {
         width: 1px;
         height: 1px;

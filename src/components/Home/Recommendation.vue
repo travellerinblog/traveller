@@ -1,11 +1,11 @@
 <template lang="pug">
   .recommend-container(:class="getScreenSize")
-    .content-header.grid
-      h1.header.col.col-m-2.col-t-2.col-d-2 우리가 강추한다!
-    .content.grid
-      router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-image.col.col-d-7.col-t-5
+    .content-header
+      h1 우리가 강추한다!
+    .content
+      router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-image
         img(:src="getRecommendItemImgSrc")
-      router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-text.col.col-d-5.col-m-4.col-t-3
+      router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-text
         h2.title {{getRecommendItem.title}}
         p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}
         p.text {{ getEllipsisText }}
@@ -53,12 +53,12 @@
   .recommend-container {
     overflow: hidden;
     margin-top: 20px;
-    @extend %maxwidth;
+    background-color: rgba(244, 67, 11, 0.04);
     a {
       text-decoration: none;
+      display: block;
     }
-    background-color: rgba(244, 67, 11, 0.04);
-    .header {
+    .content-header h1 {
       color: rgb(10, 9, 8);
       font-weight: bold;
     }
@@ -66,6 +66,8 @@
       overflow: hidden;
     }
     .content-text {
+      box-sizing: border-box;
+      overflow: hidden;
       background-color: rgb(255, 255, 255);
       .title {
         font-weight: bold;
@@ -76,26 +78,22 @@
       }
       .text {
         color: rgba(10, 9, 8, 0.7);
-        line-height: 1.4em
       }
     }
   }
   
   @include mobile {
     .recommend-container{
-      margin-top: 20px;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
-    .header {
+    .content-header h1 {
       font-size: 16px;
       margin: 0 0 0 10px;
       line-height: 50px;
     }
     .content {
-      height: 368px;
-      margin: 0 16px 10px 10px;
-    }
-    .content-image {
-      height: 215px;
+      margin: 0 10px 10px 10px;
     }
     img {
       width: 100%;
@@ -103,7 +101,6 @@
     }
     .content-text {
       padding: 16px 16px;
-      height: 153px;
       .title {
         font-size: 18px;
       }
@@ -114,32 +111,37 @@
       .text {
         margin-top: 10px;
         font-size: 14px;
+        line-height: 1.6em
       }
     }
   }
   
   @include tablet {
     .recommend-container{
-      margin-top: 30px;
+      padding-top: 30px;
+      padding-bottom: 30px;
     }
-    .header {
+    .content-header h1 {
       font-size: 18px;
       margin: 0 0 0 15px;
       line-height: 50px;
     }
     .content {
-      height: 271px;
-      margin: 0 35px 15px 15px;
+      margin: 0 15px 15px 15px;
     }
     .content-image {
-      height: 100%;
+      float: left;
+      width: 60%;
+      height: 350px;
       img {
-        width: 100%;
-        height: auto;
+        width: auto;
+        height: 150%;
       }
     }
     .content-text {
-      height: 100%;
+      float: left;
+      width: 40%;
+      height: 350px;
       padding: 16px 16px;
       .title {
         font-size: 18px;
@@ -151,24 +153,28 @@
       .text {
         margin-top: 20px;
         font-size: 14px;
+        line-height: 1.6em
       }
     }
   }
   
   @include desktop {
     .recommend-container{
-      margin-top: 40px;
+      padding-top: 40px;
+      padding-bottom: 40px;
     }
-    .header {
+    .content-header h1 {
       font-size: 28px;
       margin: 20px 0 20px 20px;
       line-height: 50px;
     }
     .content {
       height: 692px;
-      margin: 0 36px 40px 20px;
+      margin: 0 20px 40px 20px;
     }
     .content-image {
+      float: left;
+      width: 50%;
       height: 100%;
       img {
         width: auto;
@@ -176,6 +182,8 @@
       }
     }
     .content-text {
+      float: left;
+      width: 50%;
       height: 100%;
       padding: 48px 56px;
       .title {
@@ -187,7 +195,8 @@
       }
       .text {
         margin-top: 32px;
-        font-size: 24px;
+        font-size: 18px;
+        line-height: 1.6em
       }
     }
   }
