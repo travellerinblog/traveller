@@ -4,8 +4,8 @@ import axios from 'axios'
 export default {
   state: {
     temp_write_data: {},
-    write_title_value: '제목을 입력하세요',
-    write_tag_value: '태그를 입력하세요',
+    write_title_value: '',
+    write_tag_value: '',
     title_img_url: '',
     write_contents_data: [],
     selected_write_city: [],
