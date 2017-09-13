@@ -48,7 +48,7 @@
     z-index: 100;
     height: 100vh;
     background: #fff;
-    box-shadow: 0 5px 5px rgba(#000, 0.3)
+    box-shadow: 0 5px 5px rgba(#181818, 0.3)
   }
   .nav-background{
     position: absolute;
@@ -61,7 +61,7 @@
   .gnb-header {
     @include clearfix;
     height: 56px;
-    background: rgba(244, 67, 11, .04);
+    background: rgba(#181818, .04);
     .btn-start {
       float: left;
       display: block;
@@ -70,9 +70,9 @@
       line-height: 32px;
       margin-top: 11px;
       background: #fff;
-      border: 1px solid #f4430b;
+      border: 1px solid $color1;
       border-radius: 4px;
-      color: #f4430b;
+      color: $color1;
       font-size: 14px;
       cursor: pointer;
     }
@@ -82,7 +82,7 @@
       height: 32px;
       line-height: 32px;
       margin-top: 11px;
-      color: #f4430b;
+      color: $color1;
       font-size: 16px;
       font-weight: 700;
     }
@@ -100,9 +100,9 @@
         padding: 20px 0;
         font-size: 20px;
         text-decoration: none;
-        color: #000;
+        color: #181818;
         &:hover {
-          color: #f4430b;
+          color: $color1;
         }
       }
     }
@@ -115,10 +115,10 @@
     padding: 0;
     margin-top: 11px;
     background: #fff;
-    border: 1px solid #000;
+    border: 1px solid #181818;
     border-radius: 4px;
     line-height: 36px;
-    color: #000;
+    color: #181818;
     font-size: 16px;
     cursor: pointer;
   }

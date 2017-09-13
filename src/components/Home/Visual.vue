@@ -155,7 +155,7 @@
       height: 76px;
       font-size: 23px;
       color: #fff;
-      background-color: rgba(10, 9, 8, 0.4);
+      background-color: rgba(#181818, 0.4);
       white-space : nowrap;
 			overflow : hidden;
 			text-overflow : ellipsis;

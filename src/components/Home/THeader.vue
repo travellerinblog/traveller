@@ -107,7 +107,7 @@
       margin-top: 17px;
       font-size: 20px;
       font-weight: 700;
-      color: #f4430b;
+      color: $color1;
       text-decoration: none;
     }
   }
@@ -204,11 +204,11 @@
     }
     .btn-search-inside{
       background: #fff;
-      border: 1px solid #f4430b;
+      border: 1px solid $color1;
       border-radius: 4px;
       height: 32px;
       line-height: 32px;
-      color: #f4430b;
+      color: $color1;
       font-size: 14px;
     }
     .btn-close {
@@ -223,10 +223,10 @@
       height: 32px;
       margin-top: 11px;
       background: #fff;
-      border: 1px solid #f4430b;
+      border: 1px solid $color1;
       border-radius: 4px;
       line-height: 32px;
-      color: #f4430b;
+      color: $color1;
       font-size: 14px;
     }
   }
