@@ -26,14 +26,11 @@
   }
   
   @include mobile {
-    main {}
   }
   
   @include tablet {
-    main {}
   }
   
   @include desktop {
-    main {}
   }
 </style>

@@ -32,14 +32,14 @@
   
   footer {
     background: #fff;
-    border-top: rgba(#000, 0.2) 1px solid;
+    border-top: rgba(#181818, 0.2) 1px solid;
   }
   
   .logo a {
     display: inline-block;
     font-size: 20px;
     font-weight: 700;
-    color: #f4430b;
+    color: $color1;
     text-decoration: none;
   }
   
@@ -49,7 +49,7 @@
       float: left;
       font-size: 14px;
       a {
-        color: rgba(#000, 0.6);
+        color: rgba(#181818, 0.6);
         text-decoration: none;
       }
     }
@@ -59,7 +59,7 @@
         display: inline-block;
         padding: 0 10px;
         font-size: 14px;
-        color: rgba(#000, 0.6);
+        color: rgba(#181818, 0.6);
       }
     }
   }
@@ -69,7 +69,7 @@
     li {
       font-size: 14px;
       a {
-        color: rgba(#000, 0.6);
+        color: rgba(#181818, 0.6);
       }
     }
   }
@@ -135,7 +135,7 @@
           display: inline-block;
           padding: 0 10px;
           font-size: 14px;
-          color: rgba(#000, 0.6);
+          color: rgba(#181818, 0.6);
         }
       }
     }

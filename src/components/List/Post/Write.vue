@@ -22,53 +22,57 @@
           img(:src="wirteTitleImgUrl")
           .title-background(v-show="wirteTitleImgUrl")
       .write-contents-container
-        .country-and-city
-          p.selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity('country')" :class="{'default-filter-msg': selectedWriteCity === '여행지를 선택하세요.'}") {{ selectedWriteCity }}
-            i.icon-down
-          .select-container(v-show="showWriteCountry")  
-            ul.country-and-city-select
-              li.country(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
-                a(href @click.prevent="toggleWriteCountryCity(country.countryKey)") {{country.country}} 
-                ul.city-filter(v-if="selectedWriteCountryKey===country.countryKey" v-show="showWriteCity")
-                  li.city(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
-                    input.a11y-hidden(type="checkbox" :id="citygroup.city" @change.prevent="setSelectedItem")
-                    label(:for="citygroup.city") {{ citygroup.city }}
-                  li.city-btn
-                    button.city-save-btn(type="submit" @click.prevent="selectComplete(getCountryAndCityName)") 저장
-        form
-          fieldset.date-setting
-            legend.a11y-hidden 여행 날짜 입력 폼
-            .start-date(role="group")
-              label(for="start-date") 여행 시작 날짜 
-              input#start-date(type="date" @change="setDate('start')")
-            .end-date(role="group")
-              label(for="end-date") 여행 종료 날짜
-              input#end-date(type="date" @change="setDate('end')")
-            .date-btn
-              button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
-              button.date-save-btn(type="reset" @click="resetDate") 취소
-            span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
-          fieldset.input-contents  
-            legend.a11y-hidden 이미지 택스트 입력 폼
-            .contents-image
-              label(for="contents-image") 이미지를 추가하세요
-              input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
-            .contents-text
-              label(for="contents-text") 텍스트를 추가하세요
-              button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
-        span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
-        ul.write-contents-view
-          li.contents-view-item(v-for="(content, index) in writeContentsData")
-            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
-            span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
-            img(v-if="content.key === 'img'" :src="content.value")
-            button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
-        form.write-button
-          fieldset
-            legend.a11y-hidden 글 저장 및 취소 폼
-            button(type="submit" @click.prevent="saveWriteData") 저장
-            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
-            router-link.save-btn(to="/" tag="button") 취소
+        .warp
+          form
+            .form-warp
+              .country-and-city
+                p.selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity('country')" :class="{'default-filter-msg': selectedWriteCity === '여행지를 선택하세요.'}") {{ selectedWriteCity }}
+                  i.icon-down
+                .select-container(v-show="showWriteCountry")
+                  .background-select-container(@click="toggleWriteCountryCity('country')")
+                  ul.country-and-city-select
+                    li.country(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
+                      a(href @click.prevent="toggleWriteCountryCity(country.countryKey)") {{country.country}} 
+                      div.city-filter(v-if="selectedWriteCountryKey===country.countryKey" v-show="showWriteCity")
+                        ul
+                          li.city(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
+                            input.a11y-hidden(type="checkbox" :id="citygroup.city" @change.prevent="setSelectedItem")
+                            label(:for="citygroup.city") {{ citygroup.city }}
+                        button.city-save-btn(type="submit" @click.prevent="selectComplete(getCountryAndCityName)") 저장
+              
+              fieldset.date-setting
+                legend.a11y-hidden 여행 날짜 입력 폼
+                .start-date(role="group")
+                  label(for="start-date") 여행 시작 날짜 : 
+                  input#start-date(type="date" @change="setDate('start')")
+                .end-date(role="group")
+                  label(for="end-date") 여행 종료 날짜 : 
+                  input#end-date(type="date" @change="setDate('end')")
+                //- .date-btn
+                  button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
+                  button.date-save-btn(type="reset" @click="resetDate") 취소
+                span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
+            fieldset.input-contents
+              legend.a11y-hidden 이미지 택스트 입력 폼
+              .contents-image
+                label(for="contents-image") 이미지를 추가하세요
+                input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+              .contents-text
+                label(for="contents-text") 텍스트를 추가하세요
+                button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
+          span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
+          ul.write-contents-view
+            li.contents-view-item(v-for="(content, index) in writeContentsData")
+              textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
+              span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
+              img(v-if="content.key === 'img'" :src="content.value")
+              button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
+          form.write-button
+            fieldset
+              legend.a11y-hidden 글 저장 및 취소 폼
+              button(type="submit" @click.prevent="saveWriteData") 저장
+              span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+              router-link.save-btn(to="/" tag="button") 취소
 </template>
 
 <script>
@@ -146,8 +150,8 @@
   button {
     margin: 3px;
     font-size: 15px;
-    background-color: #f4430b;
-    border: 1px solid #f4430b;
+    background-color: $color1;
+    border: 1px solid $color1;
     border-radius: 4px;
     color: #fff;
     font-weight: normal;
@@ -156,51 +160,53 @@
   .write-title-container {
     position: relative;
     width: 100%;
-    height: 600px;
+    height: 500px;
     border-bottom: 1px solid rgba(#181818, 0.2);
     .title-text-container {
       position: relative;
       max-width: 1220px;
       margin: 55px auto 0 auto;
+      background: pink;
       input,
       label {
-        width: 500px;
-        height: 35px;
-        padding: 10px;
         border: 0 none;
-        background: rgba(#fff, 0.5);
-      }
-      label {
-        padding: 10px;
+        color: #bababa;
+        width: auto;
+        background: none;
       }
       [class $="error"] {
-        padding: 0 10px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 100;
+        width: 100vw;
+        height: 50px;
+        line-height: 50px;
+        display: block;
+        text-align: center;
         color: #fff;
-        font-size: 15px;
+        font-size: 20px;
+        background: $color1;
       }
       .title {
         position: absolute;
         left: 0;
-        bottom: -500px;
-        font-size: 20px;
+        bottom: -420px;
+        font-size: 56px;
       }
       .tag {
         position: absolute;
         left: 0;
-        bottom: -550px;
-        input {
-          font-size: 16px;
-        }
+        bottom: -450px;
+        font-size: 20px;
       }
       .title-image-form {
         position: absolute;
-        font-size: 20px;
         right: 0;
-        bottom: -550px;
+        bottom: -450px;
         label {
           display: inline-block;
-          width: 250px;
-          line-height: 35px;
+          font-size: 20px;
         }
       }
       .title-image-error {
@@ -218,7 +224,7 @@
     z-index: -1;
     position: fixed;
     width: 100vw;
-    height: 600px;
+    height: 500px;
     overflow: hidden;
     img {
       width: 100%;
@@ -230,7 +236,7 @@
       left: 0;
       top: 0;
       width: 100%;
-      height: 600px;
+      height: 500px;
       background: rgba(#181818, 0.2);
     }
   }
@@ -238,70 +244,101 @@
   .write-contents-container {
     position: relative;
     z-index: 1;
-    min-height: 450px;
-    height: auto;
-    width: 100%;
-    background-color: #fff;
     overflow: hidden;
+    width: 100%;
+    height: auto;
+    min-height: 450px;
+    background: #fff;
+    .warp{
+      width: 100%;
+      max-width: 1220px;
+      margin: 0 auto;
+    }
+    .form-warp{
+      position: relative;
+      z-index: 10;
+      @include clearfix;
+      padding-top: 20px;
+    }
     .country-and-city {
-      position: absolute;
-      z-index: 50;
+      float: left;
       width: 450px;
       overflow: hidden;
       background-color: #fff;
-      border: 1px solid rgba(10, 9, 8, 0.34);
+      border: 1px solid #b0b0b0;
       border-radius: 2px;
-      box-shadow: 0 1px 0px 0 rgba(10, 9, 8, 0.34);
-      font-size: 18px;
+      box-shadow: 0 1px 0px 0 #b0b0b0;
+      font-size: 16px;
     }
     .select-container {
-      margin: 0 0 0 20px;
-      width: 500px;
+      position: absolute;
+      z-index: 10;
+      left: 0;
+      top: 56px;
+      width: 450px;
       overflow: hidden;
+      border: 1px solid #b0b0b0;
+      border-top: 0 none;
+      .background-select-container{
+        position: fixed;
+        z-index: -1;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100%;
+      }
     }
     .selected-country {
-      margin: 3px 20px;
-      height: 30px;
-      line-height: 30px;
+      width: 450px;
+      height: 35px;
+      padding: 0 20px;
+      line-height: 35px;
       font-weight: bold;
-      color: rgba(244, 67, 11, 0.7);
+      color: $color1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 16px;
     }
     .country-and-city-select {
       width: 470px;
       height: 200px;
       overflow-Y: scroll;
+      background: #fff;
       .country {
         margin-top: 20px;
+        padding: 0 20px;
         width: 450px;
+        font-size: 16px;
       }
       .city-filter {
-        @include clearfix;
-        font-size: 15px;
-        li {
-          margin: 5px;
+        font-size: 16px;
+        margin-top: 20px;
+        ul{
+          @include clearfix;
         }
         .city {
           float: left;
+          margin-right: 10px;
+          height: 30px;
+          line-height: 30px;
           input:checked:checked+label::before {
             content: '✔';
             margin: 2px;
             font-size: 12px;
           }
         }
-        .city-btn {
-          float: right;
-          margin-right: 25px;
-        }
-        button {
-          margin-right: 2px;
-          font-size: 15px;
-          background-color: #f4430b;
-          border: 1px solid #f4430b;
+        .city-save-btn {
+          margin: 10px 0 0 0;
+          padding: 0 10px;
+          height: 30px;
+          line-height: 30px;
+          display: block;
           border-radius: 4px;
+          background-color: $color1;
+          border: 1px solid $color1;
           color: #fff;
+          font-size: 15px;
           font-weight: normal;
         }
       }
@@ -313,51 +350,67 @@
       font-size: 18px;
     }
     .date-setting {
-      @include clearfix;
-      margin: 20px 0 0 620px;
-      width: 600px;
-      // height: 36px;
+      position: relative;
+      float: right;
       font-size: 15px;
-      // border: 1px solid rgba(10, 9, 8, 0.34);
-      // border-radius: 2px;
-      // box-shadow: 0 1px 0px 0 rgba(10, 9, 8, 0.34);
+      height: 35px;
       input {
-        margin: 2px 2px 0 0;
-        height: 30px;
-        font-size: 15px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 16px;
         border: none;
+        background: none;
+        color: rgba( #181818, 0.4);
       }
       label {
         font-weight: bold;
+        height: 35px;
+        line-height: 35px;
+        color: rgba( #181818, 0.4);
       }
       .start-date {
         float: left;
+        height: 35px;
+        line-height: 35px;
+        border: 1px solid #b0b0b0;
+        padding: 0 20px;
+        box-shadow: 0 1px 0px 0 #b0b0b0;
       }
       .end-date {
         float: left;
+        margin-left: 10px;
+        height: 35px;
+        line-height: 35px;
+        border: 1px solid #b0b0b0;
+        padding: 0 20px;
+        box-shadow: 0 1px 0px 0 #b0b0b0;
       }
       .date-btn {
         float: right;
         margin: 3px 0 0 0;
         button {
           margin: 0 5px;
+          padding: 0 10px;
+          height: 35px;
+          line-height: 35px;
         }
       }
     }
     .date-error-message {
-      @include clearfix;
-      margin: 5px 0;
-      float: left;
+      position: absolute;
+      left: 0;
+      bottom: -20px;
       font-size: 14px;
+      color: $color1;
     }
   }
   
   .write-contents-view {
     padding: 30px 0 50px 0;
-    margin: 0 auto;
-    max-width: 1220px;
+    min-height: 400px;
     .contents-view-item {
       position: relative;
+      z-index: 1;
     }
     textarea {
       margin: 20px 0 0 0;
@@ -365,7 +418,8 @@
       width: 100%;
       height: 150px;
       overflow: visible;
-      border: 1px solid rgba(10, 9, 8, 0.34);
+      border: 1px solid #b0b0b0;
+      font-size: 18px;
     }
     img {
       margin: 15px 0 0 0;
@@ -377,7 +431,13 @@
       right: 10px;
       width: 30px;
       height: 30px;
-      border-radius: 50%;
+      text-align: center;
+      border-radius: none;
+      background: none;
+      color: $color1;
+      border: 0 none;
+      font-size: 30px;
+      transform: scale(1.5, 1);
     }
     .text-error-message {
       font-size: 20px;
@@ -385,22 +445,18 @@
   }
   
   .input-contents {
-    z-index: 10;
     position: fixed;
+    z-index: 10;
     right: 30px;
-    top: 50%;
-    width: 220px;
-    transform: translateY(-50%);
+    bottom: 20%;
     font-size: 20px;
-    form {
-      margin: 20px 0 0 0;
-      width: 100%;
+    label{
+      color: #b0b0b0;
+    }
+    .contents-image{
       height: 30px;
-      background: rgba(256, 256, 256, 0.5);
-      border: 1px solid rgba(10, 9, 8, 0.34);
       text-align: center;
       line-height: 30px;
-      color: #000;
     }
   }
   
@@ -419,14 +475,17 @@
   }
   
   .write-button {
-    position: absolute;
-    left: 50%;
-    bottom: 10px;
-    transform: translateX(-50%);
+    text-align: center;
+    margin: 40px 0;
     button {
-      margin: 0 15px 0 0;
-      width: 80px;
-      height: 30px;
+      height: 40px;
+      line-height: 40px;
+      padding: 0 40px;
+    }
+    .save-btn{
+      margin-left: 20px;
+      background: #b0b0b0;
+      border: 1px solid #b0b0b0;
     }
   }
   
@@ -436,158 +495,14 @@
   }
   
   // @include mobile {
-  //   .write-title-container {
-  //     .title-text-container {
-  //       input,
-  //       label {
-  //         display: block;
-  //         width: 250px;
-  //         height: 30px;
-  //       }
-  //       [class $="error"] {
-  //         font-size: 12px;
-  //       }
-  //       .title {
-  //         bottom: 105px;
-  //         font-size: 20px;
-  //       }
-  //       .tag {
-  //         bottom: 60px;
-  //         font-size: 10px;
-  //       }
-  //       .title-image-form {
-  //         bottom: 15px;
-  //       }
-  //       .title-image-error {
-  //         font-size: 20px;
-  //       }
-  //     }
-  //   }
-  //   .write-contents-container {
-  //     .country-and-city {
-  //       font-size: 15px;
-  //       width: 97%;
-  //       .select-container {
-  //         width: 97%;
-  //       }
-  //       .country-and-city-select {
-  //         width: 110%;
-  //       }
-  //       .country {
-  //         width: 97%;
-  //       }
-  //       .city {
-  //         font-size: 13px;
-  //         input:checked:checked+label::before {
-  //           content: '✔';
-  //           margin: 2px;
-  //           font-size: 8px;
-  //         }
-  //         .city-btn {
-  //           margin: 0
-  //         }
-  //       }
-  //       .city-btn button {
-  //         margin-right: 20px;
-  //       }
-  //     }
-  //     .date-setting {
-  //       width: 97%;
-  //       margin: 70px 10px 0 10px;
-  //     }
-  //   }
-  //   .input-contents {
-  //     right: 25px;
-  //     width: 150px;
-  //     form {
-  //       width: 100%;
-  //       margin-left: 10px;
-  //       float: left;
-  //       font-size: 15px;
-  //     }
-  //   }
-  //   .write-contents-view {
-  //     margin: 10px;
-  //     .text-error-message {
-  //       font-size: 15px;
-  //     }
-  //     textarea {}
-  //   }
-  //   .write-button {
-  //     width: 100%;
-  //     text-align: center;
-  //   }
   // }
   
   // @include tablet {
-  //   .write-title-container {
-  //     .title-text-container {
-  //       .title {
-  //         font-size: 30px;
-  //       }
-  //       .tag {
-  //         font-size: 20px;
-  //       }
-  //       .title-image-form {
-  //         bottom: 15px;
-  //         left: 10px;
-  //       }
-  //     }
-  //   }
-  //   .write-contents-container {
-  //     .date-setting {
-  //       margin: 70px 10px 0 10px;
-  //     }
-  //   }
-  //   .input-contents {
-  //     width: 200px;
-  //     form {
-  //       width: 100%;
-  //       margin-left: 10px;
-  //       float: left;
-  //       font-size: 20px;
-  //     }
-  //   }
-  //   .write-contents-view {
-  //     margin: 30px 10px;
-  //   }
   // }
   
   // @include desktop {
-  //   .write-title-container {
-  //     .title-text-container {
-  //       margin: 55px 150px 0 150px;
-  //       .title {
-  //         font-size: 30px;
-  //       }
-  //       .tag {
-  //         font-size: 20px;
-  //       }
-  //     }
-  //   }
-  //   .country-and-city {
-  //     margin: 20px 150px 0 150px;
-  //   }
-  //   .write-contents-container {
-  //     .date-error-message {}
-  //   }
   // }
   
   // @include breakpoint(0px, 1199px) {
-  //   .write-title-container {
-  //     height: 60vw;
-  //     .title-text-container {
-  //       padding: 0 10px;
-  //     }
-  //   }
-  //   .title-image-container {
-  //     img {
-  //       width: 100%;
-  //       height: auto;
-  //     }
-  //   }
-  //   .country-and-city {
-  //     margin: 20px 10px 0 10px;
-  //   }
   // }
 </style>

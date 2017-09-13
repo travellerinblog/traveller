@@ -117,7 +117,7 @@
         border-radius: 50%;
         text-align: center;
         font-size: 19px;
-        color: rgb(244,67,11);
+        color: $color1;
         font-weight: bold;
       }
     }

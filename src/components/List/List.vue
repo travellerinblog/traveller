@@ -109,7 +109,7 @@ div
       .selected-country {
         display: block;
         font-weight: bold;
-        color: rgba(244, 67, 11, 0.7);
+        color: rgba($color1, 0.7);
       }
       .default-filter-msg.selected-country {
         color: rgba(10, 9, 8, 0.7);
@@ -144,7 +144,7 @@ div
   .goto-write {
     width: 100%;
     text-align: center;
-    background-color: rgb(244, 67, 11);
+    background-color: $color1;
     .write-title {
       color: #fff;
     }
@@ -153,7 +153,7 @@ div
       color: #fff;
       border: 1px solid #fff;
       border-radius: 4px;
-      box-shadow: 0 2px 3px 0 rgb(182, 45, 2);
+      box-shadow: 0 2px 3px 0 $color1;
     }
   }
   

@@ -36,17 +36,17 @@
     methods: {
       prevItem () {
         this.stopAutoplay()
-        this.$store.commit('prevItem')
+        this.$store.dispatch('prevItem')
       },
       nextItem (event) {
         if (event) {
           this.stopAutoplay()
         }
-        this.$store.commit('nextItem')
+        this.$store.dispatch('nextItem')
       },
       gotoItem (n) {
         this.stopAutoplay()
-        this.$store.commit('gotoItem', n)
+        this.$store.dispatch('gotoItem', n)
       },
       stopAutoplay () {
         clearInterval(this.autoplayInterval)
@@ -82,7 +82,7 @@
     height: 32px;
     transition: opacity 0.4s;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(#fff, 0.6);
     border: none;
     border-radius: 50%;
     &.prev {
@@ -95,6 +95,7 @@
   
   button[type="button"] {
     padding: 0;
+    cursor: pointer;
   }
   
   .prev::after {
@@ -105,7 +106,7 @@
     transform: rotate(-90deg);
     font-family: "travelericon";
     font-size: 19px;
-    color: rgb(244, 67, 11);
+    color: $color1;
     font-weight: bold;
   }
   
@@ -117,7 +118,7 @@
     transform: rotate(90deg);
     font-family: "travelericon";
     font-size: 19px;
-    color: rgb(244, 67, 11);
+    color: $color1;
     font-weight: bold;
   }
   
@@ -132,11 +133,11 @@
       width: 32px;
       height: 2px;
       margin: 0px 4px;
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(#fff, 0.5);
       cursor: pointer;
     }
     .active-tab {
-      background-color: rgb(255, 255, 255);
+      background-color: #fff;
       cursor: default;
     }
     a::after {
