@@ -53,13 +53,13 @@
   .recommend-container {
     overflow: hidden;
     margin-top: 20px;
-    background-color: rgba(244, 67, 11, 0.04);
+    background-color: rgba(#181818, 0.04);
     a {
       text-decoration: none;
       display: block;
     }
     .content-header h1 {
-      color: rgb(10, 9, 8);
+      color: #181818;
       font-weight: bold;
     }
     .content-image {
@@ -68,16 +68,16 @@
     .content-text {
       box-sizing: border-box;
       overflow: hidden;
-      background-color: rgb(255, 255, 255);
+      background-color: #fff;
       .title {
         font-weight: bold;
-        color: rgb(10, 9, 8);
+        color: #181818;
       }
       .info {
-        color: rgba(10, 9, 8, 0.65);
+        color: rgba(#181818, 0.65);
       }
       .text {
-        color: rgba(10, 9, 8, 0.7);
+        color: rgba(#181818, 0.7);
       }
     }
   }

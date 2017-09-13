@@ -61,13 +61,13 @@
     h1 {
       float: left;
       margin-bottom: 8px;
-      color: #0a0908;
+      color: #181818;
       font-weight: 700;
     }
     a {
       float: right;
       display: block;
-      color: rgba(#000, .5);
+      color: rgba(#181818, .5);
       text-decoration: none;
       i {
         vertical-align: -2px;
@@ -116,7 +116,7 @@
             width: 100%;
             height: 58px;
             box-sizing: border-box;
-            background: rgba(#000, .4);
+            background: rgba(#181818, .4);
             color: #fff;
             strong {
               font-size: 22px;

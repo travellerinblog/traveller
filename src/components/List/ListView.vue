@@ -77,7 +77,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: rgba(10, 9, 8, 0.4);
+    background-color: rgba(#181818, 0.4);
     .title {
       color: rgb(255, 255, 255);
       white-space: nowrap;
@@ -102,7 +102,7 @@
       position: relative;
       margin: 0 10px 0 0;
       box-sizing: border-box;
-      border: 1px solid rgba(10, 9, 8, 0.4);
+      border: 1px solid rgba(#181818, 0.4);
       overflow: hidden;
     }
     .first-page {
@@ -113,14 +113,14 @@
       position: absolute;
       transform: rotate(-90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
     .first-page::before {
       content: '\66';
       position: absolute;
       transform: rotate(-90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
     .prev-page {
       order: 2;
@@ -130,7 +130,7 @@
       position: absolute;
       transform: rotate(-90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
     .page-number {
       order: 3;
@@ -138,12 +138,12 @@
         float: left;
         margin: 0 10px 0 0;
         text-align: center;
-        color: rgba(10, 9, 8, 0.7);
-        border: 1px solid rgba(10, 9, 8, 0.4);
+        color: rgba(#181818, 0.7);
+        border: 1px solid rgba(#181818, 0.4);
       }
       .active-page {
         color: rgb(244, 67, 11);
-        border: 1px solid rgb(247, 123, 84);
+        border: 1px solid $color1;
       }
       a {
         outline: none;
@@ -161,7 +161,7 @@
       position: absolute;
       transform: rotate(90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
     .last-page {
       order: 5;
@@ -171,14 +171,14 @@
       position: absolute;
       transform: rotate(90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
     .last-page::before {
       content: '\66';
       position: absolute;
       transform: rotate(90deg);
       font-family: "travelericon";
-      color: rgba(10, 9, 8, 0.4);
+      color: rgba(#181818, 0.4);
     }
   }
   
