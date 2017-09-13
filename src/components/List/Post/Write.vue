@@ -48,9 +48,6 @@
                 .end-date(role="group")
                   label(for="end-date") 여행 종료 날짜 : 
                   input#end-date(type="date" @change="setDate('end')")
-                //- .date-btn
-                  button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
-                  button.date-save-btn(type="reset" @click="resetDate") 취소
                 span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
             fieldset.input-contents
               legend.a11y-hidden 이미지 택스트 입력 폼
@@ -91,7 +88,7 @@
       ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
     },
     methods: {
-      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent', 'clearFileValue']),
+      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'deleteContent', 'clearFileValue']),
       ...mapActions(['setListsData']),
       clearInput (type) {
         let payload = { 'value': event.target.value, 'type': type }
@@ -119,9 +116,6 @@
       setDate (sort) {
         let payload = {'date': event.target.value, 'sort': sort}
         this.$store.commit('setDate', payload)
-      },
-      saveDate () {
-        this.$store.commit('saveDate', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
       },
       saveWriteData () {
         let payload = { 'id': this.$route.params.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }

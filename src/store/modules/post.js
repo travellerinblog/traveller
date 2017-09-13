@@ -248,17 +248,17 @@ export default {
           state.temp_date.end = payload.date
           break
       }
-    },
-    saveDate (state, payload) {
       let today = new Date()
       let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1).toString() : (today.getMonth() + 1).toString()
       let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate()
+      let start = state.temp_date.start
+      let end = state.temp_date.end
       today = today.getFullYear() + month + day
-      if (payload.start.value !== '' && payload.end.value !== '') {
-        if (payload.start.value <= payload.end.value) {
-          if (today >= payload.start.value.split('-').join('') && today >= payload.end.value.split('-').join('')) {
-            state.temp_write_data.start_date = state.temp_date.start
-            state.temp_write_data.end_date = state.temp_date.end
+      if (start !== undefined && end !== undefined && start !== '' && end !== '') {
+        if (start <= end) {
+          if (today >= start.split('-').join('') && today >= end.split('-').join('')) {
+            state.temp_write_data.start_date = start
+            state.temp_write_data.end_date = end
             state.date_error_message = ''
             state.show_date_error_message = false
             state.error_check_before_post.date = true
@@ -277,12 +277,6 @@ export default {
         state.show_date_error_message = true
         state.error_check_before_post.date = false
       }
-    },
-    resetDate (state) {
-      state.temp_write_data.start_date = ''
-      state.temp_write_data.end_date = ''
-      state.date_error_message = ''
-      state.show_date_error_message = false
     },
     setContentImgUrl (state, payload) {
       let contentImg = {key: 'img'}
