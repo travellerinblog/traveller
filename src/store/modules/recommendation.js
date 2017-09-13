@@ -14,7 +14,7 @@ export default {
       return state.item_img_src
     },
     getConvertedDate (state) {
-      return state.write_date.substring(0, 10).split('-').join('.')
+      return state.write_date.substr(0, 4) + '.' + state.write_date.substr(4, 2) + '.' + state.write_date.substr(6, 2)
     },
     getEllipsisText (state) {
       return state.ellipsis_text

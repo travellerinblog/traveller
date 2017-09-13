@@ -177,7 +177,7 @@
         display: block;
         width: 100%;
         height: 700px;
-        background: rgba(#000, .5);
+        background: rgba(#181818, .5);
       }
     }
     .title{
@@ -268,7 +268,7 @@
               box-sizing: border-box;
               width: 100%;
               height: 100px;
-              border: 1px solid rgba( #000, 0.4);
+              border: 1px solid rgba( #181818, 0.4);
               border-radius: 4px;
               font-size: 18px;
               line-height: 1.8em;
@@ -278,10 +278,10 @@
               height: 30px;
               line-height: 30px;
               padding: 0 10px;
-              border: 1px solid #f4430b;
+              border: 1px solid $color1;
               border-radius: 4px;
               font-size: 16px;
-              background: #f4430b;
+              background: $color1;
               color: #fff;
             }
           }
@@ -324,14 +324,14 @@
                   border-radius: 4px;
                 }
                 .btn-edit{
-                  border: 1px solid rgba(#f4430b, .5);
+                  border: 1px solid rgba($color1, .5);
                   margin: 0 5px;
                 }
                 .btn-delete{
-                  border: 1px solid rgba(#000, .5);
+                  border: 1px solid rgba(#181818, .5);
                 }
                 .btn-save{
-                  border: 1px solid rgba(#f4430b, .5);
+                  border: 1px solid rgba($color1, .5);
                   margin: 0 5px;
                 }
               }
@@ -361,10 +361,10 @@
           height: 30px;
           line-height: 30px;
           padding: 0 10px;
-          border: 1px solid #f4430b;
+          border: 1px solid $color1;
           border-radius: 4px;
           font-size: 16px;
-          color: #f4430b;
+          color: $color1;
           text-decoration: none;
         }
       }
@@ -372,20 +372,19 @@
   }
   @include mobile {
     .content-head{
-      height: 100vh;
       .title-img{
-        height: 100vh;
+        height: 500px;
         img{
           width: auto;
           height: 100%;
         }
         &::after{
-          height: 100vh;
+          height: 500px;
         }
       }
       .title{
         margin: 0 auto;
-        padding-top: 70vh;
+        padding: 320px 0 100px 0;
         h1{
           padding: 0 10px;
         }
@@ -434,20 +433,15 @@
   }
   @include tablet {
     .content-head{
-      height: 100vh;
       .title-img{
-        height: 100vh;
         img{
           width: auto;
           height: 100%;
         }
-        &::after{
-          height: 100vh;
-        }
       }
       .title{
         margin: 0 auto;
-        padding-top: 75vh;
+        padding: 550px 0 100px 0;
         h1{
           padding: 0 15px;
         }

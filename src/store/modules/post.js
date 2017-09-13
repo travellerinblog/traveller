@@ -4,8 +4,8 @@ import axios from 'axios'
 export default {
   state: {
     temp_write_data: {},
-    write_title_value: '제목을 입력하세요',
-    write_tag_value: '태그를 입력하세요',
+    write_title_value: '',
+    write_tag_value: '',
     title_img_url: '',
     write_contents_data: [],
     selected_write_city: [],
@@ -260,17 +260,17 @@ export default {
             state.show_date_error_message = false
             state.error_check_before_post.date = true
           } else {
-            state.date_error_message = '여행 날짜는 오늘 이후가 될 수 없습니다.'
+            state.date_error_message = '* 여행 날짜는 오늘 이후가 될 수 없습니다.'
             state.show_date_error_message = true
             state.error_check_before_post.date = false
           }
         } else {
-          state.date_error_message = '여행 시작날짜는 종료날짜의 이후가 될 수 없습니다.'
+          state.date_error_message = '* 여행 시작날짜는 종료날짜의 이후가 될 수 없습니다.'
           state.show_date_error_message = true
           state.error_check_before_post.date = false
         }
       } else {
-        state.date_error_message = '여행 시작날짜와 종료 날짜를 모두 입력해주세요.'
+        state.date_error_message = '* 여행 시작날짜와 종료 날짜를 모두 입력해주세요.'
         state.show_date_error_message = true
         state.error_check_before_post.date = false
       }

@@ -631,10 +631,6 @@ export default {
         context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === null) {
         context.commit('setAllBlogList', payload)
-      } else if (payload.id === 'tag') {
-        context.commit('setAllBlogList', payload)
-        context.commit('filterTagList', payload)
-        context.commit('makePageNumber', Object.keys(lists).length)
       } else if (payload.id === 'search') {
         context.commit('setAllBlogList', payload)
         context.commit('filterSearchList', payload)

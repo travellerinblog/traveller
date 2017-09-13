@@ -15,7 +15,7 @@
                 img(:src="list.title_img" :alt="list.title" title="이미지에 대한 상세 설명은 하단 내용 참조")
               figcaption
                 strong {{ list.title }}
-                span {{ list.write_date }}
+                span {{ list.write_date.substr(0, 4) + '.' + list.write_date.substr(4, 2) + '.' + list.write_date.substr(6, 2) }}
                 em {{ list.country_kr }} | {{ list.name }} | 조회수 {{ list.view}}
                   i.icon-next
 </template>
@@ -117,7 +117,7 @@
         border-radius: 50%;
         text-align: center;
         font-size: 19px;
-        color: rgb(244,67,11);
+        color: $color1;
         font-weight: bold;
       }
     }
@@ -178,6 +178,9 @@
               height: 30px;
               line-height: 30px;
               font-size: 16px;
+            }
+            b {
+              padding: 0 5px;
             }
             i {
               line-height: 30px;
@@ -241,6 +244,7 @@
                 font-size: 12px;
                 height: 16px;
                 line-height: 16px;
+                margin-right: 5px;
               }
               em {
                 display: inline-block;

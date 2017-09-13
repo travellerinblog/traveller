@@ -3,7 +3,12 @@
     .video.col(v-show="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
-      p.video-content 여행의 새로운 패러다임 
+      .video-content
+        p 
+          strong 여행의 새로운 패러다임 
+          em 당신의 여행은 어땠나요? 저희 트레블로에게 알려주세요
+          button.btn-start(type="button") 시작하기
+            i.icon-next
     .image-carousel.col(v-show="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       visual-carousel.carousel
         visual-carousel-item(v-for="(item, index) in getCarouselItems" :index="index" key="index")
@@ -83,10 +88,48 @@
       }
       .video-content {
         position: absolute;
-        left: 242px;
-        bottom: 214px;
-        font-size: 56px;
-        color: #fff
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 720px;
+        background: rgba(#181818, 0.7);
+        p {
+          position: absolute;
+          left: 10%;
+          bottom: 16%;
+          strong{
+            display: block;
+            font-size: 48px;
+            color: #fff;
+            margin-bottom: 20px;
+          }
+          em{
+            height: 40px;
+            line-height: 40px;
+            display: block;
+            font-size: 22px;
+            color: #fff
+          }
+          .btn-start{
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            font-size: 30px;
+            color: #fff;
+            background: none;
+            border: 0 none;
+            padding: 0;
+            i{
+              margin-left: 20px;
+              &::before{
+                display: inline-block;
+                height: 35px;
+                line-height: 40px;
+                padding-top: 5px;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -112,10 +155,18 @@
       height: 76px;
       font-size: 23px;
       color: #fff;
-      background-color: rgba(10, 9, 8, 0.4);
+      background-color: rgba(#181818, 0.4);
       white-space : nowrap;
 			overflow : hidden;
 			text-overflow : ellipsis;
+    }
+  }
+  @include breakpoint(1200px, 1276px) {
+    .video {
+      video {
+        width: auto;
+        height: 100%;
+      }
     }
   }
 </style>
