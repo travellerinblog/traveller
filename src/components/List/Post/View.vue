@@ -372,20 +372,19 @@
   }
   @include mobile {
     .content-head{
-      height: 100vh;
       .title-img{
-        height: 100vh;
+        height: 500px;
         img{
           width: auto;
           height: 100%;
         }
         &::after{
-          height: 100vh;
+          height: 500px;
         }
       }
       .title{
         margin: 0 auto;
-        padding-top: 70vh;
+        padding: 320px 0 100px 0;
         h1{
           padding: 0 10px;
         }
@@ -434,20 +433,15 @@
   }
   @include tablet {
     .content-head{
-      height: 100vh;
       .title-img{
-        height: 100vh;
         img{
           width: auto;
           height: 100%;
         }
-        &::after{
-          height: 100vh;
-        }
       }
       .title{
         margin: 0 auto;
-        padding-top: 75vh;
+        padding: 550px 0 100px 0;
         h1{
           padding: 0 15px;
         }

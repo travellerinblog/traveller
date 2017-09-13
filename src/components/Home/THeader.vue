@@ -10,11 +10,13 @@
           form#search-form(role="search" v-on:submit.prevent="goTofilterList")
             fieldset 
               legend.a11y-hidden 검색 폼
-              label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 검색어 입력하세요
+              label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 
+                span 검색어 입력하세요
               .search-area(v-show="showSearch")
                 .search-content
-                  input#search-keyword.icon-search(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search" :keydown.enter.prevent="searchBlogList")
-                  router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button") 검색하기
+                  label.icon-search(for="search-keyword") 검색어 입력하세요
+                  input#search-keyword(type="search" aria-label="검색어 입력상자" required placeholder="검색어를 입력하세요" @input="detectEventBinding('name', $event)" :value="search" :keydown.enter.prevent="searchBlogList")
+                  router-link(:to="`/list/search?search=${search}`" @click.native="searchBlogList" tag="button" type="button").btn-search-inside 검색하기
                   button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseSearch") 닫기
                 .search-background(@click="oncloseSearch")
       .log
@@ -165,10 +167,28 @@
     .search-content{
       width: 100%;
       height: 70px;
-      padding: 19px 0;
+      padding-top: 19px;
+      padding-bottom: 19px;
       background: #fff;
       box-sizing: border-box;
       box-shadow: 0 5px 5px rgba(#000, 0.3);
+      label{
+        overflow: hidden;
+        float: left;
+        display: block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 24px;
+        &::before {
+          display: block;
+          width: 32px;
+          height: 28px;
+          margin-top: 4px;
+          line-height: 32px;
+          font-size: 32px;
+        }
+      }
     }
     .search-background{
       height: 80vh;
@@ -181,15 +201,15 @@
       line-height: 32px;
       background: #fff;
       border: 0 none;
-      &::before {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        margin-right: 10px;
-        vertical-align: -5px;
-        font-size: 24px;
-      }
+    }
+    .btn-search-inside{
+      background: #fff;
+      border: 1px solid #f4430b;
+      border-radius: 4px;
+      height: 32px;
+      line-height: 32px;
+      color: #f4430b;
+      font-size: 14px;
     }
     .btn-close {
       float: right;
@@ -223,7 +243,13 @@
     .search-area {
       label {
         margin-left: 10px;
-        margin-right: 10px;
+      }
+      input{
+        margin-left: 10px;
+        width: 43vw;
+      }
+      .btn-search-inside{
+        margin-left: 10px;
       }
       .btn-close {
         margin-right: 10px;
@@ -246,6 +272,12 @@
         margin-left: 15px;
         margin-right: 15px;
       }
+      input{
+        margin-left: 15px;
+      }
+      .btn-search-inside{
+        margin-left: 15px;
+      }
       .btn-close {
         margin-right: 15px;
       }
@@ -265,7 +297,12 @@
     .search-area {
       label {
         margin-left: 20px;
-        margin-right: 20px;
+      }
+      input{
+        margin-left: 20px;
+      }
+      .btn-search-inside{
+        margin-left: 20px;
       }
       .btn-close {
         margin-right: 20px;
@@ -283,7 +320,6 @@
 
   @include breakpoint(0px, 375px) {
     .btn-open-search {
-      background: red;
       span {
         width: 1px;
         height: 1px;
