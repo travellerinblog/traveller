@@ -36,17 +36,17 @@
     methods: {
       prevItem () {
         this.stopAutoplay()
-        this.$store.commit('prevItem')
+        this.$store.dispatch('prevItem')
       },
       nextItem (event) {
         if (event) {
           this.stopAutoplay()
         }
-        this.$store.commit('nextItem')
+        this.$store.dispatch('nextItem')
       },
       gotoItem (n) {
         this.stopAutoplay()
-        this.$store.commit('gotoItem', n)
+        this.$store.dispatch('gotoItem', n)
       },
       stopAutoplay () {
         clearInterval(this.autoplayInterval)
@@ -95,6 +95,7 @@
   
   button[type="button"] {
     padding: 0;
+    cursor: pointer;
   }
   
   .prev::after {
