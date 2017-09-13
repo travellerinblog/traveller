@@ -32,7 +32,7 @@ div
     router-view
   .goto-write
     h2.write-title 당신의 여행 일지를 트래블러스들에게 자랑하는 공간!
-    router-link.write-link(:to="{name: 'Write', params: {id: 'wirte'}}") 여행 일지 쓰기
+    router-link.write-link(:to="{name: 'Write', query: {id: userUid}}") 여행 일지 쓰기
 </template>
 
 <script>
@@ -57,9 +57,10 @@ div
       axios.get(locationApi).then(response => {
         this.$store.dispatch('setCountryAndCity', response.data)
       }).catch(error => console.log(error.message))
+      this.$store.commit('getUserUid')
     },
     computed: {
-      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey'])
+      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey', 'userUid'])
     },
     methods: {
       setAllBlogList () {

@@ -34,6 +34,9 @@
       })
     },
     computed: {
+      listNotFound () {
+        return this.getFilteredList.length === 0
+      },
       ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum'])
     },
     methods: {

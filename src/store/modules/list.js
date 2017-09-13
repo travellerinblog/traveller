@@ -42,7 +42,9 @@ export default {
     view_count: null,
     // 화면 크기에 따라 표시되는 페이지 넘버의 개수를 다르게 하기 위한 값
     min_page_num: null,
-    max_page_num: null
+    max_page_num: null,
+    // 글쓰기를 눌렀을 때 쿼리로 연결 될 user uid
+    user_uid: ''
   },
   getters: {
     // list에 뿌려줄 item들
@@ -127,6 +129,9 @@ export default {
     },
     getViewCount (state) {
       return state.view_count
+    },
+    userUid (state) {
+      return state.user_uid
     }
   },
   mutations: {
@@ -618,6 +623,9 @@ export default {
     // 조회수 변경
     changeViewCount (state, payload) {
       state.view_count = payload + 1
+    },
+    getUserUid (state) {
+      state.user_uid = JSON.parse(localStorage.getItem('user_uid'))
     }
   },
   actions: {

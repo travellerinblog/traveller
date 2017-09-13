@@ -13,7 +13,7 @@
           a(href) 나 여기 왔다 갔다.
         //- router-link(to="/" tag="li" active-class="current-page") 
         //-   a(href) 마이페이지
-      router-link.btn-write(to="/write/user1" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
+      router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
     .nav-background(@click="oncloseModal")
 </template>
 
@@ -22,7 +22,7 @@
   export default {
     computed: {
       ...mapGetters([
-        'showNav', 'userName', 'userStatus'
+        'showNav', 'userName', 'userStatus', 'userUid'
       ])
     },
     methods: {
