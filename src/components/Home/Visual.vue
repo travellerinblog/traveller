@@ -1,5 +1,5 @@
 <template lang="pug">
-  .visual-container
+  .visual-container(:class="{'click-disable': clickDisable}")
     .video.col(v-show="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
@@ -12,7 +12,7 @@
     .image-carousel.col(v-show="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       visual-carousel.carousel
         visual-carousel-item(v-for="(item, index) in getCarouselItems" :index="index" key="index")
-          v-touch(tag="ul" daraggable="true" @swipeleft="nextItem" @swiperight="prevItem" :swipe-options="{ direction: 'horizontal'}").item-container.grid
+          v-touch(tag="ul" daraggable="true" @swipeleft="nextItem('drag')" @swiperight="prevItem('drag')" :swipe-options="{ direction: 'horizontal'}").item-container.grid
             router-link(tag="li" :to="{ name: 'View', params: { id: getCarouselItems[index].key }}" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
               a(href)
                 img(:src="item.title_img" :alt="item.country_kr")
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
   import VisualCarousel from './VisualCarousel.vue'
   import VisualCarouselItem from './VisualCarouselItem.vue'
   export default {
@@ -47,7 +47,7 @@
     },
     computed: {
       ...mapGetters([
-        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems'
+        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems', 'clickDisable'
       ])
     },
     methods: {
@@ -59,9 +59,10 @@
         this.drag_start_point = event.clientX
       },
       dragEnd () {
-        this.drag_start_point > event.clientX ? this.$store.commit('nextItem') : this.$store.commit('prevItem')
+        this.drag_start_point > event.clientX ? this.$store.dispatch('nextItem', 'drag') : this.$store.dispatch('prevItem', 'drag')
       },
-      ...mapMutations(['gotoBlogView', 'prevItem', 'nextItem'])
+      ...mapMutations(['gotoBlogView']),
+      ...mapActions(['prevItem', 'nextItem'])
     }
   }
 </script>
@@ -71,7 +72,10 @@
   .visual-container {
     overflow: hidden;
   }
-  
+  .click-disable {
+    pointer-events: none;
+    cursor: default;
+  }
   @include desktop {
     .video {
       position: relative;

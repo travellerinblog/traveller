@@ -8,7 +8,9 @@ export default {
     carousel_items: [],
     active_index: 0,
     visible: false,
-    slide: ''
+    slide: '',
+    click_disable: false,
+    drag_disable: false
   },
   getters: {
     // mobile/tablet/desktop 값을 반환
@@ -42,6 +44,9 @@ export default {
     },
     slide (state) {
       return state.slide
+    },
+    clickDisable (state) {
+      return state.click_disable
     }
   },
   mutations: {
@@ -49,11 +54,17 @@ export default {
       state.screen_size = payload.screenSize
       state.screen_width = payload.screenWidth
     },
-    prevItem (state) {
+    prevItem (state, payload) {
+      if (payload === 'drag') {
+        state.drag_disable = true
+      }
       state.active_index === 0 ? state.active_index = 3 : state.active_index--
       state.slide = 'slideright'
     },
-    nextItem (state) {
+    nextItem (state, payload) {
+      if (payload === 'drag') {
+        state.drag_disable = true
+      }
       state.active_index === 3 ? state.active_index = 0 : state.active_index++
       state.slide = 'slideleft'
     },
@@ -69,6 +80,12 @@ export default {
     },
     isVisible (state, payload) {
       state.visible = payload === state.active_index
+    },
+    changeClickStatus (state) {
+      state.click_disable = !state.click_disable
+    },
+    changeDragStatus (state) {
+      state.drag_disable = false
     },
     setCarouselItem (state, payload) {
       state.carousel_items = []
@@ -102,6 +119,43 @@ export default {
       axios.get(api).then(response => {
         context.commit('setCarouselItem', response.data)
       }).catch(error => console.log(error.message))
+    },
+    nextItem (context, payload) {
+      switch (payload) {
+        case 'drag':
+          if (context.state.drag_disable === true) {
+            return false
+          }
+          context.commit('nextItem', payload)
+          setTimeout(() => { context.commit('changeDragStatus') }, 1500)
+          break
+        default:
+          context.commit('changeClickStatus')
+          context.commit('nextItem')
+          setTimeout(() => { context.commit('changeClickStatus') }, 1300)
+          break
+      }
+    },
+    prevItem (context, payload) {
+      switch (payload) {
+        case 'drag':
+          if (context.state.drag_disable === true) {
+            return false
+          }
+          context.commit('prevItem', payload)
+          setTimeout(() => { context.commit('changeDragStatus') }, 1500)
+          break
+        default:
+          context.commit('changeClickStatus')
+          context.commit('prevItem')
+          setTimeout(() => { context.commit('changeClickStatus') }, 1300)
+          break
+      }
+    },
+    gotoItem (context, payload) {
+      context.commit('changeClickStatus')
+      context.commit('gotoItem', payload)
+      setTimeout(() => { context.commit('changeClickStatus') }, 1000)
     }
   }
 }
