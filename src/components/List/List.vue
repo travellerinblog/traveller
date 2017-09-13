@@ -1,12 +1,14 @@
 <template lang="pug">
 div
+
   .list-container
     h1.list-title 당신의 다음 목적지는 어디인가요?
     ul.list-filter
       li.country-and-city
         a.selected-country(href @click.prevent="toggleFilter('country')" :class="{'default-filter-msg': selectedCountryFilter === '보고싶은 나라를 선택하세요.'}") {{ selectedCountryFilter }}
           i.icon-down
-        div.filter-container(v-show="showCountry")  
+        div.filter-container(v-show="showCountry")
+          .background-country(@click="toggleFilter('country')")
           ul.country-and-city-filter
             router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setAllBlogList")
               a(href) 나라전체
@@ -20,11 +22,13 @@ div
       li.new-and-popular(:class="{'filter-open': showFilter === true}")
         a.selected-filter(href @click.prevent="toggleFilter('filter')") {{ selectedFilter }}
           i.icon-down
-        ul.new-and-popular-filter(v-show="showFilter")
-          router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
-            a(href) 최신순
-          router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li" @click.native="popularListFilter")
-            a(href) 인기순
+        .new-and-popular-filter(v-show="showFilter")
+          .background-country(@click="toggleFilter('filter')")
+          ul
+            router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
+              a(href) 최신순
+            router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li" @click.native="popularListFilter")
+              a(href) 인기순
     router-view
   .goto-write
     h2.write-title 당신의 여행 일지를 트래블러스들에게 자랑하는 공간!
@@ -84,6 +88,12 @@ export default {
 a {
   text-decoration: none;
   color: inherit;
+}
+.background-country {
+  position: absolute;                                                                                                                         
+  width: 100vw;
+  height: 100vh;
+  background : red;
 }
 .list-container {
   @extend %maxwidth;
