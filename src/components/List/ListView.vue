@@ -33,11 +33,8 @@
         this.makePageNumber()
       })
     },
-    ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum'])
-  },
-  methods: {
-    makePageNumber () {
-      this.$store.commit('makePageNumber', this.getFilteredList.length)
+    computed: {
+      ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum'])
     },
     methods: {
       makePageNumber () {

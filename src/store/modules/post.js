@@ -131,6 +131,9 @@ export default {
       state.temp_write_data.title_img = payload.url
       state.temp_write_data.title_img_name = payload.name
     },
+    clearFileValue () {
+      event.target.value = null
+    },
     clearInput (state, payload) {
       if (payload.type === 'title') {
         state.write_title_value = payload.value === '제목을 입력하세요' ? '' : payload.value

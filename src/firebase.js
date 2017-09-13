@@ -11,7 +11,6 @@ var config = {
 
 firebase.initializeApp(config)
 var googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-
 export default {
   database: firebase.database(),
   storage: firebase.storage(),

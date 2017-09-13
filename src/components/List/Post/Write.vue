@@ -16,7 +16,7 @@
           fieldset.title-image-form
             legend.a11y-hidden 대표이미지 등록 폼
             label(for="title-image-input") 대표이미지를 등록하세요
-            input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
+            input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')" @click="clearFileValue")
           span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
         .title-image-container
           img(:src="wirteTitleImgUrl")
@@ -56,7 +56,7 @@
               legend.a11y-hidden 이미지 택스트 입력 폼
               .contents-image
                 label(for="contents-image") 이미지를 추가하세요
-                input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+                input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')" @click="clearFileValue")
               .contents-text
                 label(for="contents-text") 텍스트를 추가하세요
                 button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
@@ -91,7 +91,7 @@
       ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
     },
     methods: {
-      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent']),
+      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'resetDate', 'setContentsText', 'addContentsText', 'deleteContent', 'clearFileValue']),
       ...mapActions(['setListsData']),
       clearInput (type) {
         let payload = { 'value': event.target.value, 'type': type }

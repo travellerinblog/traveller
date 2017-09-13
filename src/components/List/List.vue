@@ -8,8 +8,8 @@ div
         a.selected-country(href @click.prevent="toggleFilter('country')" :class="{'default-filter-msg': selectedCountryFilter === '보고싶은 나라를 선택하세요.'}") {{ selectedCountryFilter }}
           i.icon-down
         div.filter-container(v-show="showCountry")
-          .background-country(@click="toggleFilter('country')")
-          ul.country-and-city-filter
+          .background-selector(@click="toggleFilter('country')")
+          ul.country-and-city-filter(tabindex="0")
             router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setAllBlogList")
               a(href) 나라전체
             li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
@@ -23,7 +23,7 @@ div
         a.selected-filter(href @click.prevent="toggleFilter('filter')") {{ selectedFilter }}
           i.icon-down
         .new-and-popular-filter(v-show="showFilter")
-          .background-country(@click="toggleFilter('filter')")
+          .background-selector(@click="toggleFilter('filter')")
           ul
             router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
               a(href) 최신순
@@ -91,7 +91,13 @@ div
     text-decoration: none;
     color: inherit;
   }
-  
+  .background-selector {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vw;
+  }
   .list-container {
     @extend %maxwidth;
     .list-title {
@@ -101,13 +107,13 @@ div
   
   .list-filter {
     @include clearfix;
+    position: relative;
     .icon-down {
       position: relative;
       top: 3px;
       float: right;
       font-size: 18px;
     }
-    position: relative;
     .country-and-city {
       position: relative;
       .selected-country {
@@ -141,6 +147,14 @@ div
       color: rgba(10, 9, 8, 0.7);
       .selected-filter {
         font-weight: bold;
+      }
+      .new-and-popular-filter {
+        position: absolute;
+        z-index: 50;
+        width: 100%;
+        ul {
+          position: absolute;
+        }
       }
     }
   }
