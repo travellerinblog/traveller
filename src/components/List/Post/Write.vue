@@ -106,7 +106,7 @@
         }
       },
       imageUpload (type) {
-        let payload = {'image': event.target.files[0], 'type': type, 'id': this.$route.params.id}
+        let payload = {'image': event.target.files[0], 'type': type, 'id': this.$route.query.id}
         this.$store.dispatch('setImageToStorage', payload)
       },
       setSelectedItem () {
@@ -118,7 +118,7 @@
         this.$store.commit('setDate', payload)
       },
       saveWriteData () {
-        let payload = { 'id': this.$route.params.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
+        let payload = { 'id': this.$route.query.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
         this.$store.dispatch('saveWriteData', payload)
       }
     }

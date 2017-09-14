@@ -49,7 +49,7 @@
     },
     computed: {
       ...mapGetters([
-        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems', 'clickDisable', 'userStatus'
+        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems', 'clickDisable', 'userStatus', 'userUid'
       ])
     },
     methods: {

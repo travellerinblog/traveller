@@ -126,6 +126,9 @@ export default {
     signUpAndSignIN (context, payload) {
       let userInfo = {}
       let provider = payload.provider === 'google' ? firebase.googleProvider : firebase.facebookProvider
+      axios.get(userApi).then(response => {
+        context.commit('getUsersData', response.data)
+      })
       firebase.auth().signInWithPopup(provider).then(result => {
         let user = result.user
         userInfo.id = user.email
@@ -140,8 +143,8 @@ export default {
               axios.post(userApi, userInfo).then(result => {
                 window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
                 axios.get(userApi).then(response => {
+                  context.commit('closeContainer')
                   context.commit('getUsersData', response.data)
-                  context.commit('showSignModal')
                   context.commit('changeUsetStatus', 'in')
                 })
               })
@@ -150,7 +153,7 @@ export default {
           case 'in':
             if (context.state.show_sign_in_message === false) {
               window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
-              context.commit('showSignModal')
+              context.commit('closeContainer')
               context.commit('changeUsetStatus', 'in')
             }
             break
@@ -159,11 +162,11 @@ export default {
         console.log(error.message)
       })
     },
-    getUsersData ({commit}) {
-      axios.get(userApi).then(response => {
-        commit('getUsersData', response.data)
-      })
-    },
+    // getUsersData ({commit}) {
+    //   axios.get(userApi).then(response => {
+    //     commit('getUsersData', response.data)
+    //   })
+    // },
     checkUserExist ({commit}) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
       if (user) {

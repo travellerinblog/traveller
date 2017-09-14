@@ -9,9 +9,6 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex'
 export default {
-  mounted () {
-    this.$store.dispatch('getUsersData')
-  },
   computed: {
     ...mapGetters(['SignUpMessage', 'showSignUpMessage'])
   },

@@ -404,7 +404,7 @@ export default {
         axios.get(userApi).then(response => {
           // user값을 저장하는 통신
           for (let prop in response.data) {
-            if (prop === payload.id) {
+            if (response.data[prop].uid === payload.id) {
               context.commit('setRemainWriteInfo', response.data[prop])
             }
           }
