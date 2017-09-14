@@ -31,6 +31,7 @@
   }
   
   footer {
+    z-index: 0;
     background: #fff;
     border-top: rgba(#181818, 0.2) 1px solid;
   }

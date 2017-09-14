@@ -11,12 +11,12 @@
                 i.icon-next
       p.listNotFound(v-show="listNotFound") 선택한 지역에 대한 글이 존재하지 않습니다.
     .page
-      a.first-page.page-btn(href @click.prevent="changePagePosition('first')") 처음페이지
-      a.last-page.page-btn(href @click.prevent="changePagePosition('last')") 마지막페이지
-      a.prev-page.page-btn(href @click.prevent="changePagePosition('prev')") 이전
-      a.next-page.page-btn(href @click.prevent="changePagePosition('next')") 다음
+      a.first-page.page-btn(href @click.prevent="changePagePosition('first')" v-show="activePage !== 0") 처음페이지
+      a.last-page.page-btn(href @click.prevent="changePagePosition('last')" v-show="activePage !== pageAmount-1") 마지막페이지
+      a.prev-page.page-btn(href @click.prevent="changePagePosition('prev')" v-show="activePage !== 0") 이전
+      a.next-page.page-btn(href @click.prevent="changePagePosition('next')" v-show="activePage !== pageAmount-1") 다음
       ul.page-number
-        li(v-for="(page, index) in pageAmount" :class="{'active-page': activePage === index}") 
+        li(v-for="(page, index) in pageAmount" :class="{'active-page': activePage === index}" v-if="minPageNum <= index && index < maxPageNum") 
           a(href @click.prevent="changePageNumber(index + 1)") {{ page }}     
 </template>
 
@@ -33,11 +33,11 @@
         this.makePageNumber()
       })
     },
-    computed: {
-      listNotFound () {
-        return this.getFilteredList.length === 0
-      },
-      ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage'])
+    ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum'])
+  },
+  methods: {
+    makePageNumber () {
+      this.$store.commit('makePageNumber', this.getFilteredList.length)
     },
     methods: {
       makePageNumber () {
@@ -132,7 +132,8 @@
       font-family: "travelericon";
       color: rgba(#181818, 0.4);
     }
-    .page-number {
+    .page-number{
+      @include clearfix;
       order: 3;
       li {
         float: left;

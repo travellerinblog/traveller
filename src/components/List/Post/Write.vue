@@ -1,78 +1,108 @@
 <template lang="pug">
-  .write
-      .write-title-container
-        .title-container
-        form.title-text-container
-          fieldset.title
-            legend.a11y-hidden 제목 입력 폼
-            label.a11y-hidden(for="write-title") 제목을 입력하세요.
-            input#write-title(:value="writeTitleValue" @click="clearInput('title')" @input="setTitleValue" @blur="inputValueCheck('title')" placeholder="제목을 입력하세요.")
-            span.title-error(v-show="showTitleErrorMessage") {{ titleErrorMessage }}
-          fieldset.tag
-            legend.a11y-hidden 태그 입력 폼
-            label.a11y-hidden(for="write-tag") 태그를 입력하세요.
-            input#write-tag(:value="writeTagValue" @click="clearInput('tag')" @input="setTagValue" @blur="inputValueCheck('tag')" placeholder="태그를 입력하세요")
-            span.tag-error(v-show="showTagErrorMessage") {{ tagErrorMessage }}
-          fieldset.title-image-form
-            legend.a11y-hidden 대표이미지 등록 폼
-            label(for="title-image-input") 대표이미지를 등록하세요
-            input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
-          span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
-        .title-image-container
-          img(:src="wirteTitleImgUrl")
-          .title-background(v-show="wirteTitleImgUrl")
-      .write-contents-container
-        .warp
-          form
-            .form-warp
-              .country-and-city
-                p.selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity('country')" :class="{'default-filter-msg': selectedWriteCity === '여행지를 선택하세요.'}") {{ selectedWriteCity }}
-                  i.icon-down
-                .select-container(v-show="showWriteCountry")
-                  .background-select-container(@click="toggleWriteCountryCity('country')")
-                  ul.country-and-city-select
-                    li.country(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
-                      a(href @click.prevent="toggleWriteCountryCity(country.countryKey)") {{country.country}} 
-                      div.city-filter(v-if="selectedWriteCountryKey===country.countryKey" v-show="showWriteCity")
-                        ul
-                          li.city(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
-                            input.a11y-hidden(type="checkbox" :id="citygroup.city" @change.prevent="setSelectedItem")
-                            label(:for="citygroup.city") {{ citygroup.city }}
-                        button.city-save-btn(type="submit" @click.prevent="selectComplete(getCountryAndCityName)") 저장
-              
-              fieldset.date-setting
-                legend.a11y-hidden 여행 날짜 입력 폼
-                .start-date(role="group")
-                  label(for="start-date") 여행 시작 날짜 : 
-                  input#start-date(type="date" @change="setDate('start')")
-                .end-date(role="group")
-                  label(for="end-date") 여행 종료 날짜 : 
-                  input#end-date(type="date" @change="setDate('end')")
-                //- .date-btn
-                  button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
-                  button.date-save-btn(type="reset" @click="resetDate") 취소
-                span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
-            fieldset.input-contents
-              legend.a11y-hidden 이미지 택스트 입력 폼
-              .contents-image
-                label(for="contents-image") 이미지를 추가하세요
-                input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
-              .contents-text
-                label(for="contents-text") 텍스트를 추가하세요
-                button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
-          span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
-          ul.write-contents-view
-            li.contents-view-item(v-for="(content, index) in writeContentsData")
-              textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
-              span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
-              img(v-if="content.key === 'img'" :src="content.value")
-              button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
-          form.write-button
-            fieldset
-              legend.a11y-hidden 글 저장 및 취소 폼
-              button(type="submit" @click.prevent="saveWriteData") 저장
-              span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
-              router-link.save-btn(to="/" tag="button") 취소
+  form.write
+    .write-title-container
+      .title-container
+      .title-text-container
+        fieldset.title(:class="{'has-img': wirteTitleImgUrl}")
+          legend.a11y-hidden 제목 입력 폼
+          label.a11y-hidden(for="write-title") 제목을 입력하세요.
+          input#write-title(:value="writeTitleValue" @click="clearInput('title')" @input="setTitleValue" @blur="inputValueCheck('title')" placeholder="제목을 입력하세요.")
+          span.title-error(v-show="showTitleErrorMessage") {{ titleErrorMessage }}
+        fieldset.tag(:class="{'has-img': wirteTitleImgUrl}")
+          legend.a11y-hidden 태그 입력 폼
+          label.a11y-hidden(for="write-tag") 태그를 입력하세요.
+          input#write-tag(:value="writeTagValue" @click="clearInput('tag')" @input="setTagValue" @blur="inputValueCheck('tag')" placeholder="태그를 입력하세요")
+          span.tag-error(v-show="showTagErrorMessage") {{ tagErrorMessage }}
+        fieldset.title-image-form
+          legend.a11y-hidden 대표이미지 등록 폼
+          label(for="title-image-input" :class="{'has-img': wirteTitleImgUrl}")
+            i
+              svg.feather.feather-image(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
+                rect(x='3', y='3', width='18', height='18', rx='2', ry='2')
+                circle(cx='8.5', cy='8.5', r='1.5')
+                polyline(points='21 15 16 10 5 21')
+            | 대표이미지를 등록하세요
+          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
+        span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
+      .title-image-container
+        img(:src="wirteTitleImgUrl")
+        .title-background(v-show="wirteTitleImgUrl")
+    .write-contents-container
+      .warp
+        .form-warp
+          .country-and-city
+            p.selected-country(tabindex="0" @click.prevent="toggleWriteCountryCity('country')" :class="{'default-filter-msg': selectedWriteCity === '여행지를 선택하세요.'}") {{ selectedWriteCity }}
+              i.icon-down
+            .select-container(v-show="showWriteCountry")
+              .background-select-container(@click="toggleWriteCountryCity('country')")
+              ul.country-and-city-select
+                li.country(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
+                  a(href @click.prevent="toggleWriteCountryCity(country.countryKey)") {{country.country}} 
+                  div.city-filter(v-if="selectedWriteCountryKey===country.countryKey" v-show="showWriteCity")
+                    ul
+                      li.city(v-for="(citygroup, index) in country.citygroup" :key="'city' + index")
+                        input.a11y-hidden(type="checkbox" :id="citygroup.city" @change.prevent="setSelectedItem")
+                        label(:for="citygroup.city") {{ citygroup.city }}
+                    button.city-save-btn(type="submit" @click.prevent="selectComplete(getCountryAndCityName)") 저장
+          
+          fieldset.date-setting
+            legend.a11y-hidden 여행 날짜 입력 폼
+            .start-date(role="group")
+              label(for="start-date")
+                i
+                  svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar")
+                    rect(x="3" y="4" width="18" height="18" rx="2" ry="2")
+                    line(x1="16" y1="2" x2="16" y2="6")
+                    line(x1="8" y1="2" x2="8" y2="6")
+                    line(x1="3" y1="10" x2="21" y2="10")
+                | 여행 시작 날짜 : 
+              input#start-date(type="date" @change="setDate('start')")
+            .end-date(role="group")
+              label(for="end-date")
+                i
+                  svg(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar")
+                    rect(x="3" y="4" width="18" height="18" rx="2" ry="2")
+                    line(x1="16" y1="2" x2="16" y2="6")
+                    line(x1="8" y1="2" x2="8" y2="6")
+                    line(x1="3" y1="10" x2="21" y2="10")
+                | 여행 종료 날짜 : 
+              input#end-date(type="date" @change="setDate('end')")
+            //- .date-btn
+              button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
+              button.date-save-btn(type="reset" @click="resetDate") 취소
+            span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
+        ul.write-contents-view
+          li.contents-view-item(v-for="(content, index) in writeContentsData")
+            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
+            span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
+            img(v-if="content.key === 'img'" :src="content.value")
+            button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
+        fieldset.input-contents
+          legend.a11y-hidden 이미지 택스트 입력 폼
+          .contents-image
+            label(for="contents-image") 
+              i
+                svg.feather.feather-image(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
+                  rect(x='3', y='3', width='18', height='18', rx='2', ry='2')
+                  circle(cx='8.5', cy='8.5', r='1.5')
+                  polyline(points='21 15 16 10 5 21')
+              | 이미지를 추가하세요
+            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+          .contents-text
+            label(for="contents-text") 
+              i
+                svg(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
+                  polygon(points='14 2 18 6 7 17 3 17 3 13 14 2')
+                  line(x1='3', y1='22', x2='21', y2='22')
+              | 텍스트를 추가하세요
+            button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
+        span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
+        .write-button
+          fieldset
+            legend.a11y-hidden 글 저장 및 취소 폼
+            button(type="submit" @click.prevent="saveWriteData") 저장
+            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+            router-link.save-btn(to="/" tag="button") 취소
 </template>
 
 <script>
@@ -136,7 +166,15 @@
   * {
     box-sizing: border-box;
   }
-  
+  i{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    svg{
+      width: 100%;
+      height: 100%;
+    }
+  }
   a {
     text-decoration: none;
     color: inherit;
@@ -157,6 +195,20 @@
     font-weight: normal;
   }
   
+  [class $="error"] {
+    position: fixed;
+    z-index: 10;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    width: 100vw;
+    height: 50px;
+    line-height: 50px;
+    background: $color1;
+    color: #fff;
+    font-size: 20px;
+    display: block;
+  }
   .write-title-container {
     position: relative;
     width: 100%;
@@ -174,20 +226,6 @@
         width: auto;
         background: none;
       }
-      [class $="error"] {
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 100;
-        width: 100vw;
-        height: 50px;
-        line-height: 50px;
-        display: block;
-        text-align: center;
-        color: #fff;
-        font-size: 20px;
-        background: $color1;
-      }
       .title {
         position: absolute;
         left: 0;
@@ -200,22 +238,37 @@
         bottom: -450px;
         font-size: 20px;
       }
+      .title.has-img, .tag.has-img{
+        input{
+          color: #fff;
+        }
+      }
       .title-image-form {
         position: absolute;
         right: 0;
         bottom: -450px;
-        label {
-          display: inline-block;
-          font-size: 20px;
+        label{
+          display: block;
+          height: 40px;
+          line-height: 40px;
+          padding: 0 10px;
+          background: rgba(#fff, 0.3);
+          border-radius: 35px;
+          color: #b0b0b0;
+          border: 1px solid #b0b0b0;
+          font-size: 16px;
+          i{
+            display: block;
+            float: left;
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+            margin-top: 7px;
+          }
         }
-      }
-      .title-image-error {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translateY(-50%);
-        transform: translateX(-50%);
-        font-size: 25px;
+        label.has-img{
+          color: #fff;
+        }
       }
     }
   }
@@ -355,6 +408,8 @@
       font-size: 15px;
       height: 35px;
       input {
+        float: left;
+        display: block;
         height: 35px;
         line-height: 35px;
         font-size: 16px;
@@ -363,10 +418,20 @@
         color: rgba( #181818, 0.4);
       }
       label {
-        font-weight: bold;
+        float: left;
+        display: block;
         height: 35px;
         line-height: 35px;
+        margin-right: 5px;
         color: rgba( #181818, 0.4);
+        font-weight: bold;
+        i{
+          display: block;
+          float: left;
+          width: 15px;
+          height: 15px;
+          margin: 2px 5px 19px 0;
+        }
       }
       .start-date {
         float: left;
@@ -440,7 +505,7 @@
       transform: scale(1.5, 1);
     }
     .text-error-message {
-      font-size: 20px;
+      font-size: 16px;
     }
   }
   
@@ -450,28 +515,43 @@
     right: 30px;
     bottom: 20%;
     font-size: 20px;
-    label{
-      color: #b0b0b0;
-    }
     .contents-image{
-      height: 30px;
-      text-align: center;
-      line-height: 30px;
+      margin-bottom: 10px;
+    }
+    label{
+      display: block;
+      height: 40px;
+      line-height: 40px;
+      padding: 0 10px;
+      background: #fff;
+      border-radius: 35px;
+      color: #b0b0b0;
+      border: 1px solid #b0b0b0;
+      font-size: 16px;
+      i{
+        display: block;
+        float: left;
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+        margin-top: 7px;
+      }
     }
   }
   
   .image-progress {
-    z-index: 5;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    transform: translateY(-50%);
-    height: 30px;
-    line-height: 30px;
-    background: rgba(0, 0, 0, 0.5);
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    text-align: center;
     color: #fff;
     font-size: 20px;
+    background: $color1;
   }
   
   .write-button {
@@ -487,6 +567,20 @@
       background: #b0b0b0;
       border: 1px solid #b0b0b0;
     }
+    .error-message{
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+      width: 100vw;
+      height: 50px;
+      line-height: 50px;
+      display: block;
+      text-align: center;
+      color: #fff;
+      font-size: 20px;
+      background: $color1;
+    }
   }
   
   .selected-country,
@@ -494,9 +588,403 @@
     cursor: pointer;
   }
   
-  // @include mobile {
-  // }
+  @include mobile {
+    .write-title-container {
+      height: 300px;
+      .title-text-container {
+        .title {
+          left: 10px;
+          bottom: -200px;
+          font-size: 56px;
+          font-size: 24px;
+        }
+        .tag {
+          left: 10px;
+          bottom: -230px;
+          font-size: 18px;
+        }
+        .title-image-form {
+          left: 10px;
+          bottom: -280px;
+          label{
+            width: 250px;
+          }
+        }
+      }
+    }
+    .title-image-container {
+      height: 300px;
+      img{
+        width: auto;
+        height: 200%;
+        padding: 0;
+      }
+      .title-background{
+        height: 300px;
+      }
+    }
+      
+    .write-contents-container {
+      .warp{
+        padding: 10px;
+      }
+      .country-and-city {
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .select-container {
+        overflow: hidden;
+        width: 100%;
+      }
+      .selected-country {
+        width: 100%;
+        padding: 0 10px;
+      }
+      .country-and-city-select {
+        width: 100%;
+        height: 200px;
+        .country {
+          width: auto;
+          padding: 0 10px;
+        }
+        .city-filter {
+          width: 100%;
+          ul{
+            @include clearfix;
+          }
+        }
+      }
+      .date-setting {
+        float: none;
+        input {
+          float: left;
+          display: block;
+        }
+        label {
+          float: left;
+          display: block;
+          i{
+            display: none;
+          }
+        }
+        .start-date {
+          @include clearfix;
+          float: none;
+          padding: 0 10px;
+        }
+        .end-date {
+          @include clearfix;
+          float: none;
+          padding: 0 10px;
+          margin: 10px 0 0 0;
+        }
+        .date-btn {
+          float: right;
+          margin: 3px 0 0 0;
+          button {
+            margin: 0 5px;
+            padding: 0 10px;
+            height: 35px;
+            line-height: 35px;
+          }
+        }
+      }
+    }
+      
+    .write-contents-view {
+      margin-top: 20px;
+      textarea {
+        padding: 10px;
+      }
+      img {
+        margin: 15px 0 0 0;
+        width: 100%;
+      }
+    }
+      
+    .input-contents {
+      position:inherit;
+      z-index: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin-left: 0;
+      font-size: 20px;
+      text-align: center;
+      label{
+        width: 100px;
+        overflow: hidden;
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 10px;
+        i{
+          display: inline-block;
+          float: none;
+          width: 24px;
+          height: 24px;
+          margin-right: 0;
+          margin-top: 7px;
+        }
+      }
+      .contents-image{
+        display: inline-block;
+        margin-bottom: 0;
+        label{
+          border-radius: 35px 0 0 35px;
+          border-right: 0 none;
+        }
+      }
+      .contents-text{
+        display: inline-block;
+        label{
+          border-radius: 0 35px 35px 0;
+        }
+      }
+    }
+    .image-progress {
+      position: fixed;
+      z-index: 10;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      width: 100vw;
+      height: 50px;
+      line-height: 50px;
+      background: $color1;
+      color: #fff;
+      font-size: 20px;
+    }
+      
+    .write-button {
+      text-align: center;
+      margin: 20px 0;
+      button {
+        height: 40px;
+        line-height: 40px;
+        padding: 0 40px;
+      }
+      .save-btn{
+        margin-left: 20px;
+        background: #b0b0b0;
+        border: 1px solid #b0b0b0;
+      }
+      .error-message{
+        position: fixed;
+        z-index: 10;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        width: 100vw;
+        height: 50px;
+        line-height: 50px;
+        background: $color1;
+        color: #fff;
+        font-size: 20px;
+      }
+    }
+
+  }
   
+  @include tablet {
+    .write-title-container {
+      height: 300px;
+      .title-text-container {
+        .title {
+          left: 10px;
+          bottom: -200px;
+          font-size: 56px;
+          font-size: 24px;
+        }
+        .tag {
+          left: 10px;
+          bottom: -230px;
+          font-size: 18px;
+        }
+        .title-image-form {
+          left: 10px;
+          bottom: -280px;
+          label{
+            width: 250px;
+          }
+        }
+      }
+    }
+    .title-image-container {
+      height: 300px;
+      img{
+        width: auto;
+        height: 200%;
+        padding: 0;
+      }
+      .title-background{
+        height: 300px;
+      }
+    }
+      
+    .write-contents-container {
+      .warp{
+        padding: 10px;
+      }
+      .country-and-city {
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .select-container {
+        overflow: hidden;
+        width: 100%;
+      }
+      .selected-country {
+        width: 100%;
+        padding: 0 10px;
+      }
+      .country-and-city-select {
+        width: 100%;
+        height: 200px;
+        .country {
+          width: auto;
+          padding: 0 10px;
+        }
+        .city-filter {
+          width: 100%;
+          ul{
+            @include clearfix;
+          }
+        }
+      }
+      .date-setting {
+        float: none;
+        input {
+          float: left;
+          display: block;
+        }
+        label {
+          float: left;
+          display: block;
+          i{
+            display: none;
+          }
+        }
+        .start-date {
+          @include clearfix;
+          float: none;
+          padding: 0 10px;
+        }
+        .end-date {
+          @include clearfix;
+          float: none;
+          padding: 0 10px;
+          margin: 10px 0 0 0;
+        }
+        .date-btn {
+          float: right;
+          margin: 3px 0 0 0;
+          button {
+            margin: 0 5px;
+            padding: 0 10px;
+            height: 35px;
+            line-height: 35px;
+          }
+        }
+      }
+    }
+      
+    .write-contents-view {
+      margin-top: 20px;
+      textarea {
+        padding: 10px;
+      }
+      img {
+        margin: 15px 0 0 0;
+        width: 100%;
+      }
+    }
+      
+    .input-contents {
+      position:inherit;
+      z-index: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin-left: 0;
+      font-size: 20px;
+      text-align: center;
+      label{
+        width: 100px;
+        overflow: hidden;
+        display: inline-block;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 10px;
+        i{
+          display: inline-block;
+          float: none;
+          width: 24px;
+          height: 24px;
+          margin-right: 0;
+          margin-top: 7px;
+        }
+      }
+      .contents-image{
+        display: inline-block;
+        margin-bottom: 0;
+        label{
+          border-radius: 35px 0 0 35px;
+          border-right: 0 none;
+        }
+      }
+      .contents-text{
+        display: inline-block;
+        label{
+          border-radius: 0 35px 35px 0;
+        }
+      }
+    }
+    .image-progress {
+      position: fixed;
+      z-index: 10;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      width: 100vw;
+      height: 50px;
+      line-height: 50px;
+      background: $color1;
+      color: #fff;
+      font-size: 20px;
+    }
+      
+    .write-button {
+      text-align: center;
+      margin: 20px 0;
+      button {
+        height: 40px;
+        line-height: 40px;
+        padding: 0 40px;
+      }
+      .save-btn{
+        margin-left: 20px;
+        background: #b0b0b0;
+        border: 1px solid #b0b0b0;
+      }
+      .error-message{
+        position: fixed;
+        z-index: 10;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        width: 100vw;
+        height: 50px;
+        line-height: 50px;
+        background: $color1;
+        color: #fff;
+        font-size: 20px;
+      }
+    }
+    
+  }
   // @include tablet {
   // }
   

@@ -39,7 +39,10 @@ export default {
     // 블로그 상세페이지 태그
     blog_view_item_tag: [],
     // 조회수 기본 값
-    view_count: null
+    view_count: null,
+    // 화면 크기에 따라 표시되는 페이지 넘버의 개수를 다르게 하기 위한 값
+    min_page_num: null,
+    max_page_num: null
   },
   getters: {
     // list에 뿌려줄 item들
@@ -76,6 +79,12 @@ export default {
     // 화면 표시해줄 마지막 아이템 (v-for에서 사용)
     endShowItem (state) {
       return state.active_page * state.show_amount
+    },
+    minPageNum (state) {
+      return state.min_page_num
+    },
+    maxPageNum (state) {
+      return state.max_page_num
     },
     // 페이지 넘버링 관련
     pageAmount (state) {
@@ -124,29 +133,30 @@ export default {
     makePageNumber (state, payload) {
       // 화면 크기에 따라 표시하는 아이템 수와 페이지 수를 설정.
       let width = document.documentElement.clientWidth
+      state.active_page = 1
       if (width < 768) {
         state.show_amount = 4
         state.page_amount = Math.ceil(payload / 4)
+        state.min_page_num = 0
+        state.max_page_num = 3
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
-        } else if (state.active_page === 0) {
-          state.active_page = 1
         }
       } else if (width >= 768 && width < 1200) {
         state.show_amount = 8
         state.page_amount = Math.ceil(payload / 8)
+        state.min_page_num = 0
+        state.max_page_num = 5
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
-        } else if (state.active_page === 0) {
-          state.active_page = 1
         }
       } else {
         state.show_amount = 12
         state.page_amount = Math.ceil(payload / 12)
+        state.min_page_num = 0
+        state.max_page_num = 10
         if (state.active_page > state.page_amount) {
           state.active_page = state.page_amount
-        } else if (state.active_page === 0) {
-          state.active_page = 1
         }
       }
     },
@@ -156,18 +166,91 @@ export default {
     },
     changePagePosition (state, payload) {
       // 페이지 버튼을 눌렀을 때 active_page의 변경.
+      let width = document.documentElement.clientWidth
       switch (payload) {
         case 'first':
           state.active_page = 1
+          if (width < 768) {
+            state.min_page_num = 0
+            state.max_page_num = 3
+          } else if (width >= 768 && width < 1200) {
+            state.min_page_num = 0
+            state.max_page_num = 5
+          } else {
+            state.min_page_num = 0
+            state.max_page_num = 10
+          }
           break
         case 'last':
           state.active_page = state.page_amount
+          let active = state.active_page
+          if (width < 768) {
+            if (active % 3 === 0) {
+              state.min_page_num = active - 3
+              state.max_page_num = active
+            } else {
+              state.min_page_num = Math.floor((active / 3)) * 3
+              state.max_page_num = state.min_page_num + 3
+            }
+          } else if (width >= 768 && width < 1200) {
+            if (active % 5 === 0) {
+              state.min_page_num = active - 5
+              state.max_page_num = active
+            } else {
+              state.min_page_num = Math.floor((active / 5)) * 5
+              state.max_page_num = state.min_page_num + 5
+            }
+          } else {
+            if (active % 10 === 0) {
+              state.min_page_num = active - 10
+              state.max_page_num = active
+            } else {
+              state.min_page_num = Math.floor((active / 10)) * 10
+              state.max_page_num = state.min_page_num + 10
+            }
+          }
           break
         case 'prev':
-          state.active_page === 1 ? 1 : state.active_page--
+          if (width < 768) {
+            state.active_page--
+            if (state.active_page % 3 === 0 && state.active_page !== 1) {
+              state.min_page_num -= 3
+              state.max_page_num -= 3
+            }
+          } else if (width >= 768 && width < 1200) {
+            state.active_page--
+            if (state.active_page % 5 === 0 && state.active_page !== 1) {
+              state.min_page_num -= 5
+              state.max_page_num -= 5
+            }
+          } else {
+            state.active_page--
+            if (state.active_page % 10 === 0 && state.active_page !== 1) {
+              state.min_page_num -= 10
+              state.max_page_num -= 10
+            }
+          }
           break
         case 'next':
-          state.active_page === state.page_amount ? state.page_amount : state.active_page++
+          if (width < 768) {
+            state.active_page++
+            if (state.active_page % 3 === 1 && state.active_page < state.page_amount) {
+              state.min_page_num += 3
+              state.max_page_num += 3
+            }
+          } else if (width >= 768 && width < 1200) {
+            state.active_page++
+            if (state.active_page % 5 === 1 && state.active_page < state.page_amount) {
+              state.min_page_num += 5
+              state.max_page_num += 5
+            }
+          } else {
+            state.active_page++
+            if (state.active_page % 10 === 1 && state.active_page < state.page_amount) {
+              state.min_page_num += 10
+              state.max_page_num += 10
+            }
+          }
           break
       }
     },
@@ -184,7 +267,7 @@ export default {
           // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
           item = lists[prop]
           item.key = prop
-          item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
+          item.write_date = lists[prop].write_date.substring(0, 8)
           state.filtered_country_list.push(item)
         }
       }
@@ -212,7 +295,7 @@ export default {
             // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
             item = lists[prop]
             item.key = prop
-            item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
+            item.write_date = lists[prop].write_date.substring(0, 8)
             state.filtered_city_list.push(item)
           }
         }
@@ -314,7 +397,7 @@ export default {
       for (var prop in lists) {
         item = lists[prop]
         item.key = prop
-        item.write_date = lists[prop].write_date.substring(0, 10).split('-').join('.')
+        item.write_date = lists[prop].write_date.substring(0, 8)
         state.all_blog_list.push(item)
       }
       if (payload.id === null) { return }
