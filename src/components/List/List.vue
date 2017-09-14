@@ -32,7 +32,8 @@ div
     router-view
   .goto-write
     h2.write-title 당신의 여행 일지를 트래블러스들에게 자랑하는 공간!
-    router-link.write-link(:to="{name: 'Write', query: {id: userUid}}") 여행 일지 쓰기
+    button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+    router-link.write-link(:to="{name: 'Write', query: {id: userUid}}" v-if="userStatus === 'in'") 여행 일지 쓰기
 </template>
 
 <script>
@@ -60,7 +61,7 @@ div
       this.$store.commit('getUserUid')
     },
     computed: {
-      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey', 'userUid'])
+      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey', 'userUid', 'userStatus'])
     },
     methods: {
       setAllBlogList () {
@@ -77,7 +78,7 @@ div
         this.$store.commit('filterCityList', city)
         this.$store.commit('makePageNumber', this.getFilteredList.length)
       },
-      ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'toggleFilter'])
+      ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'toggleFilter', 'showSignModal'])
     }
   }
 </script>
@@ -167,12 +168,13 @@ div
     .write-title {
       color: #fff;
     }
-    .write-link {
+    .write-link, .btn-start {
       display: block;
       color: #fff;
       border: 1px solid #fff;
       border-radius: 4px;
       box-shadow: 0 2px 3px 0 $color1;
+      cursor: pointer;
     }
   }
   
@@ -250,7 +252,7 @@ div
         text-align: left;
         font-size: 20px;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 20px 0 0 10px;
         width: 104px;
         height: 34px;
@@ -336,7 +338,7 @@ div
         font-size: 25px;
         float: left;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 68px 64px 0 0;
         width: 153px;
         height: 46px;
@@ -422,7 +424,7 @@ div
         padding: 50px 0 0 0;
         font-size: 43px;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 21px auto 0 auto;
         width: 201px;
         height: 62px;

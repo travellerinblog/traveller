@@ -50,6 +50,8 @@ export default {
     },
     closeContainer (state) {
       state.show_sign_container = false
+      state.show_sign_in = false
+      state.show_sign_up = false
     },
     signViewChange (state, payload) {
       switch (payload) {
@@ -121,10 +123,10 @@ export default {
     }
   },
   actions: {
-    signUpByGoogle (context, payload) {
+    signUpAndSignIN (context, payload) {
       let userInfo = {}
-      let googleProvider = firebase.googleProvider
-      firebase.auth().signInWithPopup(googleProvider).then(result => {
+      let provider = payload.provider === 'google' ? firebase.googleProvider : firebase.facebookProvider
+      firebase.auth().signInWithPopup(provider).then(result => {
         let user = result.user
         userInfo.id = user.email
         userInfo.name = user.displayName
@@ -132,7 +134,7 @@ export default {
         userInfo.uid = user.uid
         userInfo.provider = result.additionalUserInfo.providerId
         context.commit('userDataCheck', userInfo)
-        switch (payload) {
+        switch (payload.type) {
           case 'up':
             if (context.state.show_sign_up_message === false) {
               axios.post(userApi, userInfo).then(result => {
