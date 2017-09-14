@@ -445,6 +445,17 @@ export default {
             return 0
           })
           break
+        case 'search':
+          state.filtered_search_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
       }
       state.selected_filter = 'popular'
       state.show_filter = false
@@ -476,6 +487,17 @@ export default {
           break
         case 'all':
           state.all_blog_list.sort((a, b) => {
+            if (Number(a.write_date) < Number(b.write_date)) {
+              return 1
+            }
+            if (Number(a.write_date) > Number(b.write_date)) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'search':
+          state.filtered_search_list.sort((a, b) => {
             if (Number(a.write_date) < Number(b.write_date)) {
               return 1
             }

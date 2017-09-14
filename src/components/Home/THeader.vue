@@ -46,7 +46,7 @@
       }
     },
     computed: {
-      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus'])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus', 'getFilteredList'])
     },
     methods: {
       goTofilterList () {
@@ -56,6 +56,7 @@
           let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
           this.$store.dispatch('setListsData', payload).then(response => {
             this.$store.commit('filterSearchList', payload)
+            this.$store.commit('makePageNumber', this.getFilteredList.length)
           })
         }).catch(error => console.log(error.message))
       },

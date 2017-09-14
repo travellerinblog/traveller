@@ -25,9 +25,9 @@ div
         .new-and-popular-filter(v-show="showFilter")
           .background-selector(@click="toggleFilter('filter')")
           ul
-            router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
+            router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }, query: { search: $route.query.search }}" tag="li"  @click.native="newListFilter")
               a(href) 최신순
-            router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li" @click.native="popularListFilter")
+            router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }, query: { search: $route.query.search }}" tag="li" @click.native="popularListFilter")
               a(href) 인기순
     router-view
   .goto-write
