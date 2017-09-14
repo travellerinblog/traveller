@@ -30,12 +30,6 @@ export default {
     error_check_before_post: {}
   },
   getters: {
-    writeTitleEditable (state) {
-      return state.title_editable
-    },
-    writeTagEditable (state) {
-      return state.tag_editable
-    },
     writeTitleValue (state) {
       return state.write_title_value
     },
@@ -101,16 +95,6 @@ export default {
     }
   },
   mutations: {
-    changeEditable (state, payload) {
-      switch (payload) {
-        case 'title':
-          state.title_editable = true
-          break
-        case 'tag':
-          state.tag_editable = true
-          break
-      }
-    },
     setTitleValue (state, payload) {
       if (event.target.value.length > 30) {
         state.show_title_error_message = true
@@ -305,6 +289,7 @@ export default {
       state.temp_write_data.contents = state.write_contents_data
     },
     deleteContent (state, payload) {
+      // 이미지와 텍스트에리어의 삭제 버튼을 눌렀을 때 state 데이터에서 해당 값을 삭제해준다.
       let content = state.write_contents_data[payload]
       switch (content.key) {
         case 'text':
@@ -332,6 +317,7 @@ export default {
       state.show_write_error_message = true
     },
     setRemainWriteInfo (state, payload) {
+      // 저장하기 전에 필요한 나머지 데이터들 추가해 주기.
       let times = new Date()
       let month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString()
       let day = times.getDate() < 10 ? '0' + times.getDate() : times.getDate()
@@ -344,13 +330,17 @@ export default {
       state.temp_write_data.write_date = times.getFullYear() + month + day + hours + minute + second
     },
     resetTempData (state, payload) {
+      // mounted시점에 이전에 입력했던 temp data들을 전부 비워준다.
       state.temp_write_data = {}
       state.selected_write_city = []
       state.write_contents_data = []
       state.write_title_value = '제목을 입력하세요'
+      state.show_title_error_message = false
       state.write_tag_value = '태그를 입력하세요'
+      state.show_tag_error_message = false
       state.title_img_url = ''
       state.write_error_message = ''
+      state.show_write_error_message = false
       state.error_check_before_post = {}
       state.date_error_message = ''
       payload.start.value = ''

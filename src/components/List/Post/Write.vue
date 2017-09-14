@@ -67,9 +67,6 @@
                     line(x1="3" y1="10" x2="21" y2="10")
                 | 여행 종료 날짜 : 
               input#end-date(type="date" @change="setDate('end')")
-            //- .date-btn
-              button.date-save-btn(type="submit" @click.prevent="saveDate") 저장
-              button.date-save-btn(type="reset" @click="resetDate") 취소
             span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
         ul.write-contents-view
           li.contents-view-item(v-for="(content, index) in writeContentsData")
@@ -121,7 +118,7 @@
       ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
     },
     methods: {
-      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'clearFileValue']),
+      ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'clearFileValue', 'resetTempData']),
       ...mapActions(['setListsData', 'deleteContent']),
       clearInput (type) {
         let payload = { 'value': event.target.value, 'type': type }
