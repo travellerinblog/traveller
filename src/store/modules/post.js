@@ -30,12 +30,6 @@ export default {
     error_check_before_post: {}
   },
   getters: {
-    writeTitleEditable (state) {
-      return state.title_editable
-    },
-    writeTagEditable (state) {
-      return state.tag_editable
-    },
     writeTitleValue (state) {
       return state.write_title_value
     },
@@ -101,16 +95,6 @@ export default {
     }
   },
   mutations: {
-    changeEditable (state, payload) {
-      switch (payload) {
-        case 'title':
-          state.title_editable = true
-          break
-        case 'tag':
-          state.tag_editable = true
-          break
-      }
-    },
     setTitleValue (state, payload) {
       if (event.target.value.length > 30) {
         state.show_title_error_message = true
@@ -123,13 +107,12 @@ export default {
       state.error_check_before_post.title = true
     },
     setTitleImgUrl (state, payload) {
-      if (state.title_img_url !== '') {
-        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
-        storageRef.delete()
-      }
       state.title_img_url = payload.url
       state.temp_write_data.title_img = payload.url
       state.temp_write_data.title_img_name = payload.name
+    },
+    clearFileValue () {
+      event.target.value = null
     },
     clearInput (state, payload) {
       if (payload.type === 'title') {
@@ -245,17 +228,17 @@ export default {
           state.temp_date.end = payload.date
           break
       }
-    },
-    saveDate (state, payload) {
       let today = new Date()
       let month = (today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1).toString() : (today.getMonth() + 1).toString()
       let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate()
+      let start = state.temp_date.start
+      let end = state.temp_date.end
       today = today.getFullYear() + month + day
-      if (payload.start.value !== '' && payload.end.value !== '') {
-        if (payload.start.value <= payload.end.value) {
-          if (today >= payload.start.value.split('-').join('') && today >= payload.end.value.split('-').join('')) {
-            state.temp_write_data.start_date = state.temp_date.start
-            state.temp_write_data.end_date = state.temp_date.end
+      if (start !== undefined && end !== undefined && start !== '' && end !== '') {
+        if (start <= end) {
+          if (today >= start.split('-').join('') && today >= end.split('-').join('')) {
+            state.temp_write_data.start_date = start
+            state.temp_write_data.end_date = end
             state.date_error_message = ''
             state.show_date_error_message = false
             state.error_check_before_post.date = true
@@ -274,12 +257,6 @@ export default {
         state.show_date_error_message = true
         state.error_check_before_post.date = false
       }
-    },
-    resetDate (state) {
-      state.temp_write_data.start_date = ''
-      state.temp_write_data.end_date = ''
-      state.date_error_message = ''
-      state.show_date_error_message = false
     },
     setContentImgUrl (state, payload) {
       let contentImg = {key: 'img'}
@@ -312,6 +289,7 @@ export default {
       state.temp_write_data.contents = state.write_contents_data
     },
     deleteContent (state, payload) {
+      // 이미지와 텍스트에리어의 삭제 버튼을 눌렀을 때 state 데이터에서 해당 값을 삭제해준다.
       let content = state.write_contents_data[payload]
       switch (content.key) {
         case 'text':
@@ -319,11 +297,8 @@ export default {
           state.temp_write_data.contents = state.write_contents_data
           break
         case 'img':
-          let storageRef = firebase.storage.ref('/Write/' + content.name)
-          storageRef.delete().then(snapshot => {
-            state.write_contents_data.splice(payload, 1)
-            state.temp_write_data.contents = state.write_contents_data
-          }).catch(error => console.log(error))
+          state.write_contents_data.splice(payload, 1)
+          state.temp_write_data.contents = state.write_contents_data
           break
       }
     },
@@ -342,6 +317,7 @@ export default {
       state.show_write_error_message = true
     },
     setRemainWriteInfo (state, payload) {
+      // 저장하기 전에 필요한 나머지 데이터들 추가해 주기.
       let times = new Date()
       let month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString()
       let day = times.getDate() < 10 ? '0' + times.getDate() : times.getDate()
@@ -354,13 +330,17 @@ export default {
       state.temp_write_data.write_date = times.getFullYear() + month + day + hours + minute + second
     },
     resetTempData (state, payload) {
+      // mounted시점에 이전에 입력했던 temp data들을 전부 비워준다.
       state.temp_write_data = {}
       state.selected_write_city = []
       state.write_contents_data = []
       state.write_title_value = '제목을 입력하세요'
+      state.show_title_error_message = false
       state.write_tag_value = '태그를 입력하세요'
+      state.show_tag_error_message = false
       state.title_img_url = ''
       state.write_error_message = ''
+      state.show_write_error_message = false
       state.error_check_before_post = {}
       state.date_error_message = ''
       payload.start.value = ''
@@ -379,12 +359,16 @@ export default {
     }
   },
   actions: {
-    setImageToStorage ({commit}, payload) {
+    setImageToStorage ({commit, state}, payload) {
       var date = new Date()
       date = date.getFullYear() + (date.getMonth() + 1).toString() + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds()
       var uploadName = payload.id + '_' + payload.type + '_' + date + '_' + payload.image.name
       var storageRef = firebase.storage.ref('/Write/' + uploadName)
       commit('imageUploadProgress', {'state': 'progress', 'type': payload.type})
+      if (state.title_img_url !== '') {
+        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
+        storageRef.delete()
+      }
       storageRef.put(payload.image).then(snapshot => {
         let imgInfo = { 'url': snapshot.downloadURL, 'name': uploadName }
         payload.type === 'title' ? commit('setTitleImgUrl', imgInfo) : commit('setContentImgUrl', imgInfo)
@@ -407,7 +391,7 @@ export default {
         axios.get(userApi).then(response => {
           // user값을 저장하는 통신
           for (let prop in response.data) {
-            if (prop === payload.id) {
+            if (response.data[prop].uid === payload.id) {
               context.commit('setRemainWriteInfo', response.data[prop])
             }
           }
@@ -429,6 +413,20 @@ export default {
           }
         }
         context.commit('printErrorMessage', requiredData)
+      }
+    },
+    deleteContent ({commit, state}, payload) {
+      let content = state.write_contents_data[payload]
+      switch (content.key) {
+        case 'text':
+          commit('deleteContent', payload)
+          break
+        case 'img':
+          let storageRef = firebase.storage.ref('/Write/' + content.name)
+          storageRef.delete().then(snapshot => {
+            commit('deleteContent', payload)
+          }).catch(error => console.log(error))
+          break
       }
     }
   }

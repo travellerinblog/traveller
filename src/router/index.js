@@ -21,7 +21,7 @@ export default new Router({
       }
     },
     {
-      path: '/write/:id',
+      path: '/write',
       component: Write,
       name: 'Write'
     },

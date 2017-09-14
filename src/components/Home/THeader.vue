@@ -27,15 +27,18 @@
 </template>
 
 <script>
+  const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
   import {mapGetters, mapMutations} from 'vuex'
   import Navigation from './Navigation.vue'
   import Sign from './../Sign/Sign.vue'
+  import axios from 'axios'
   export default {
     components: {
       Navigation, Sign
     },
     mounted () {
       this.$store.dispatch('checkUserExist')
+      this.$store.commit('getUserUid')
     },
     data () {
       return {
@@ -43,14 +46,19 @@
       }
     },
     computed: {
-      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus'])
+      ...mapGetters(['showNav', 'showSearch', 'closeSearch', 'showSignContainer', 'userStatus', 'getFilteredList'])
     },
     methods: {
       goTofilterList () {
         this.$router.push({name: 'ListView', params: {id: 'search'}, query: {search: this.search}})
         this.$store.commit('closeMeSearch')
-        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
-        this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
+        axios.get(listApi).then(response => {
+          let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
+          this.$store.dispatch('setListsData', payload).then(response => {
+            this.$store.commit('filterSearchList', payload)
+            this.$store.commit('makePageNumber', this.getFilteredList.length)
+          })
+        }).catch(error => console.log(error.message))
       },
       onshowModal () {
         this.$store.commit('showMeModal')
@@ -122,6 +130,7 @@
     padding: 0;
     border: 0 none;
     background: none;
+    cursor: pointer;
     &::before {
       display: block;
       width: 40px;
@@ -228,6 +237,7 @@
       line-height: 32px;
       color: $color1;
       font-size: 14px;
+      cursor: pointer;
     }
   }
   @include mobile {

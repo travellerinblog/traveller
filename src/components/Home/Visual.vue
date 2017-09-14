@@ -7,7 +7,9 @@
         p 
           strong 여행의 새로운 패러다임 
           em 당신의 여행은 어땠나요? 저희 트레블로에게 알려주세요
-          button.btn-start(type="button") 시작하기
+          button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+            i.icon-next
+          router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
             i.icon-next
     .image-carousel.col(v-show="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       visual-carousel.carousel
@@ -47,7 +49,7 @@
     },
     computed: {
       ...mapGetters([
-        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems', 'clickDisable'
+        'getScreenSize', 'isDesktopScreen', 'isTabletScreen', 'getCarouselItems', 'clickDisable', 'userStatus', 'userUid'
       ])
     },
     methods: {
@@ -61,7 +63,7 @@
       dragEnd () {
         this.drag_start_point > event.clientX ? this.$store.dispatch('nextItem', 'drag') : this.$store.dispatch('prevItem', 'drag')
       },
-      ...mapMutations(['gotoBlogView']),
+      ...mapMutations(['gotoBlogView', 'showSignModal']),
       ...mapActions(['prevItem', 'nextItem'])
     }
   }
@@ -110,7 +112,7 @@
             font-size: 22px;
             color: #fff
           }
-          .btn-start{
+          .btn-start, .btn-write{
             display: block;
             height: 40px;
             line-height: 40px;
@@ -119,6 +121,7 @@
             background: none;
             border: 0 none;
             padding: 0;
+            cursor: pointer;
             i{
               margin-left: 20px;
               &::before{
