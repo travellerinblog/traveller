@@ -123,10 +123,6 @@ export default {
       state.error_check_before_post.title = true
     },
     setTitleImgUrl (state, payload) {
-      if (state.title_img_url !== '') {
-        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
-        storageRef.delete()
-      }
       state.title_img_url = payload.url
       state.temp_write_data.title_img = payload.url
       state.temp_write_data.title_img_name = payload.name
@@ -316,11 +312,8 @@ export default {
           state.temp_write_data.contents = state.write_contents_data
           break
         case 'img':
-          let storageRef = firebase.storage.ref('/Write/' + content.name)
-          storageRef.delete().then(snapshot => {
-            state.write_contents_data.splice(payload, 1)
-            state.temp_write_data.contents = state.write_contents_data
-          }).catch(error => console.log(error))
+          state.write_contents_data.splice(payload, 1)
+          state.temp_write_data.contents = state.write_contents_data
           break
       }
     },
@@ -376,12 +369,16 @@ export default {
     }
   },
   actions: {
-    setImageToStorage ({commit}, payload) {
+    setImageToStorage ({commit, state}, payload) {
       var date = new Date()
       date = date.getFullYear() + (date.getMonth() + 1).toString() + date.getDate() + date.getHours() + date.getMinutes() + date.getSeconds()
       var uploadName = payload.id + '_' + payload.type + '_' + date + '_' + payload.image.name
       var storageRef = firebase.storage.ref('/Write/' + uploadName)
       commit('imageUploadProgress', {'state': 'progress', 'type': payload.type})
+      if (state.title_img_url !== '') {
+        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
+        storageRef.delete()
+      }
       storageRef.put(payload.image).then(snapshot => {
         let imgInfo = { 'url': snapshot.downloadURL, 'name': uploadName }
         payload.type === 'title' ? commit('setTitleImgUrl', imgInfo) : commit('setContentImgUrl', imgInfo)
@@ -426,6 +423,20 @@ export default {
           }
         }
         context.commit('printErrorMessage', requiredData)
+      }
+    },
+    deleteContent ({commit, state}, payload) {
+      let content = state.write_contents_data[payload]
+      switch (content.key) {
+        case 'text':
+          commit('deleteContent', payload)
+          break
+        case 'img':
+          let storageRef = firebase.storage.ref('/Write/' + content.name)
+          storageRef.delete().then(snapshot => {
+            commit('deleteContent', payload)
+          }).catch(error => console.log(error))
+          break
       }
     }
   }
