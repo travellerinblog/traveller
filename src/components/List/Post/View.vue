@@ -54,8 +54,8 @@
         clickedBtnEdit: true,
         reply: {
           date: '',
-          id: '아이디',
-          name: '네임',
+          id: '',
+          name: '',
           reply_text: '댓글을 작성해주세요',
           clickedBtnEdit: false
         }
@@ -82,16 +82,6 @@
     },
     methods: {
       ...mapMutations(['filterTagList']),
-      replyEdit (index) {
-        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + 'list1' + '/reply/' + index + '/clickedBtnEdit.json'
-        axios.update(URL, this.reply.clickedBtnEdit)
-            .then(function (response) {
-              console.log(response)
-            })
-            .catch(function (error) {
-              console.error(error.message)
-            })
-      },
       textReset () {
         if (this.reply.reply_text === '댓글을 작성해주세요' || this.reply.reply_text === '댓글이 입력되지 않았습니다. 댓글을 입력해주세요') {
           this.reply.reply_text = ''
@@ -107,6 +97,7 @@
           this.reply.reply_text = '댓글이 입력되지 않았습니다. 댓글을 입력해주세요'
           return
         }
+        this.$store.dispatch('setReplyUserData')
         axios.post(URL, this.reply)
             .then(response => {
               this.reply.reply_text = ''

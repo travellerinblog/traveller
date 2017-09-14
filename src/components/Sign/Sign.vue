@@ -22,9 +22,6 @@ div
     components: {
       SignIn, SignUp
     },
-    // mounted () {
-    //   this.$store.dispatch('getUsersData')
-    // },
     computed: {
       ...mapGetters(['showSignUp', 'showSignIn'])
     },

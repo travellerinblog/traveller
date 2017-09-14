@@ -27,9 +27,11 @@
 </template>
 
 <script>
+  const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
   import {mapGetters, mapMutations} from 'vuex'
   import Navigation from './Navigation.vue'
   import Sign from './../Sign/Sign.vue'
+  import axios from 'axios'
   export default {
     components: {
       Navigation, Sign
@@ -50,8 +52,12 @@
       goTofilterList () {
         this.$router.push({name: 'ListView', params: {id: 'search'}, query: {search: this.search}})
         this.$store.commit('closeMeSearch')
-        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
-        this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
+        axios.get(listApi).then(response => {
+          let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
+          this.$store.dispatch('setListsData', payload).then(response => {
+            this.$store.commit('filterSearchList', payload)
+          })
+        }).catch(error => console.log(error.message))
       },
       onshowModal () {
         this.$store.commit('showMeModal')

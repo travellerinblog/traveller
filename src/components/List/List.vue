@@ -10,7 +10,7 @@ div
         div.filter-container(v-show="showCountry")
           .background-selector(@click="toggleFilter('country')")
           ul.country-and-city-filter(tabindex="0")
-            router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setAllBlogList")
+            router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setListsData")
               a(href) 나라전체
             li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
               a(href @click.prevent="toggleFilter(country.countryKey)") {{country.country}} 
@@ -48,13 +48,7 @@ div
       ListView
     },
     mounted () {
-      axios.get(listApi).then(response => {
-        let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
-        this.$store.dispatch('setListsData', payload).then(response => {
-          this.$store.commit('makePageNumber', this.getFilteredList.length)
-          this.$store.commit('newListFilter')
-        })
-      }).catch(error => console.log(error.message))
+      this.setListsData()
       axios.get(locationApi).then(response => {
         this.$store.dispatch('setCountryAndCity', response.data)
       }).catch(error => console.log(error.message))
@@ -64,10 +58,6 @@ div
       ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey', 'userUid', 'userStatus'])
     },
     methods: {
-      setAllBlogList () {
-        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
-        this.$store.commit('makePageNumber', this.getFilteredList.length)
-      },
       // 필터를 선택하면 보여지는 글의 개수가 달라지기 때문에, makePageNumber 실행 필요.
       filterCountryList (country) {
         this.$store.commit('setCountryAndCityData')
@@ -78,7 +68,17 @@ div
         this.$store.commit('filterCityList', city)
         this.$store.commit('makePageNumber', this.getFilteredList.length)
       },
+      setListsData () {
+        axios.get(listApi).then(response => {
+          let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
+          this.$store.dispatch('setListsData', payload).then(response => {
+            this.$store.commit('makePageNumber', this.getFilteredList.length)
+            this.$store.commit('newListFilter')
+          })
+        }).catch(error => console.log(error.message))
+      },
       ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'toggleFilter', 'showSignModal'])
+
     }
   }
 </script>

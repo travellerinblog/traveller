@@ -75,9 +75,17 @@ export default {
     changeUsetStatus (state, status) {
       state.user_status = status
     },
-    userDataCheck (state, userInfo) {
+    saveUserData (state, result) {
+      let user = result.user
+      state.signin_user.id = user.email
+      state.signin_user.name = user.displayName
+      state.signin_user.picture = user.photoURL
+      state.signin_user.uid = user.uid
+      state.signin_user.provider = result.additionalUserInfo.providerId
+    },
+    userDataCheck (state) {
       let userDB = state.users_data
-      state.signin_user = userInfo
+      let userInfo = state.signin_user
       // userDB의 id 들을 확인해서 같은 값이 있으면 error_msg
       // 로그인 할 경우와 회원 가입할 경우로 나눠서
       if (state.show_sign_up === true) {
@@ -101,6 +109,8 @@ export default {
           state.show_sign_in_message = true
           state.sign_in_message = '가입되지 않은 아이디입니다. 회원가입을 해주세요.'
           return
+        } else {
+          state.show_sign_in_message = false
         }
       }
     },
@@ -123,41 +133,41 @@ export default {
     }
   },
   actions: {
+    signExecution (context, payload) {
+      let userInfo = context.state.signin_user
+      switch (payload.type) {
+        case 'up':
+          if (context.state.show_sign_up_message === false) {
+            axios.post(userApi, userInfo).then(result => {
+              window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
+              axios.get(userApi).then(response => {
+                context.commit('closeContainer')
+                context.commit('getUsersData', response.data)
+                context.commit('changeUsetStatus', 'in')
+              })
+            })
+          }
+          break
+        case 'in':
+          if (context.state.show_sign_in_message === false) {
+            window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
+            context.commit('closeContainer')
+            context.commit('changeUsetStatus', 'in')
+          }
+          break
+      }
+    },
     signUpAndSignIN (context, payload) {
-      let userInfo = {}
+      // google과 facebook 중 어느 것으로 로그인하는지 확인.
       let provider = payload.provider === 'google' ? firebase.googleProvider : firebase.facebookProvider
+      // 가입 여부를 확인하기 위해, 로그인 버튼을 눌렀을 때, firebase에 저장되어 있는 user들의 정보를 가져온다.
       axios.get(userApi).then(response => {
         context.commit('getUsersData', response.data)
       })
       firebase.auth().signInWithPopup(provider).then(result => {
-        let user = result.user
-        userInfo.id = user.email
-        userInfo.name = user.displayName
-        userInfo.picture = user.photoURL
-        userInfo.uid = user.uid
-        userInfo.provider = result.additionalUserInfo.providerId
-        context.commit('userDataCheck', userInfo)
-        switch (payload.type) {
-          case 'up':
-            if (context.state.show_sign_up_message === false) {
-              axios.post(userApi, userInfo).then(result => {
-                window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
-                axios.get(userApi).then(response => {
-                  context.commit('closeContainer')
-                  context.commit('getUsersData', response.data)
-                  context.commit('changeUsetStatus', 'in')
-                })
-              })
-            }
-            break
-          case 'in':
-            if (context.state.show_sign_in_message === false) {
-              window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
-              context.commit('closeContainer')
-              context.commit('changeUsetStatus', 'in')
-            }
-            break
-        }
+        context.commit('saveUserData', result)
+        context.commit('userDataCheck')
+        context.dispatch('signExecution', payload)
       }).catch(function (error) {
         console.log(error.message)
       })
