@@ -240,7 +240,7 @@
     }
     .list-item {
       padding: 24px;
-      height: 90px;
+      height: 60px;
       .title {
         padding-right: 30px;
         font-size: 22px;
@@ -251,7 +251,6 @@
       }
       .icon-next {
         right: 70px;
-        float: right;
         font-size: 20px;
       }
     }
@@ -312,7 +311,7 @@
       margin: 40px 0 0 0;
     }
     .list-item {
-      height: 76px;
+      height: 50px;
       .title {
         padding-right: 30px;
         font-size: 18px;
@@ -323,7 +322,6 @@
       }
       .icon-next {
         right: 70px;
-        float: right;
         font-size: 18px;
       }
     }

@@ -979,12 +979,4 @@
     }
     
   }
-  // @include tablet {
-  // }
-  
-  // @include desktop {
-  // }
-  
-  // @include breakpoint(0px, 1199px) {
-  // }
 </style>
