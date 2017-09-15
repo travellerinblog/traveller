@@ -63,8 +63,9 @@ export default {
     editReply () {
     },
     deleteReply ({commit}, payload) {
-      console.log(payload)
-      axios.delete(userApi).then(response => {
+      // let replyApi =
+      // let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
+      axios.delete().then(response => {
       })
     }
   }
