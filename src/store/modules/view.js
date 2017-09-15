@@ -62,7 +62,10 @@ export default {
     },
     editReply () {
     },
-    deleteReply () {
+    deleteReply ({commit}, payload) {
+      console.log(payload)
+      axios.delete(userApi).then(response => {
+      })
     }
   }
 }

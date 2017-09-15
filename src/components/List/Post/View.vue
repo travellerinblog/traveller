@@ -13,6 +13,9 @@
           span {{getBlogViewItem.write_date}}
           b |
           span 조회수 {{getViewCount}}
+        .btn-edits
+          button.btn-edit 수정
+          button.btn-delete 삭제
     .content-body
       .cover
         .contents
@@ -36,7 +39,7 @@
                     span {{item.date}}
                     //- button.btn-save(v-show="saveEditedReply" type="button" @click="" :class="index") 저장
                     button.btn-edit(v-show="item.user_uid === viewReplyData.user_uid" type="button" @click="editReply(index)" :class="index") 수정
-                    button.btn-delete(v-show="item.user_uid === viewReplyData.user_uid" type="button" @click="deleteReply") 삭제
+                    button.btn-delete(v-show="item.user_uid === viewReplyData.user_uid" type="button" @click="deleteReply(item.user_uid)") 삭제
                 .reply-list-content
                   //- textarea(v-if="item.clickedBtnEdit" :class="index" @input="detectEventBinding('name', $event)" :value="reply.reply_text" v-text="item.reply_text")
                   p(:class="index") {{item.reply_text}}
@@ -67,7 +70,7 @@
     },
     methods: {
       ...mapMutations(['filterTagList', 'inputReplyText', 'resetReplytext', 'setAllBlogList']),
-      ...mapActions(['editReply', 'deleteReply']),
+      ...mapActions(['editReply']),
       submitText () {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
         this.$store.commit('checkReplyText')
@@ -84,6 +87,9 @@
             })
           }).catch(error => console.log(error.message))
         }).catch(error => console.log(error.message))
+      },
+      deleteReply (uid) {
+        this.$store.dispatch('deleteReply', {'id': this.$route.params.id, 'uid': uid})
       }
     }
   }

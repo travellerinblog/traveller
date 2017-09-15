@@ -529,6 +529,7 @@ export default {
       }
     },
     gotoBlogViewReply (state, key) {
+      state.blog_view_item_replys = []
       // 리플 가져오는 곳
       var lists = state.all_blog_list
       for (var prop in lists) {
