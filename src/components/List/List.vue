@@ -171,6 +171,7 @@ div
     .write-link, .btn-start {
       display: block;
       color: #fff;
+      background: $color1;
       border: 1px solid #fff;
       border-radius: 4px;
       box-shadow: 0 2px 3px 0 $color1;
@@ -248,7 +249,7 @@ div
       margin: 32px 0 0 0;
       .write-title {
         margin: 0 47px 0 10px;
-        padding: 32px 0 0 0;
+        padding: 50px 0 0 0;
         text-align: left;
         font-size: 20px;
       }
@@ -421,7 +422,7 @@ div
       margin: 40px 0 0 0;
       height: 260px;
       .write-title {
-        padding: 50px 0 0 0;
+        padding: 70px 0 0 0;
         font-size: 43px;
       }
       .write-link, .btn-start {

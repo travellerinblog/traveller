@@ -160,11 +160,13 @@ export default {
     signUpAndSignIN (context, payload) {
       // google과 facebook 중 어느 것으로 로그인하는지 확인.
       let provider = payload.provider === 'google' ? firebase.googleProvider : firebase.facebookProvider
+      console.log('provider는 무엇인가? :', provider)
       // 가입 여부를 확인하기 위해, 로그인 버튼을 눌렀을 때, firebase에 저장되어 있는 user들의 정보를 가져온다.
       axios.get(userApi).then(response => {
         context.commit('getUsersData', response.data)
       })
       firebase.auth().signInWithPopup(provider).then(result => {
+        console.log('result????? :', result)
         context.commit('saveUserData', result)
         context.commit('userDataCheck')
         context.dispatch('signExecution', payload)
