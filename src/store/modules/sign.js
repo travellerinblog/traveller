@@ -124,7 +124,7 @@ export default {
     logout (state) {
       localStorage.removeItem('user_uid')
       state.user_status = 'out'
-      state.user_uid = ''
+      state.reply_user_uid = ''
     },
     showUserName (state) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
