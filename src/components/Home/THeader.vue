@@ -38,7 +38,6 @@
     },
     mounted () {
       this.$store.dispatch('checkUserExist')
-      this.$store.commit('getUserUid')
     },
     data () {
       return {

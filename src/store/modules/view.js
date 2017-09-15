@@ -17,7 +17,7 @@ export default {
     }
   },
   mutations: {
-    inputReplyText (state) {
+    inputReplyText (state, payload) {
       state.view_reply_data.reply_text = event.target.value
       let times = new Date()
       let month = (times.getMonth() + 1) < 10 ? '0' + (times.getMonth() + 1).toString() : (times.getMonth() + 1).toString()
@@ -26,6 +26,11 @@ export default {
       let minute = times.getMinutes() < 10 ? '0' + times.getMinutes() : times.getMinutes()
       let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
       state.view_reply_data.date = times.getFullYear() + month + day + hours + minute + second
+      if (state.view_reply_data.user_uid === '') {
+        state.view_reply_data.id = payload.id
+        state.view_reply_data.name = payload.name
+        state.view_reply_data.user_uid = payload.uid
+      }
     },
     resetReplytext (state) {
       if (state.view_reply_data.reply_text === '댓글을 작성해주세요' || state.view_reply_data.reply_text === '댓글이 입력되지 않았습니다. 댓글을 입력해주세요') {
@@ -42,31 +47,32 @@ export default {
     },
     clearReplyData (state) {
       state.view_reply_data.reply_text = '댓글을 작성해주세요'
-    },
-    setViewUserInfo (state, payload) {
-      state.view_reply_data.id = payload.id
-      state.view_reply_data.name = payload.name
-      state.view_reply_data.user_uid = payload.uid
     }
   },
   actions: {
-    setViewUserData ({commit}) {
-      let user = JSON.parse(localStorage.getItem('user_uid'))
-      axios.get(userApi).then(response => {
-        for (let prop in response.data) {
-          if (response.data[prop].uid === user) {
-            commit('setViewUserInfo', response.data[prop])
+    inputReplyText ({commit, state}) {
+      if (state.view_reply_data.user_uid === '') {
+        let user = JSON.parse(localStorage.getItem('user_uid'))
+        axios.get(userApi).then(response => {
+          for (let prop in response.data) {
+            if (response.data[prop].uid === user) {
+              commit('inputReplyText', response.data[prop])
+            }
           }
-        }
-      })
+        })
+      } else {
+        commit('inputReplyText')
+      }
     },
     editReply () {
     },
     deleteReply ({commit}, payload) {
-      // let replyApi =
+      console.log(payload)
+      let replyApi = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.id + '/reply/' + payload.key + '.json'
+      console.log(replyApi)
       // let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
-      axios.delete().then(response => {
-      })
+      // axios.delete(repylApi).then(response => {
+      // })
     }
   }
 }
