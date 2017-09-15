@@ -1,3 +1,4 @@
+const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
 import axios from 'axios'
 export default {
   state: {
@@ -42,7 +43,9 @@ export default {
     view_count: null,
     // 화면 크기에 따라 표시되는 페이지 넘버의 개수를 다르게 하기 위한 값
     min_page_num: null,
-    max_page_num: null
+    max_page_num: null,
+    // 글쓰기를 눌렀을 때 쿼리로 연결 될 user uid
+    user_uid: ''
   },
   getters: {
     // list에 뿌려줄 item들
@@ -127,6 +130,9 @@ export default {
     },
     getViewCount (state) {
       return state.view_count
+    },
+    userUid (state) {
+      return state.user_uid
     }
   },
   mutations: {
@@ -266,7 +272,7 @@ export default {
         if (payload === lists[prop].country) {
           // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
           item = lists[prop]
-          item.key = prop
+          item.key = lists[prop].key
           item.write_date = lists[prop].write_date.substring(0, 8)
           state.filtered_country_list.push(item)
         }
@@ -294,7 +300,7 @@ export default {
           if (payload === lists[prop].city[i]) {
             // payload값과 lists의 나라 이름이 같으면 state의 배열에 추가해준다.
             item = lists[prop]
-            item.key = prop
+            item.key = lists[prop].key
             item.write_date = lists[prop].write_date.substring(0, 8)
             state.filtered_city_list.push(item)
           }
@@ -315,14 +321,12 @@ export default {
       state.show_country = false
     },
     filterSearchList (state, payload) {
-      // 새로고침이 되었을때 payload.data가 비워지기 때문에 다시 넣어줌
-      var lists = payload.data ? payload.data : state.all_blog_list
+      var lists = state.all_blog_list
       // 이전 결과값을 비워줘야 합니다.
       state.filtered_search_list = []
       state.selected_country_filter = null
       // 검색어 소문자로 변경
-      let searchData = payload.search
-      searchData = searchData.toLowerCase()
+      let searchData = payload.search.toLowerCase()
       let keywordAll = []
       let keywordOnce = {}
       if (searchData) {
@@ -371,7 +375,7 @@ export default {
           let keyword = keywordCityAll + keywordCountry + keywordStartDate + keywordEndDate + keywordWriteDate + keywordId + keywordName + keywordTitle + keywordContentsAll + keywordTag + keywordReplyAll
           // 대문자를 소문자로 통일
           keyword = keyword.toLowerCase()
-          keywordOnce.key = prop
+          keywordOnce.key = lists[prop].key
           keywordOnce.value = keyword
           keywordAll.push(keywordOnce)
           keywordOnce = {}
@@ -391,7 +395,7 @@ export default {
     },
     setAllBlogList (state, payload) {
       // 모든 blog 글 목록을 구하는 메소드 / 새로고침이 되었을때 payload.data가 비워지기 때문에 다시 넣어줌
-      var lists = payload.data ? payload.data : state.all_blog_list
+      var lists = payload.data
       var item = {}
       state.all_blog_list = []
       for (var prop in lists) {
@@ -441,6 +445,17 @@ export default {
             return 0
           })
           break
+        case 'search':
+          state.filtered_search_list.sort((a, b) => {
+            if (a.view < b.view) {
+              return 1
+            }
+            if (a.view > b.view) {
+              return -1
+            }
+            return 0
+          })
+          break
       }
       state.selected_filter = 'popular'
       state.show_filter = false
@@ -472,6 +487,17 @@ export default {
           break
         case 'all':
           state.all_blog_list.sort((a, b) => {
+            if (Number(a.write_date) < Number(b.write_date)) {
+              return 1
+            }
+            if (Number(a.write_date) > Number(b.write_date)) {
+              return -1
+            }
+            return 0
+          })
+          break
+        case 'search':
+          state.filtered_search_list.sort((a, b) => {
             if (Number(a.write_date) < Number(b.write_date)) {
               return 1
             }
@@ -618,6 +644,9 @@ export default {
     // 조회수 변경
     changeViewCount (state, payload) {
       state.view_count = payload + 1
+    },
+    getUserUid (state) {
+      state.user_uid = JSON.parse(localStorage.getItem('user_uid'))
     }
   },
   actions: {
@@ -714,6 +743,11 @@ export default {
         })
       }
       commit('setCountryAndCityData', {'countryAndCityName': countryAndCityName, 'cityNameGroup': cityNameGroup})
+    },
+    setReplyUserData ({commit}) {
+      axios.get(userApi).then(response => {
+        commit('getUsersData', response.data)
+      })
     }
   }
 }

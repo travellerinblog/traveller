@@ -1,6 +1,6 @@
 import firebase from 'firebase'
 
-var config = {
+let config = {
   apiKey: 'AIzaSyCYfuIUcb_3I8LkvfK-mA-0SnltpwkaqOc',
   authDomain: 'traveller-in-blog.firebaseapp.com',
   databaseURL: 'https://traveller-in-blog.firebaseio.com',
@@ -10,11 +10,12 @@ var config = {
 }
 
 firebase.initializeApp(config)
-var googleAuthProvider = new firebase.auth.GoogleAuthProvider()
-
+let googleAuthProvider = new firebase.auth.GoogleAuthProvider()
+let facebookAuthProvider = new firebase.auth.FacebookAuthProvider()
 export default {
   database: firebase.database(),
   storage: firebase.storage(),
   auth: firebase.auth,
-  googleProvider: googleAuthProvider
+  googleProvider: googleAuthProvider,
+  facebookProvider: facebookAuthProvider
 }

@@ -8,9 +8,9 @@ div
         a.selected-country(href @click.prevent="toggleFilter('country')" :class="{'default-filter-msg': selectedCountryFilter === '보고싶은 나라를 선택하세요.'}") {{ selectedCountryFilter }}
           i.icon-down
         div.filter-container(v-show="showCountry")
-          .background-country(@click="toggleFilter('country')")
-          ul.country-and-city-filter
-            router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setAllBlogList")
+          .background-selector(@click="toggleFilter('country')")
+          ul.country-and-city-filter(tabindex="0")
+            router-link( :to="{ name: 'ListView', params: { id: 'all' }}" tag="li" @click.native="setListsData")
               a(href) 나라전체
             li(v-for="(country, index) in getCountryAndCityName" :key="'country' + index")
               a(href @click.prevent="toggleFilter(country.countryKey)") {{country.country}} 
@@ -23,16 +23,17 @@ div
         a.selected-filter(href @click.prevent="toggleFilter('filter')") {{ selectedFilter }}
           i.icon-down
         .new-and-popular-filter(v-show="showFilter")
-          .background-country(@click="toggleFilter('filter')")
+          .background-selector(@click="toggleFilter('filter')")
           ul
-            router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li"  @click.native="newListFilter")
+            router-link(v-show="selectedFilter==='인기순'" :to="{ name: 'ListView', params: { id: $route.params.id }, query: { search: $route.query.search }}" tag="li"  @click.native="newListFilter")
               a(href) 최신순
-            router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }}" tag="li" @click.native="popularListFilter")
+            router-link(v-show="selectedFilter==='최신순'" :to="{ name: 'ListView', params: { id: $route.params.id }, query: { search: $route.query.search }}" tag="li" @click.native="popularListFilter")
               a(href) 인기순
     router-view
   .goto-write
     h2.write-title 당신의 여행 일지를 트래블러스들에게 자랑하는 공간!
-    router-link.write-link(:to="{name: 'Write', params: {id: 'wirte'}}") 여행 일지 쓰기
+    button.btn-start(type="button" @click="showSignModal" v-if="userStatus === 'out'") 시작하기
+    router-link.write-link(:to="{name: 'Write', query: {id: userUid}}" v-if="userStatus === 'in'") 여행 일지 쓰기
 </template>
 
 <script>
@@ -47,25 +48,16 @@ div
       ListView
     },
     mounted () {
-      axios.get(listApi).then(response => {
-        let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
-        this.$store.dispatch('setListsData', payload).then(response => {
-          this.$store.commit('makePageNumber', this.getFilteredList.length)
-          this.$store.commit('newListFilter')
-        })
-      }).catch(error => console.log(error.message))
+      this.setListsData()
       axios.get(locationApi).then(response => {
         this.$store.dispatch('setCountryAndCity', response.data)
       }).catch(error => console.log(error.message))
+      this.$store.commit('getUserUid')
     },
     computed: {
-      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey'])
+      ...mapGetters(['getFilteredList', 'getCountryAndCityName', 'selectedFilter', 'selectedCountryFilter', 'showFilter', 'showCountry', 'showCity', 'selectedCountryKey', 'userUid', 'userStatus'])
     },
     methods: {
-      setAllBlogList () {
-        this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
-        this.$store.commit('makePageNumber', this.getFilteredList.length)
-      },
       // 필터를 선택하면 보여지는 글의 개수가 달라지기 때문에, makePageNumber 실행 필요.
       filterCountryList (country) {
         this.$store.commit('setCountryAndCityData')
@@ -76,7 +68,17 @@ div
         this.$store.commit('filterCityList', city)
         this.$store.commit('makePageNumber', this.getFilteredList.length)
       },
-      ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'toggleFilter'])
+      setListsData () {
+        axios.get(listApi).then(response => {
+          let payload = { 'data': response.data, 'id': this.$route.params.id, 'search': this.$route.query.search }
+          this.$store.dispatch('setListsData', payload).then(response => {
+            this.$store.commit('makePageNumber', this.getFilteredList.length)
+            this.$store.commit('newListFilter')
+          })
+        }).catch(error => console.log(error.message))
+      },
+      ...mapMutations(['gotoBlogView', 'popularListFilter', 'newListFilter', 'toggleFilter', 'showSignModal'])
+
     }
   }
 </script>
@@ -91,7 +93,13 @@ div
     text-decoration: none;
     color: inherit;
   }
-  
+  .background-selector {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vw;
+  }
   .list-container {
     @extend %maxwidth;
     .list-title {
@@ -101,13 +109,13 @@ div
   
   .list-filter {
     @include clearfix;
+    position: relative;
     .icon-down {
       position: relative;
       top: 3px;
       float: right;
       font-size: 18px;
     }
-    position: relative;
     .country-and-city {
       position: relative;
       .selected-country {
@@ -142,6 +150,14 @@ div
       .selected-filter {
         font-weight: bold;
       }
+      .new-and-popular-filter {
+        position: absolute;
+        z-index: 50;
+        width: 100%;
+        ul {
+          position: absolute;
+        }
+      }
     }
   }
   
@@ -152,12 +168,14 @@ div
     .write-title {
       color: #fff;
     }
-    .write-link {
+    .write-link, .btn-start {
       display: block;
       color: #fff;
+      background: $color1;
       border: 1px solid #fff;
       border-radius: 4px;
       box-shadow: 0 2px 3px 0 $color1;
+      cursor: pointer;
     }
   }
   
@@ -231,11 +249,11 @@ div
       margin: 32px 0 0 0;
       .write-title {
         margin: 0 47px 0 10px;
-        padding: 32px 0 0 0;
+        padding: 50px 0 0 0;
         text-align: left;
         font-size: 20px;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 20px 0 0 10px;
         width: 104px;
         height: 34px;
@@ -321,7 +339,7 @@ div
         font-size: 25px;
         float: left;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 68px 64px 0 0;
         width: 153px;
         height: 46px;
@@ -404,10 +422,10 @@ div
       margin: 40px 0 0 0;
       height: 260px;
       .write-title {
-        padding: 50px 0 0 0;
+        padding: 70px 0 0 0;
         font-size: 43px;
       }
-      .write-link {
+      .write-link, .btn-start {
         margin: 21px auto 0 auto;
         width: 201px;
         height: 62px;
