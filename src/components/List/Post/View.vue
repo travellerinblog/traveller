@@ -40,12 +40,16 @@
                   .btns
                     span {{item.date}}
                     div(v-if="userStatus==='in'")
-                      //- button.btn-save(v-show="saveEditedReply" type="button" @click="" :class="index") 저장
-                      button.btn-edit(v-show="item.user_uid === replyUserUid" type="button" @click="editReply(index)" :class="index") 수정
-                      button.btn-delete(v-show="item.user_uid === replyUserUid" type="button" @click="deleteReply(item.key)") 삭제
+                      button.btn-edit(v-show="item.user_uid === replyUserUid && !showEditReply" type="button" @click="changeEditReply(index)") 수정
+                      button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
+                      button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
+                      button.btn-delete(v-show="item.user_uid === replyUserUid && !showEditReply" type="button" @click="askDeleteReply(index)") 삭제
+                    .ask-delete(v-show="showDeleteReply.display" v-if="index === showDeleteReply.index")
+                      p 댓글을 삭제하시겠습니까?
+                      button.btn-delete(@click="deleteReply(item.key)") 삭제
+                      button.btn-cancel(@click="closeDeleteReply") 취소
                 .reply-list-content
-                  //- textarea(v-if="item.clickedBtnEdit" :class="index" @input="detectEventBinding('name', $event)" :value="reply.reply_text" v-text="item.reply_text")
-                  p(:class="index") {{item.reply_text}}
+                  p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText(item.reply_text)") {{item.reply_text}}
         .btn-contents
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
 </template>
@@ -69,11 +73,11 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'replyUserUid'])
+      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'replyUserUid', 'showDeleteReply', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
-      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal']),
-      ...mapActions(['editReply', 'inputReplyText']),
+      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeleteReply', 'closeDeleteReply', 'editReplyText']),
+      ...mapActions(['inputReplyText', 'saveEditReply']),
       submitText () {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
         this.$store.commit('checkReplyText')
@@ -92,7 +96,44 @@
         }).catch(error => console.log(error.message))
       },
       deleteReply (uid) {
-        this.$store.dispatch('deleteReply', {'id': this.$route.params.id, 'key': uid})
+        let replyApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply/' + uid + '.json'
+        axios.delete(replyApi).then(() => {
+          axios.get(listApi).then(response => {
+            let payload = { 'data': response.data, 'id': null }
+            this.$store.dispatch('setListsData', payload).then(() => {
+              this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+              this.$store.commit('closeDeleteReply')
+            })
+          }).catch(error => console.log(error.message))
+        }).catch(error => console.log(error.message))
+      },
+      changeEditReply (index) {
+        // 포커스를 주기 위해 수정해야할 리플 엘리먼트를 찾는다.
+        let el = document.getElementById('reply' + index)
+        // 수정 버튼을 누르면 저장이 보이도록 하는 mutation
+        this.$store.commit('changeEditReply', index)
+        // 렌더된 다음 포커스를 준다.
+        this.$nextTick(() => {
+          el.focus()
+        })
+      },
+      cancelEditReply (index) {
+        let el = document.getElementById('reply' + index)
+        el.textContent = this.originalReplyText
+        this.$store.commit('changeEditReply', index)
+      },
+      saveEditReply (key) {
+        this.$store.dispatch('saveEditReply', {'reply_key': key, 'post_id': this.$route.params.id})
+      },
+      focusOut (index, key) {
+        // 댓글의 blur 이벤트
+        // blur에 그냥 취소를 연결하면, 저장 버튼을 눌렀을 때도 취소가 동작하기 때문에
+        // blur 이벤트가 눌려진 타겟이 저장 버튼이면 저장을 수행하도록하고 아니면 취소를 수행
+        if (event.relatedTarget && event.relatedTarget.id === 'reply-save' + index) {
+          this.$store.dispatch('saveEditReply', {'reply_key': key, 'post_id': this.$route.params.id})
+        } else {
+          this.cancelEditReply(index)
+        }
       }
     }
   }
@@ -280,7 +321,14 @@
                 .btn-save{ 
                   border: 1px solid rgba($color1, .5); 
                   margin: 0 5px; 
-                } 
+                }
+                .ask-delete {
+                  position: absolute;
+                  width: 200px;
+                  height: 50px;
+                  border: 1px solid #aaa;
+                  background-color: #fff;
+                }
               } 
             } 
             .reply-list-content{ 
