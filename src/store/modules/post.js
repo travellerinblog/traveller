@@ -366,10 +366,10 @@ export default {
       var uploadName = payload.id + '_' + payload.type + '_' + date + '_' + payload.image.name
       var storageRef = firebase.storage.ref('/Write/' + uploadName)
       commit('imageUploadProgress', {'state': 'progress', 'type': payload.type})
-      if (state.title_img_url !== '') {
-        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
-        storageRef.delete()
-      }
+      // if (state.title_img_url !== '') {
+      //   let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
+      //   storageRef.delete()
+      // }
       storageRef.put(payload.image).then(snapshot => {
         let imgInfo = { 'url': snapshot.downloadURL, 'name': uploadName }
         payload.type === 'title' ? commit('setTitleImgUrl', imgInfo) : commit('setContentImgUrl', imgInfo)
