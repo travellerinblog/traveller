@@ -4,7 +4,7 @@ import axios from 'axios'
 export default {
   state: {
     show_sign_container: false,
-    show_sign_in: false,
+    show_sign_in: true,
     show_sign_up: false,
     show_sign_up_message: false,
     sign_up_message: '',
@@ -50,7 +50,7 @@ export default {
     },
     closeContainer (state) {
       state.show_sign_container = false
-      state.show_sign_in = false
+      state.show_sign_in = true
       state.show_sign_up = false
     },
     signViewChange (state, payload) {
@@ -174,11 +174,6 @@ export default {
         console.log(error.message)
       })
     },
-    // getUsersData ({commit}) {
-    //   axios.get(userApi).then(response => {
-    //     commit('getUsersData', response.data)
-    //   })
-    // },
     checkUserExist ({commit}) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
       if (user) {

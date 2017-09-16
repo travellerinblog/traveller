@@ -101,11 +101,11 @@
   }
   
   .cover {
-    display: flex;
-    justify-content: space-between;
+    @include clearfix;
   }
 
   .logo_search{
+    float: left;
     display: flex;
   }
 
@@ -226,7 +226,7 @@
   }
   
   .log {
-    text-align: right;
+    float: right;
     .btn-start, .btn-out {
       width: 82px;
       height: 32px;
