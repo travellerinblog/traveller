@@ -4,7 +4,7 @@
       h1 우리가 강추한다!
     .content
       router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-image
-        img(:src="getRecommendItemImgSrc")
+        img(:src="getRecommendItemImgSrc" alt="추천 게시글 타이틀 이미지")
       router-link(:to="{ name: 'View', params: { id: 'list1' }}" @click.native="gotoBlogView('list1')").content-text
         h2.title {{getRecommendItem.title}}
         p.info {{getConvertedDate}}  |  {{getRecommendItem.country_kr}}  | {{ getRecommendItem.name}}

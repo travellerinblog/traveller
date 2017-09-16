@@ -1,10 +1,10 @@
 <template lang="pug">
-
+  .eidt
+    p 글 수정
 </template>
 
 <script>
 export default {
-  name:'emailSignUp',
   data () {
     return {
 

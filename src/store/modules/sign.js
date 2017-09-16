@@ -1,6 +1,7 @@
 const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
 import firebase from './../../firebase'
 import axios from 'axios'
+import router from './../../router/'
 export default {
   state: {
     show_sign_container: false,
@@ -13,7 +14,8 @@ export default {
     users_data: {},
     signin_user: {},
     user_status: 'out',
-    user_name: ''
+    user_name: '',
+    reply_user_uid: ''
   },
   getters: {
     showSignContainer (state) {
@@ -42,6 +44,9 @@ export default {
     },
     userName (state) {
       return state.user_name
+    },
+    replyUserUid (state) {
+      return state.reply_user_uid
     }
   },
   mutations: {
@@ -75,6 +80,9 @@ export default {
     changeUsetStatus (state, status) {
       state.user_status = status
     },
+    setUserUid (state, uid) {
+      state.reply_user_uid = uid
+    },
     saveUserData (state, result) {
       let user = result.user
       state.signin_user.id = user.email
@@ -92,7 +100,7 @@ export default {
         for (let prop in userDB) {
           if (userDB[prop].uid === userInfo.uid) {
             state.show_sign_up_message = true
-            state.sign_up_message = userInfo.provider + ' 계정으로 이미 가입된 아이디입니다. 로그인해주세요.'
+            state.sign_up_message = userDB[prop].provider + ' 계정으로 이미 가입된 아이디입니다. 로그인해주세요.'
             return
           }
         }
@@ -117,6 +125,8 @@ export default {
     logout (state) {
       localStorage.removeItem('user_uid')
       state.user_status = 'out'
+      state.reply_user_uid = ''
+      router.push({name: 'Home'})
     },
     showUserName (state) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
@@ -144,6 +154,7 @@ export default {
                 context.commit('closeContainer')
                 context.commit('getUsersData', response.data)
                 context.commit('changeUsetStatus', 'in')
+                context.commit('setUserUid', userInfo.uid)
               })
             })
           }
@@ -153,6 +164,7 @@ export default {
             window.localStorage.setItem('user_uid', JSON.stringify(userInfo.uid))
             context.commit('closeContainer')
             context.commit('changeUsetStatus', 'in')
+            context.commit('setUserUid', userInfo.uid)
           }
           break
       }
@@ -160,18 +172,16 @@ export default {
     signUpAndSignIN (context, payload) {
       // google과 facebook 중 어느 것으로 로그인하는지 확인.
       let provider = payload.provider === 'google' ? firebase.googleProvider : firebase.facebookProvider
-      console.log('provider는 무엇인가? :', provider)
       // 가입 여부를 확인하기 위해, 로그인 버튼을 눌렀을 때, firebase에 저장되어 있는 user들의 정보를 가져온다.
       axios.get(userApi).then(response => {
         context.commit('getUsersData', response.data)
       })
       firebase.auth().signInWithPopup(provider).then(result => {
-        console.log('result????? :', result)
         context.commit('saveUserData', result)
         context.commit('userDataCheck')
         context.dispatch('signExecution', payload)
       }).catch(function (error) {
-        console.log(error.message)
+        console.log('error', error)
       })
     },
     // getUsersData ({commit}) {
