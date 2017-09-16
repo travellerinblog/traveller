@@ -1,6 +1,7 @@
 const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
 import firebase from './../../firebase'
 import axios from 'axios'
+import router from './../../router/'
 export default {
   state: {
     show_sign_container: false,
@@ -125,6 +126,7 @@ export default {
       localStorage.removeItem('user_uid')
       state.user_status = 'out'
       state.reply_user_uid = ''
+      router.push({name: 'Home'})
     },
     showUserName (state) {
       let user = JSON.parse(localStorage.getItem('user_uid'))

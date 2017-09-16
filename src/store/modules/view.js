@@ -47,6 +47,9 @@ export default {
     },
     clearReplyData (state) {
       state.view_reply_data.reply_text = '댓글을 작성해주세요'
+    },
+    askDeleteReply (state) {
+      state.show_delete_reply = true
     }
   },
   actions: {
