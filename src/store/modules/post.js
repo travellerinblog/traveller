@@ -326,6 +326,7 @@ export default {
       let second = times.getSeconds() < 10 ? '0' + times.getSeconds() : times.getSeconds()
       state.temp_write_data.id = payload.id
       state.temp_write_data.name = payload.name
+      state.temp_write_data.uid = JSON.parse(localStorage.getItem('user_uid'))
       state.temp_write_data.view = 0
       state.temp_write_data.write_date = times.getFullYear() + month + day + hours + minute + second
     },

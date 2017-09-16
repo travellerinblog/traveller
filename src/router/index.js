@@ -6,6 +6,7 @@ import List from '../components/List/List.vue'
 import ListView from '../components/List/ListView.vue'
 import View from '../components/List/Post/View.vue'
 import Write from '../components/List/Post/Write.vue'
+import Edit from '../components/List/Post/Edit.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/write',
       component: Write,
       name: 'Write'
+    },
+    {
+      path: '/edit',
+      component: Edit,
+      name: 'Edit'
     },
     {
       path: '/view/:id',
