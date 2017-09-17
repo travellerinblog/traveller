@@ -1,6 +1,7 @@
 <template lang="pug">
   form.write
     .write-title-container
+      .title-container
       .title-text-container
         fieldset.title(:class="{'has-img': wirteTitleImgUrl}")
           legend.a11y-hidden 제목 입력 폼
@@ -106,15 +107,7 @@
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import axios from 'axios'
   export default {
-    name: 'edit',
-    beforeCreate () {
-      let listApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.query.key + '.json'
-      console.log(listApi)
-      axios.get(listApi).then((response) => {
-        let payload = {'data': response.data, 'id': this.$route.query.key}
-        this.$store.commit('setEditData', payload)
-      }).catch(error => console.log(error.message))
-    },
+    name: 'write',
     mounted () {
       this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
       axios.get(locationApi).then(response => {
@@ -122,7 +115,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogEditItem', 'getBlogEditItemContents', 'getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
+      ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
     },
     methods: {
       ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'clearFileValue', 'resetTempData']),

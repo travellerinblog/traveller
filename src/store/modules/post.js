@@ -3,14 +3,24 @@ import router from './../../router/'
 import axios from 'axios'
 export default {
   state: {
+    // 글쓰기
+    // 최종 post 값
     temp_write_data: {},
+    // 제목 값
     write_title_value: '',
+    // 태그 값
     write_tag_value: '',
+    // 대표 이미지 값
     title_img_url: '',
+    // 이미지 / 텍스트 값
     write_contents_data: [],
+    // 최종 도시 값
     selected_write_city: [],
+    // 도시 값
     temp_selected_write_city: [],
+    // 날짜 값을 비교
     temp_date: {},
+    // show 관련된 것을 토글
     show_write_country: false,
     show_write_city: false,
     selected_write_country_key: '',
@@ -27,6 +37,7 @@ export default {
     image_progress_message: '이미지를 업로드 하고있습니다.',
     show_title_image_progress: false,
     show_content_image_progress: false,
+    // 에러 메세지의 유무를 확인하는 곳
     error_check_before_post: {}
   },
   getters: {
@@ -95,6 +106,12 @@ export default {
     }
   },
   mutations: {
+    // 수정
+    setEditData (state, payload) {
+      state.write_title_value = payload.data.title
+    },
+    // 글쓰기
+    // 타이틀
     setTitleValue (state, payload) {
       if (event.target.value.length > 30) {
         state.show_title_error_message = true
@@ -366,10 +383,10 @@ export default {
       var uploadName = payload.id + '_' + payload.type + '_' + date + '_' + payload.image.name
       var storageRef = firebase.storage.ref('/Write/' + uploadName)
       commit('imageUploadProgress', {'state': 'progress', 'type': payload.type})
-      if (state.title_img_url !== '') {
-        let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
-        storageRef.delete()
-      }
+      // if (state.title_img_url !== '') {
+      //   let storageRef = firebase.storage.ref('/Write/' + state.temp_write_data.title_img_name)
+      //   storageRef.delete()
+      // }
       storageRef.put(payload.image).then(snapshot => {
         let imgInfo = { 'url': snapshot.downloadURL, 'name': uploadName }
         payload.type === 'title' ? commit('setTitleImgUrl', imgInfo) : commit('setContentImgUrl', imgInfo)
