@@ -121,7 +121,6 @@
             background: none;
             border: 0 none;
             padding: 0;
-            cursor: pointer;
             i{
               margin-left: 20px;
               &::before{

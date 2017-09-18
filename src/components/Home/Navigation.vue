@@ -78,7 +78,6 @@ transition(name="slide")
       border-radius: 4px;
       color: $color1;
       font-size: 14px;
-      cursor: pointer;
     }
     h1 {
       float: left;
@@ -124,7 +123,6 @@ transition(name="slide")
     line-height: 36px;
     color: #181818;
     font-size: 16px;
-    cursor: pointer;
   }
   
   @include mobile {

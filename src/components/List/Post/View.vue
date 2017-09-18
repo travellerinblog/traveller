@@ -34,7 +34,7 @@
             button(type="button" @click="showSignModal")
               | 트레블로를 가입 혹은 로그인 후, 댓글이나 글쓰기가 가능합니다. 
               br
-              | 트레블로를 시작하여 주세요
+              | 트레블로 시작하기
               i.icon-next
           .reply-write(v-else)
             h1 댓글 작성
@@ -308,7 +308,7 @@
             background: $color1;
             color: #fff;
             i{
-              margin-left: 50px;
+              margin-left: 20px;
               vertical-align: -2px;
             }
           }

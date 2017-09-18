@@ -130,7 +130,6 @@
     padding: 0;
     border: 0 none;
     background: none;
-    cursor: pointer;
     &::before {
       display: block;
       width: 40px;
@@ -237,7 +236,6 @@
       line-height: 32px;
       color: $color1;
       font-size: 14px;
-      cursor: pointer;
     }
   }
   @include mobile {
