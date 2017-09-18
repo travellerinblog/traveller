@@ -316,6 +316,9 @@ export default {
       }
       state.show_write_error_message = true
     },
+    closeErrorMessage (state) {
+      state.show_write_error_message = false
+    },
     setRemainWriteInfo (state, payload) {
       // 저장하기 전에 필요한 나머지 데이터들 추가해 주기.
       let times = new Date()
@@ -382,30 +385,35 @@ export default {
       let tempData = context.state.temp_write_data
       let requiredData = [{ 'key': 'title', 'print': '제목' }, { 'key': 'title_img', 'print': '대표 이미지' }, { 'key': 'tag', 'print': '태그' }, { 'key': 'city', 'print': '여행지' }, { 'key': 'start_date', 'print': '여행 시작 날짜' }, { 'key': 'end_date', 'print': '여행 종료 날짜' }, { 'key': 'contents', 'print': '블로그 본문' }]
       let errorCheck = context.state.error_check_before_post
+      // 현제 표시된 에러가 하나라도 있으면 에러 창을 띄운다.
       for (var prop in errorCheck) {
         if (errorCheck[prop] === false) {
           context.commit('printErrorMessage', 'error')
           return
         }
       }
+      // 필요한 모든 값이 들어와있으면(11개) 통신한다.
       if (Object.keys(tempData).length === 11) {
         axios.get(userApi).then(response => {
           // user값을 저장하는 통신
           for (let prop in response.data) {
             if (response.data[prop].uid === payload.id) {
+              // temp data에 아직 저장되지 않은 값을 추가로 저장한다.
               context.commit('setRemainWriteInfo', response.data[prop])
             }
           }
         }).then(response => {
           // list에 저장하는 통신
           axios.post(listApi, context.state.temp_write_data).then(response => {
-            // router.push(...) 로 라우터 연결
+            // router.push(...) 로 라우터 연결 등록된 글로 연결.
             router.push({name: 'View', params: { id: response.data.name }})
           }).catch(error => console.log(error))
         }).catch(error => console.log(error.message))
       } else if (Object.keys(tempData).length === 0) {
+        // 아무 것도 입력하지 않았을 때 에러 메세지 표시
         context.commit('printErrorMessage', 'all')
       } else {
+        // 어떤 값이 입력되지 않았는지 확인한다.
         for (let prop in tempData) {
           for (let i = requiredData.length; i--;) {
             if (requiredData[i].key === prop) {
@@ -413,8 +421,10 @@ export default {
             }
           }
         }
+        // 입력되지 않은 값을 알려주는 에러 메세지 표시
         context.commit('printErrorMessage', requiredData)
       }
+      setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
     },
     deleteContent ({commit, state}, payload) {
       let content = state.write_contents_data[payload]
