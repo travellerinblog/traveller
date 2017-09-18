@@ -217,6 +217,23 @@
           line-height: 30px; 
         } 
       } 
+    }
+    .btn-edits{
+      button{
+        padding: 0 20px;
+        height: 30px;
+        line-height: 30px;
+        border: 0 none;
+      }
+      .btn-edit{
+        background: rgba($color1, .8);
+        color: #fff;
+      }
+      .btn-delete{
+        background: rgba(#b0b0b0, .8);
+        color: #fff;
+        margin-left: 10px;
+      }
     } 
   } 
   .content-body{ 
@@ -387,6 +404,10 @@
           padding: 0 10px; 
         } 
       } 
+      .btn-edits{
+        margin-top: 20px;
+        margin-left: 10px;
+      } 
     } 
     .content-body{ 
       .cover{ 
@@ -431,7 +452,7 @@
       .title-img{ 
         img{ 
           width: auto; 
-          height: 100%; 
+          height: 120%; 
         } 
       } 
       .title{ 
@@ -443,7 +464,11 @@
         p{ 
           padding: 0 15px; 
         } 
-      } 
+      }
+      .btn-edits{
+        margin-top: 20px;
+        margin-left: 15px;
+      }  
     } 
     .content-body{ 
       .cover{ 
@@ -494,6 +519,12 @@
         p{ 
           padding: 0 20px; 
         } 
+        .btn-edits{
+          position: absolute;
+          bottom: 106px;
+          right: 0;
+          margin-top: 0;
+        }
       } 
     } 
     .content-body{ 

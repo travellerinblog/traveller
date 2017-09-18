@@ -55,7 +55,7 @@
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
                 | 여행 시작 날짜 : 
-              input#start-date(type="date" @change="setDate('start')")
+              input#start-date(type="date" @change="setDate('start')" :value="writeDate.start")
             .end-date(role="group")
               label(for="end-date")
                 i
@@ -65,11 +65,11 @@
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
                 | 여행 종료 날짜 : 
-              input#end-date(type="date" @change="setDate('end')")
+              input#end-date(type="date" @change="setDate('end')" :value="writeDate.end")
             span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
         ul.write-contents-view
           li.contents-view-item(v-for="(content, index) in writeContentsData")
-            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
+            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)") {{ writeContentsData[index].value }}
             span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
             img(v-if="content.key === 'img'" :src="content.value")
             button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
@@ -96,7 +96,7 @@
         .write-button
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
-            button(type="submit" @click.prevent="saveWriteData") 저장
+            button(type="submit" @click.prevent="saveEditData") 수정
             span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
@@ -122,7 +122,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogEditItem', 'getBlogEditItemContents', 'getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
+      ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage', 'writeDate'])
     },
     methods: {
       ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'clearFileValue', 'resetTempData']),
@@ -154,9 +154,9 @@
         let payload = {'date': event.target.value, 'sort': sort}
         this.$store.commit('setDate', payload)
       },
-      saveWriteData () {
-        let payload = { 'id': this.$route.query.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
-        this.$store.dispatch('saveWriteData', payload)
+      saveEditData () {
+        let payload = {'id': this.$route.query.id, 'key': this.$route.query.key}
+        this.$store.dispatch('saveEditData', payload)
       }
     }
   }
@@ -219,7 +219,6 @@
       position: relative;
       max-width: 1220px;
       margin: 55px auto 0 auto;
-      background: pink;
       input,
       label {
         border: 0 none;
@@ -227,11 +226,16 @@
         width: auto;
         background: none;
       }
+      #write-title, #write-tag {
+        width: 900px;
+        height: 40px;
+        line-height: 40px;
+      }
       .title {
         position: absolute;
         left: 0;
-        bottom: -420px;
-        font-size: 56px;
+        bottom: -410px;
+        font-size: 30px;
       }
       .tag {
         position: absolute;
@@ -480,7 +484,7 @@
     }
     textarea {
       margin: 20px 0 0 0;
-      padding: 0 35px 0 0;
+      padding: 20px;
       width: 100%;
       height: 150px;
       overflow: visible;
@@ -595,7 +599,7 @@
       .title-text-container {
         .title {
           left: 10px;
-          bottom: -200px;
+          bottom: -190px;
           font-size: 56px;
           font-size: 24px;
         }
@@ -610,6 +614,10 @@
           label{
             width: 250px;
           }
+        }
+        #write-title, #write-tag {
+          width: 100%;
+          min-width: 300px;
         }
       }
     }
@@ -794,7 +802,7 @@
       .title-text-container {
         .title {
           left: 10px;
-          bottom: -200px;
+          bottom: -190px;
           font-size: 56px;
           font-size: 24px;
         }
@@ -809,6 +817,10 @@
           label{
             width: 250px;
           }
+        }
+        #write-title, #write-tag {
+          width: 748px;
+          min-width: 300px;
         }
       }
     }
