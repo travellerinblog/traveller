@@ -3,6 +3,7 @@ const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
 import axios from 'axios'
 export default {
   state: {
+    // 댓글 등록시 필요한 데이터
     view_reply_data: {
       date: '',
       id: '',
@@ -10,24 +11,26 @@ export default {
       user_uid: '',
       reply_text: '댓글을 작성해주세요'
     },
-    show_delete_reply: {
-      display: false,
-      index: null
-    },
+    // 삭제 여부 확인을 위한 값
+    show_delete_post: false,
+    // 댓글을 수정할 수 있는 상태로 만들기 위한 값
     reply_editable: {
       state: false,
       index: null
     },
+    // 수정을 눌렀을 때 저장/취소 버튼이 보이도록 하는 값
     show_edit_reply: false,
+    // 댓글 수정 취소시에 원래의 댓글을 넣어주기 위해 값을 저장
     original_reply_text: '',
+    // 수정된 댓들을 저장
     edited_reply_text: ''
   },
   getters: {
     viewReplyData (state) {
       return state.view_reply_data
     },
-    showDeleteReply (state) {
-      return state.show_delete_reply
+    showDeletePost (state) {
+      return state.show_delete_post
     },
     replyEditable (state) {
       return state.reply_editable
@@ -77,26 +80,26 @@ export default {
       state.original_reply_text = ''
       state.edited_reply_text = ''
     },
-    askDeleteReply (state, payload) {
+    askDeletePost (state, payload) {
       // 댓글 삭제 여부 확인 창 열기
-      state.show_delete_reply.display = true
-      state.show_delete_reply.index = payload
+      state.show_delete_post = true
     },
-    closeDeleteReply (state) {
+    closeDeletePost (state) {
       // 댓글 삭제 여부 확인 창 닫음
-      state.show_delete_reply.display = false
-      state.show_delete_reply.index = null
+      state.show_delete_post = false
     },
-    changeEditReply (state, index) {
+    changeEditReply (state, payload) {
       // 저장버튼 보이게하고 리플 텍스트 editable 상태를 변경
       state.show_edit_reply = !state.show_edit_reply
       state.reply_editable.state = !state.reply_editable.state
       // 해당 요소만 저장 할 수 있도록 하기 위해 index 값이 필요
-      state.reply_editable.index = index
+      state.reply_editable.index = payload.index
+      if (payload.replyText) {
+        state.original_reply_text = payload.replyText
+      }
     },
     editReplyText (state, replyText) {
       // 리플 텍스트의 input 이벤트, state에서 reply 값을 변경한다.
-      state.original_reply_text = replyText
       state.edited_reply_text = event.target.textContent
     }
   },
@@ -120,7 +123,7 @@ export default {
     },
     saveEditReply ({commit, state}, payload) {
       // 댓글 수정후 저장 버튼을 눌렀을 때의 동작
-      // 서버와 통신 reply 값을 변경, key값 필요
+      // 서버와 통신 reply 값을 변경
       let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.post_id + '/reply/' + payload.reply_key + '.json'
       axios.patch(URL, {'reply_text': state.edited_reply_text})
       .catch(function (error) {

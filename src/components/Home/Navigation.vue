@@ -1,8 +1,8 @@
 <template lang="pug">
+transition(name="slide")
   nav
     .gnb
       .gnb-header
-        //- button.btn-start(type="button") 시작하기
         h1 {{ userName }} 
         button.btn-start(type="button" @click="startSign" v-if="userStatus === 'out'") 시작하기
         button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseModal") 닫기
@@ -43,6 +43,10 @@
 
 <style lang="scss" scoped>
   @import '../../sass/App.scss';
+  .slide-leave-active,
+  .slide-enter-active {
+    transition: 1.5s;
+  }
   .gnb {
     position: fixed;
     z-index: 100;
@@ -139,9 +143,21 @@
     .btn-close {
       margin-right: 10px;
     }
+    .slide-enter {
+      transform: translateX(-100%);
+    }
+    .slide-leave-to {
+      transform: translate(-100%);
+    }
   }
   
   @include tablet {
+    .slide-enter {
+      transform: translateX(-50%);
+    }
+    .slide-leave-to {
+      transform: translate(-50%);
+    }
     .gnb {
       width: 330px;
     }
@@ -160,6 +176,12 @@
   }
   
   @include desktop {
+    .slide-enter {
+      transform: translateX(-30%);
+    }
+    .slide-leave-to {
+      transform: translate(-30%);
+    }
     .gnb {
       width: 330px;
     }

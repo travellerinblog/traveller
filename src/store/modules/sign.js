@@ -15,7 +15,7 @@ export default {
     signin_user: {},
     user_status: 'out',
     user_name: '',
-    reply_user_uid: ''
+    user_uid: ''
   },
   getters: {
     showSignContainer (state) {
@@ -45,8 +45,8 @@ export default {
     userName (state) {
       return state.user_name
     },
-    replyUserUid (state) {
-      return state.reply_user_uid
+    userUid (state) {
+      return state.user_uid
     }
   },
   mutations: {
@@ -81,7 +81,7 @@ export default {
       state.user_status = status
     },
     setUserUid (state, uid) {
-      state.reply_user_uid = uid
+      state.user_uid = uid
     },
     saveUserData (state, result) {
       let user = result.user
@@ -125,7 +125,7 @@ export default {
     logout (state) {
       localStorage.removeItem('user_uid')
       state.user_status = 'out'
-      state.reply_user_uid = ''
+      state.user_uid = ''
       router.push({name: 'Home'})
     },
     showUserName (state) {

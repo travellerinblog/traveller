@@ -22,7 +22,7 @@
                 circle(cx='8.5', cy='8.5', r='1.5')
                 polyline(points='21 15 16 10 5 21')
             | 대표이미지를 등록하세요
-          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
+          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')" accept="image/*")
         span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
       .title-image-container
         img(:src="wirteTitleImgUrl")
@@ -84,7 +84,6 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               span 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
           .contents-text
             label(for="contents-text") 
               i
@@ -98,7 +97,7 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveWriteData") 저장
-            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+            write-error.error-message(v-show="showWriteErrorMessage")
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 
@@ -106,8 +105,12 @@
   const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import axios from 'axios'
+  import WriteError from './WriteError.vue'
   export default {
-    name: 'write',
+    name: 'write',`
+    components: {
+      WriteError
+    },
     mounted () {
       this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
       axios.get(locationApi).then(response => {
@@ -148,7 +151,7 @@
         this.$store.commit('setDate', payload)
       },
       saveWriteData () {
-        let payload = { 'id': this.$route.query.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
+        let payload = { 'id': this.$route.query.id }
         this.$store.dispatch('saveWriteData', payload)
       }
     }

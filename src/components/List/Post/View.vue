@@ -13,9 +13,13 @@
           span {{getBlogViewItem.write_date}}
           b |
           span 조회수 {{getViewCount}}
-        .btn-edits
-          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': replyUserUid, 'key': this.$route.params.id }}") 수정
-          button.btn-delete 삭제
+        .btn-edits(v-if="getBlogViewItem.uid === userUid")
+          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': userUid, 'key': this.$route.params.id }}") 수정
+          button.btn-delete(@click="askDeletePost") 삭제
+        .ask-delete(v-show="showDeletePost")
+          p 글을 삭제하시겠습니까?
+          button.btn-delete(@click="deleteAction('post')") 삭제
+          button.btn-cancel(@click="closeDeletePost") 취소
     .content-body
       .cover
         .contents
@@ -40,16 +44,12 @@
                   .btns
                     span {{item.date}}
                     div(v-if="userStatus==='in'")
-                      button.btn-edit(v-show="item.user_uid === replyUserUid && !showEditReply" type="button" @click="changeEditReply(index)") 수정
+                      button.btn-edit(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
                       button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
                       button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
-                      button.btn-delete(v-show="item.user_uid === replyUserUid && !showEditReply" type="button" @click="askDeleteReply(index)") 삭제
-                    .ask-delete(v-show="showDeleteReply.display" v-if="index === showDeleteReply.index")
-                      p 댓글을 삭제하시겠습니까?
-                      button.btn-delete(@click="deleteReply(item.key)") 삭제
-                      button.btn-cancel(@click="closeDeleteReply") 취소
+                      button.btn-delete(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
                 .reply-list-content
-                  p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText(item.reply_text)") {{item.reply_text}}
+                  p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText") {{item.reply_text}}
         .btn-contents
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
 </template>
@@ -73,12 +73,13 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'replyUserUid', 'showDeleteReply', 'replyEditable', 'showEditReply', 'originalReplyText'])
+      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'userUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
-      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeleteReply', 'closeDeleteReply', 'editReplyText']),
+      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),
       ...mapActions(['inputReplyText', 'saveEditReply']),
       submitText () {
+        // 댓글 등록
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply.json'
         this.$store.commit('checkReplyText')
         // 댓글이 빈칸일 때 댓글이 달리지 않도록.
@@ -95,34 +96,47 @@
           }).catch(error => console.log(error.message))
         }).catch(error => console.log(error.message))
       },
-      deleteReply (uid) {
-        let replyApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply/' + uid + '.json'
-        axios.delete(replyApi).then(() => {
+      deleteAction (deletekey) {
+        let replyUrl = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '/reply/' + deletekey + '.json'
+        let postUrl = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.params.id + '.json'
+        let deleteUrl = deletekey === 'post' ? postUrl : replyUrl
+        axios.delete(deleteUrl).then(() => {
           axios.get(listApi).then(response => {
             let payload = { 'data': response.data, 'id': null }
-            this.$store.dispatch('setListsData', payload).then(() => {
-              this.$store.commit('gotoBlogViewReply', this.$route.params.id)
-              this.$store.commit('closeDeleteReply')
-            })
+            // 댓글 삭제 후 firebase에서 수정된 댓글 값을 가져온다.
+            if (deletekey === 'post') {
+              this.$router.push({name: 'Home'})
+            } else {
+              this.$store.dispatch('setListsData', payload).then(() => {
+                this.$store.commit('gotoBlogViewReply', this.$route.params.id)
+                this.$store.commit('closeDeletePost')
+              })
+            }
           }).catch(error => console.log(error.message))
         }).catch(error => console.log(error.message))
       },
-      changeEditReply (index) {
+      changeEditReply (payload) {
         // 포커스를 주기 위해 수정해야할 리플 엘리먼트를 찾는다.
-        let el = document.getElementById('reply' + index)
+        let el = document.getElementById('reply' + payload.index)
         // 수정 버튼을 누르면 저장이 보이도록 하는 mutation
-        this.$store.commit('changeEditReply', index)
+        this.$store.commit('changeEditReply', payload)
         // 렌더된 다음 포커스를 준다.
         this.$nextTick(() => {
           el.focus()
         })
       },
       cancelEditReply (index) {
-        let el = document.getElementById('reply' + index)
+        // 댓글 수정 취소
+        // 해당 댓글 요소를 찾아서 원래 입력되어있던 댓글 값을 넣어주고, 수정/삭제 버튼이 보이게한다.
+        // changeEditReply 에서 payload를 객체로 받기 때문에(처음에 original_text를 넣기위해서) payload를 객체로 선언하여 전달한다
+        let payload = {}
+        payload.index = index
+        let el = document.getElementById('reply' + payload.index)
         el.textContent = this.originalReplyText
-        this.$store.commit('changeEditReply', index)
+        this.$store.commit('changeEditReply', payload)
       },
       saveEditReply (key) {
+        // 수정한 댓글을 저장, 댓글의 key와 글의 key값이 필요
         this.$store.dispatch('saveEditReply', {'reply_key': key, 'post_id': this.$route.params.id})
       },
       focusOut (index, key) {
@@ -215,7 +229,7 @@
           font-size: 14px; 
           height: 30px; 
           line-height: 30px; 
-        } 
+        }
       } 
     }
     .btn-edits{
@@ -338,13 +352,6 @@
                 .btn-save{ 
                   border: 1px solid rgba($color1, .5); 
                   margin: 0 5px; 
-                }
-                .ask-delete {
-                  position: absolute;
-                  width: 200px;
-                  height: 50px;
-                  border: 1px solid #aaa;
-                  background-color: #fff;
                 }
               } 
             } 

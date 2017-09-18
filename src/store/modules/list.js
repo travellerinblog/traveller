@@ -565,7 +565,7 @@ export default {
               let timeDate
               if (hourDate < 12) {
                 timeDate = hourDate + ':' + minDate + ' AM'
-              } else if (hourDate === 12) {
+              } else if (hourDate === '12') {
                 timeDate = hourDate + ':' + minDate + ' PM'
               } else if (hourDate >= 22) {
                 timeDate = (hourDate - 12) + ':' + minDate + ' PM'
