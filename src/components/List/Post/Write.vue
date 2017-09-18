@@ -98,7 +98,7 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveWriteData") 저장
-            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+            write-error.error-message(v-show="showWriteErrorMessage")
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 
@@ -106,8 +106,12 @@
   const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import axios from 'axios'
+  import WriteError from './WriteError.vue'
   export default {
     name: 'write',
+    components: {
+      WriteError
+    },
     mounted () {
       this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
       axios.get(locationApi).then(response => {
@@ -148,7 +152,7 @@
         this.$store.commit('setDate', payload)
       },
       saveWriteData () {
-        let payload = { 'id': this.$route.query.id, 'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date') }
+        let payload = { 'id': this.$route.query.id }
         this.$store.dispatch('saveWriteData', payload)
       }
     }
