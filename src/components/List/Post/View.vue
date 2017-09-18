@@ -30,8 +30,12 @@
               p(v-if="item.key === 'text' ") {{ item.value }}
               img(v-else :src="item.value")
         .reply
-          .btn-start(v-if="userStatus==='out'")
-            button(type="button" @click="showSignModal") 시작하기
+          .btn-login-start(v-if="userStatus==='out'")
+            button(type="button" @click="showSignModal")
+              | 트레블로를 가입 혹은 로그인 후, 댓글이나 글쓰기가 가능합니다. 
+              br
+              | 트레블로를 시작하여 주세요
+              i.icon-next
           .reply-write(v-else)
             h1 댓글 작성
             div
@@ -54,6 +58,10 @@
                   p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText") {{item.reply_text}}
         .btn-contents
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
+          router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
+    .btn-goto
+      button(type="button") 위로 
+      button(type="button") 아래로 
 </template>
 
 <script>
@@ -75,7 +83,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'userUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
+      ...mapGetters(['userStatus', 'getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'userUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
       ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),
@@ -151,6 +159,13 @@
           this.cancelEditReply(index)
         }
       }
+      // ,
+      // goTo (what) {
+      //   console.log(what)
+      //   scrollBehavior (to, from, savedPosition) {
+      //     return { x: 0, y: 0 }
+      //   }
+      // }
     }
   }
 </script>
@@ -277,7 +292,27 @@
       .reply{ 
         max-width: 1220px; 
         margin: 0 auto; 
-        box-sizing: border-box; 
+        box-sizing: border-box;
+        .btn-login-start{
+          margin-top: 50px;
+          box-shadow: 0 5px 5px rgba(#000, 0.3);
+          button{
+            border: 0 none;
+            box-sizing: border-box; 
+            width: 100%; 
+            height: 100px;
+            border: 1px solid $color1; 
+            border-radius: 4px; 
+            line-height: 1.4em;
+            font-size: 20px;
+            background: $color1;
+            color: #fff;
+            i{
+              margin-left: 50px;
+              vertical-align: -2px;
+            }
+          }
+        }
         .reply-write{ 
           margin-top: 50px;
           h1{ 
@@ -348,12 +383,12 @@
                   border: 0 none;
                 } 
                 .btn-edit{ 
-                  background: rgba($color1, .6); 
+                  background: $color1; 
                   color: #fff;
                   margin: 0 5px; 
                 }
                 .btn-delete{
-                  background: rgba(#b0b0b0, .6);
+                  background: #b0b0b0;
                   color: #fff;
                 } 
                 .btn-save{ 
@@ -397,7 +432,20 @@
           font-size: 16px; 
           color: $color1; 
           text-decoration: none; 
-        } 
+        }
+        .btn-write{
+          display: inline-block; 
+          height: 30px; 
+          line-height: 30px; 
+          padding: 0 10px; 
+          margin-left: 10px;
+          border: 1px solid $color1; 
+          border-radius: 4px; 
+          font-size: 16px; 
+          color: #fff; 
+          background: $color1;
+          text-decoration: none; 
+        }
       } 
     } 
   } 
@@ -440,6 +488,45 @@
       color: #fff;
       background: $color1;
       margin-left: 10px;
+    }
+  }
+  .btn-goto{
+    position: fixed;
+    z-index: 2;
+    bottom: 85px;
+    right: 20px;
+    button{
+      position: relative;
+      overflow: hidden;
+      display: block;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid #b0b0b0;
+      background: none;
+      &::before{
+        content: '\66';
+        display: block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-family: "travelericon";
+        font-size: 19px;
+        color: $color1;
+        font-weight: bold;
+        background: rgba(#fff, .7);
+      }
+    }
+    button:first-child{
+      border-bottom: 0 none;
+      &::before {
+        transform: rotate(0deg);
+      }
+    }
+    button:last-child{
+      &::before {
+        transform: rotate(180deg);
+      }
     }
   }
   @include mobile { 
@@ -517,7 +604,7 @@
       } 
       .title{ 
         margin: 0 auto; 
-        padding: 550px 0 100px 0; 
+        padding: 493px 0 100px 0; 
         h1{ 
           padding: 0 15px; 
         } 
@@ -572,7 +659,7 @@
     .content-head{ 
       .title{ 
         margin: 0 auto; 
-        padding: 550px 0 100px 0; 
+        padding: 493px 0 100px 0; 
         h1{ 
           padding: 0 20px; 
         } 
