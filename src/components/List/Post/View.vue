@@ -17,9 +17,11 @@
           router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': userUid, 'key': this.$route.params.id }}") 수정
           button.btn-delete(@click="askDeletePost") 삭제
         .ask-delete(v-show="showDeletePost")
-          p 글을 삭제하시겠습니까?
-          button.btn-delete(@click="deleteAction('post')") 삭제
-          button.btn-cancel(@click="closeDeletePost") 취소
+          .popup-background(@click="closeDeletePost")
+          .popup
+            p 글을 삭제하시겠습니까?
+            button.btn-delete(@click="deleteAction('post')") 삭제
+            button.btn-cancel(@click="closeDeletePost") 취소
     .content-body
       .cover
         .contents
@@ -43,7 +45,7 @@
                     strong by. {{item.name}}
                   .btns
                     span {{item.date}}
-                    div(v-if="userStatus==='in'")
+                    span(v-if="userStatus==='in'")
                       button.btn-edit(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
                       button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
                       button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
@@ -184,7 +186,7 @@
     } 
     .title{ 
       position: relative; 
-      z-index: 1; 
+      z-index: 5; 
       width: 100%; 
       max-width: 1220px; 
       box-sizing: border-box; 
@@ -277,6 +279,7 @@
         margin: 0 auto; 
         box-sizing: border-box; 
         .reply-write{ 
+          margin-top: 50px;
           h1{ 
             font-size: 20px; 
             margin-bottom: 10px; 
@@ -333,6 +336,7 @@
                 span{ 
                   height: 30px; 
                   line-height: 30px; 
+                  margin-left: 10px;
                 } 
                 button{ 
                   display: inline-block; 
@@ -341,17 +345,25 @@
                   height: 30px; 
                   line-height: 30px; 
                   border-radius: 4px; 
+                  border: 0 none;
                 } 
                 .btn-edit{ 
-                  border: 1px solid rgba($color1, .5); 
+                  background: rgba($color1, .6); 
+                  color: #fff;
                   margin: 0 5px; 
-                } 
-                .btn-delete{ 
-                  border: 1px solid rgba(#181818, .5); 
+                }
+                .btn-delete{
+                  background: rgba(#b0b0b0, .6);
+                  color: #fff;
                 } 
                 .btn-save{ 
-                  border: 1px solid rgba($color1, .5); 
+                  background: $color1;
+                  color: #fff;
                   margin: 0 5px; 
+                }
+                .btn-cancel{
+                  background: #b0b0b0;
+                  color: #fff;
                 }
               } 
             } 
@@ -389,6 +401,47 @@
       } 
     } 
   } 
+  .ask-delete{
+    .popup-background{
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 10;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(#fff, .95);
+    }
+    .popup{
+      position: fixed;
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      margin: -150px 0 0 -150px;
+      width: 300px;
+      height: 300px;
+      border: 1px solid #b0b0b0;
+      text-align: center;
+    }
+    p{
+      margin: 90px 0 30px 0;
+      font-size: 26px;
+    }
+    button{
+      height: 40px;
+      line-height: 40px;
+      padding: 0 20px;
+      border: 0 none;
+    }
+    .btn-delete{
+      color: #fff;
+      background: #b0b0b0;
+    }
+    .btn-cancel{
+      color: #fff;
+      background: $color1;
+      margin-left: 10px;
+    }
+  }
   @include mobile { 
     .content-head{ 
       .title-img{ 
