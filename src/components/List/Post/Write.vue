@@ -22,7 +22,7 @@
                 circle(cx='8.5', cy='8.5', r='1.5')
                 polyline(points='21 15 16 10 5 21')
             | 대표이미지를 등록하세요
-          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
+          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')" accept="image/*")
         span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
       .title-image-container
         img(:src="wirteTitleImgUrl")
@@ -84,7 +84,7 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               | 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')" accept="image/*")
           .contents-text
             label(for="contents-text") 
               i
