@@ -43,7 +43,9 @@ export default {
     min_page_num: null,
     max_page_num: null,
     // 글쓰기를 눌렀을 때 쿼리로 연결 될 user uid
-    list_user_uid: ''
+    user_uid: '',
+    // 리스트를 불러오고 있는지 여부를 표시
+    list_loading: true
   },
   getters: {
     // list에 뿌려줄 item들
@@ -129,8 +131,11 @@ export default {
     getViewCount (state) {
       return state.view_count
     },
-    listUserUid (state) {
-      return state.list_user_uid
+    userUid (state) {
+      return state.user_uid
+    },
+    listLoading (state) {
+      return state.list_loading
     }
   },
   mutations: {
@@ -594,7 +599,10 @@ export default {
       state.view_count = payload + 1
     },
     getUserUid (state) {
-      state.list_user_uid = JSON.parse(localStorage.getItem('user_uid'))
+      state.user_uid = JSON.parse(localStorage.getItem('user_uid'))
+    },
+    changeListLoadingStatus (state) {
+      state.list_loading = false
     }
   },
   actions: {

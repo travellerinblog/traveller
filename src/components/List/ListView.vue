@@ -9,7 +9,8 @@
               p.title {{ list.title }}
               p.content {{ list.write_date.substr(0, 4) + '.' + list.write_date.substr(4, 2) + '.' + list.write_date.substr(6, 2) }} | {{ list.country_kr}} | {{ list.name}} | 조회수 {{ list.view}}
                 i.icon-next
-      p.listNotFound(v-show="listNotFound") 선택한 지역에 대한 글이 존재하지 않습니다.
+      p.listNotFound(v-show="listNotFound && !listLoading") 관련 글이 존재하지 않습니다.
+      p.listLoading(v-show="listLoading") 글을 불러오고 있습니다.
     .page
       a.first-page.page-btn(href @click.prevent="changePagePosition('first')" v-show="activePage !== 0") 처음페이지
       a.last-page.page-btn(href @click.prevent="changePagePosition('last')" v-show="activePage !== pageAmount-1") 마지막페이지
@@ -37,7 +38,7 @@
       listNotFound () {
         return this.getFilteredList.length === 0
       },
-      ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum'])
+      ...mapGetters(['getFilteredList', 'startShowItem', 'endShowItem', 'pageAmount', 'activePage', 'minPageNum', 'maxPageNum', 'listLoading'])
     },
     methods: {
       makePageNumber () {
