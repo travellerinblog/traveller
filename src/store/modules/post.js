@@ -484,10 +484,8 @@ export default {
           return
         }
       }
-      if (Object.keys(tempData).length >= 17) {
+      if (Object.keys(tempData).length >= 16) {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.key + '.json'
-        // console.log(URL)
-        // console.log(payload.key)
         axios.patch(URL, tempData).then(response => {
           // 객체 형식으로 보내지 않으면 patch가 되지 않음
           router.push({name: 'View', params: { id: payload.key }})
@@ -495,6 +493,7 @@ export default {
           console.log('error', error)
         })
       } else if (Object.keys(tempData).length === 0) {
+        console.log('check')
         context.commit('printErrorMessage', 'all')
       } else {
         for (let prop in tempData) {
