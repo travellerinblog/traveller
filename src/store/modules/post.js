@@ -3,17 +3,28 @@ import router from './../../router/'
 import axios from 'axios'
 export default {
   state: {
+    // 글쓰기
+    // 최종 post 값
     temp_write_data: {},
+    // 제목 값
     write_title_value: '',
+    // 태그 값
     write_tag_value: '',
+    // 대표 이미지 값
     title_img_url: '',
+    // 이미지 / 텍스트 값
     write_contents_data: [],
+    // 최종 도시 값
     selected_write_city: [],
+    // 도시 값
     temp_selected_write_city: [],
+    // 날짜 값을 비교
     temp_date: {},
+    // 나라 값
+    selected_write_country_key: '',
+    // show 관련된 것을 토글
     show_write_country: false,
     show_write_city: false,
-    selected_write_country_key: '',
     title_error_message: '제목은 30자 이하로 작성해주세요.',
     show_title_error_message: false,
     tag_error_message: '태그 내용을 #으로 구분해주세요.',
@@ -27,6 +38,7 @@ export default {
     image_progress_message: '이미지를 업로드 하고있습니다.',
     show_title_image_progress: false,
     show_content_image_progress: false,
+    // 에러 메세지의 유무를 확인하는 곳
     error_check_before_post: {}
   },
   getters: {
@@ -41,6 +53,9 @@ export default {
     },
     writeTagValue (state) {
       return state.write_tag_value
+    },
+    writeDate (state) {
+      return state.temp_date
     },
     selectedWriteCity (state) {
       return state.selected_write_city.length === 0 ? '여행지를 선택하세요.' : state.selected_write_city.join(', ')
@@ -95,6 +110,38 @@ export default {
     }
   },
   mutations: {
+    // 수정
+    setEditData (state, payload) {
+      // 타이틀
+      state.write_title_value = payload.data.title
+      // 태그
+      state.write_tag_value = '#' + payload.data.tag.join('#')
+      // 대표이미지
+      state.title_img_url = payload.data.title_img
+      // 나라
+      state.selected_write_country_key = payload.data.country
+      // 시티
+      state.selected_write_city = payload.data.city_kr
+      // 여행 날짜
+      state.temp_date.start = payload.data.start_date
+      state.temp_date.end = payload.data.end_date
+      // 이미지와 텍스트
+      state.write_contents_data = payload.data.contents
+      // 에러 메세지
+      state.show_title_error_message = false
+      state.show_write_country = false
+      state.show_write_city = false
+      state.show_tag_error_message = false
+      state.show_date_error_message = false
+      state.show_content_error_message = false
+      state.show_write_error_message = false
+      state.show_title_image_progress = false
+      state.show_content_image_progress = false
+      state.error_check_before_post.title = true
+      state.temp_write_data = payload.data
+    },
+    // 글쓰기
+    // 타이틀
     setTitleValue (state, payload) {
       if (event.target.value.length > 30) {
         state.show_title_error_message = true
@@ -286,6 +333,7 @@ export default {
         state.error_check_before_post.content = true
       }
       state.write_contents_data[payload].value = event.target.value
+      console.log('이건 알아야해 :', state.write_contents_data[payload].value)
       state.temp_write_data.contents = state.write_contents_data
     },
     deleteContent (state, payload) {
@@ -425,6 +473,39 @@ export default {
         context.commit('printErrorMessage', requiredData)
       }
       setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
+    },
+    saveEditData (context, payload) {
+      let tempData = context.state.temp_write_data
+      let requiredData = [{ 'key': 'title', 'print': '제목' }, { 'key': 'title_img', 'print': '대표 이미지' }, { 'key': 'tag', 'print': '태그' }, { 'key': 'city', 'print': '여행지' }, { 'key': 'start_date', 'print': '여행 시작 날짜' }, { 'key': 'end_date', 'print': '여행 종료 날짜' }, { 'key': 'contents', 'print': '블로그 본문' }]
+      let errorCheck = context.state.error_check_before_post
+      for (var prop in errorCheck) {
+        if (errorCheck[prop] === false) {
+          context.commit('printErrorMessage', 'error')
+          return
+        }
+      }
+      if (Object.keys(tempData).length >= 17) {
+        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.key + '.json'
+        // console.log(URL)
+        // console.log(payload.key)
+        axios.patch(URL, tempData).then(response => {
+          // 객체 형식으로 보내지 않으면 patch가 되지 않음
+          router.push({name: 'View', params: { id: payload.key }})
+        }).catch(function (error) {
+          console.log('error', error)
+        })
+      } else if (Object.keys(tempData).length === 0) {
+        context.commit('printErrorMessage', 'all')
+      } else {
+        for (let prop in tempData) {
+          for (let i = requiredData.length; i--;) {
+            if (requiredData[i].key === prop) {
+              requiredData.splice(i, 1)
+            }
+          }
+        }
+        context.commit('printErrorMessage', requiredData)
+      }
     },
     deleteContent ({commit, state}, payload) {
       let content = state.write_contents_data[payload]

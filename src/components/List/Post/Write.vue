@@ -83,15 +83,14 @@
                   rect(x='3', y='3', width='18', height='18', rx='2', ry='2')
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
-              | 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')" accept="image/*")
+              span 이미지를 추가하세요
           .contents-text
             label(for="contents-text") 
               i
                 svg(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
                   polygon(points='14 2 18 6 7 17 3 17 3 13 14 2')
                   line(x1='3', y1='22', x2='21', y2='22')
-              | 텍스트를 추가하세요
+              span 텍스트를 추가하세요
             button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
         span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
         .write-button
@@ -108,7 +107,7 @@
   import axios from 'axios'
   import WriteError from './WriteError.vue'
   export default {
-    name: 'write',
+    name: 'write',`
     components: {
       WriteError
     },
@@ -216,7 +215,6 @@
       position: relative;
       max-width: 1220px;
       margin: 55px auto 0 auto;
-      background: pink;
       input,
       label {
         border: 0 none;
@@ -224,11 +222,16 @@
         width: auto;
         background: none;
       }
+      #write-title, #write-tag {
+        width: 900px;
+        height: 40px;
+        line-height: 40px;
+      }
       .title {
         position: absolute;
         left: 0;
-        bottom: -420px;
-        font-size: 56px;
+        bottom: -410px;
+        font-size: 30px;
       }
       .tag {
         position: absolute;
@@ -477,7 +480,7 @@
     }
     textarea {
       margin: 20px 0 0 0;
-      padding: 0 35px 0 0;
+      padding: 20px;
       width: 100%;
       height: 150px;
       overflow: visible;
@@ -592,7 +595,7 @@
       .title-text-container {
         .title {
           left: 10px;
-          bottom: -200px;
+          bottom: -190px;
           font-size: 56px;
           font-size: 24px;
         }
@@ -607,6 +610,10 @@
           label{
             width: 250px;
           }
+        }
+        #write-title, #write-tag {
+          width: 100%;
+          min-width: 300px;
         }
       }
     }
@@ -718,12 +725,18 @@
         line-height: 40px;
         padding: 0 10px;
         i{
-          display: inline-block;
-          float: none;
+          display: block;
+          float: left;
           width: 24px;
           height: 24px;
           margin-right: 0;
           margin-top: 7px;
+        }
+        span{
+          display: block;
+          float: left;
+          width: 50px;
+          overflow: hidden;
         }
       }
       .contents-image{
@@ -791,7 +804,7 @@
       .title-text-container {
         .title {
           left: 10px;
-          bottom: -200px;
+          bottom: -190px;
           font-size: 56px;
           font-size: 24px;
         }
@@ -806,6 +819,10 @@
           label{
             width: 250px;
           }
+        }
+        #write-title, #write-tag {
+          width: 748px;
+          min-width: 300px;
         }
       }
     }
@@ -917,12 +934,18 @@
         line-height: 40px;
         padding: 0 10px;
         i{
-          display: inline-block;
-          float: none;
+          display: block;
+          float: left;
           width: 24px;
           height: 24px;
           margin-right: 0;
           margin-top: 7px;
+        }
+        span{
+          display: block;
+          float: left;
+          width: 50px;
+          overflow: hidden;
         }
       }
       .contents-image{
