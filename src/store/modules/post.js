@@ -333,7 +333,6 @@ export default {
         state.error_check_before_post.content = true
       }
       state.write_contents_data[payload].value = event.target.value
-      console.log('이건 알아야해 :', state.write_contents_data[payload].value)
       state.temp_write_data.contents = state.write_contents_data
     },
     deleteContent (state, payload) {

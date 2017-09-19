@@ -83,7 +83,7 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               span 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')" accept="image/*")
           .contents-text
             button(type="button" @click="setContentsText") 
               i

@@ -133,7 +133,6 @@ export default {
     showUserName (state) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
       let userDB = state.users_data
-      console.log(state.users_data)
       if (user) {
         for (let prop in userDB) {
           if (userDB[prop]['uid'] === user) {

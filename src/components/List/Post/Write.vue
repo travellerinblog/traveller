@@ -84,7 +84,7 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               span 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" @change="imageUpload('content')")
+            input#contents-image.a11y-hidden(type="file" @change="imageUpload('content')" accept="image/*")
           .contents-text
             button(type="button" @click="setContentsText") 
               i
@@ -97,8 +97,8 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveWriteData") 저장
-            .error-message(v-show="showWriteErrorMessage")
-              transition(name="fade")
+            transition(name="fade")
+              .error-message(v-show="showWriteErrorMessage")
                 span.error-message {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
@@ -107,12 +107,8 @@
   const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import axios from 'axios'
-  import WriteError from './WriteError.vue'
   export default {
     name: 'write',
-    components: {
-      WriteError
-    },
     mounted () {
       this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
       axios.get(locationApi).then(response => {
@@ -202,6 +198,12 @@
     color: #fff;
     font-size: 20px;
     display: block;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s
+  }
+  .fade-enter, .fade-leave-to  {
+    opacity: 0
   }
   .write-title-container {
     position: relative;
