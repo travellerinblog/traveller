@@ -84,14 +84,14 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               span 이미지를 추가하세요
+            input#contents-image.a11y-hidden(type="file" @change="imageUpload('content')")
           .contents-text
-            label(for="contents-text") 
+            button(type="button" @click="setContentsText") 
               i
                 svg(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
                   polygon(points='14 2 18 6 7 17 3 17 3 13 14 2')
                   line(x1='3', y1='22', x2='21', y2='22')
               span 텍스트를 추가하세요
-            button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
         span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
         .write-button
           fieldset
@@ -504,18 +504,19 @@
       font-size: 16px;
     }
   }
-  
+   
   .input-contents {
     position: fixed;
     z-index: 10;
     right: 30px;
     bottom: 20%;
-    font-size: 20px;
+    vertical-align: middle;
     .contents-image{
       margin-bottom: 10px;
     }
-    label{
-      display: block;
+    label, button{
+      display: inline-block;
+      width: 190px;
       height: 40px;
       line-height: 40px;
       padding: 0 10px;
@@ -523,7 +524,6 @@
       border-radius: 35px;
       color: #b0b0b0;
       border: 1px solid #b0b0b0;
-      font-size: 16px;
       i{
         display: block;
         float: left;
@@ -531,10 +531,23 @@
         height: 24px;
         margin-right: 5px;
         margin-top: 7px;
+        font-size: 16px;
+      }
+      span{
+        display: block;
+        float: left;
+        font-size: 16px;
+      }
+    }
+    .contents-text{
+      display: inline-block;
+      button{
+        border-radius: 35px;
+        margin: 0;
       }
     }
   }
-  
+
   .image-progress {
     position: fixed;
     left: 0;
@@ -697,20 +710,19 @@
         width: 100%;
       }
     }
-      
     .input-contents {
-      position:inherit;
+      position: relative;
       z-index: 0;
-      left: 0;
       bottom: 0;
-      right: 0;
-      margin-left: 0;
-      font-size: 20px;
+      left: 50%;
+      margin-left: -100px;
+      vertical-align: bottom;
       text-align: center;
-      label{
+      height: 40px;
+      label, button{
+        display: block;
         width: 100px;
         overflow: hidden;
-        display: inline-block;
         height: 40px;
         line-height: 40px;
         padding: 0 10px;
@@ -726,24 +738,30 @@
           display: block;
           float: left;
           width: 50px;
+          height: 40px;
           overflow: hidden;
         }
       }
       .contents-image{
-        display: inline-block;
+        float: left;
+        display: block;
         margin-bottom: 0;
         label{
           border-radius: 35px 0 0 35px;
           border-right: 0 none;
+          font-size: 16px;
         }
       }
       .contents-text{
-        display: inline-block;
-        label{
+        float: left;
+        display: block;
+        button{
           border-radius: 0 35px 35px 0;
+          font-size: 16px;
         }
       }
     }
+
     .image-progress {
       position: fixed;
       z-index: 10;
@@ -816,6 +834,7 @@
         }
       }
     }
+
     .title-image-container {
       height: 300px;
       img{
@@ -827,7 +846,7 @@
         height: 300px;
       }
     }
-      
+
     .write-contents-container {
       .warp{
         padding: 10px;
@@ -895,7 +914,7 @@
         }
       }
     }
-      
+
     .write-contents-view {
       margin-top: 20px;
       textarea {
@@ -906,20 +925,20 @@
         width: 100%;
       }
     }
-      
+
     .input-contents {
-      position:inherit;
+      position: relative;
       z-index: 0;
-      left: 0;
       bottom: 0;
-      right: 0;
-      margin-left: 0;
-      font-size: 20px;
+      left: 50%;
+      margin-left: -100px;
+      vertical-align: bottom;
       text-align: center;
-      label{
+      height: 40px;
+      label, button{
+        display: block;
         width: 100px;
         overflow: hidden;
-        display: inline-block;
         height: 40px;
         line-height: 40px;
         padding: 0 10px;
@@ -935,24 +954,30 @@
           display: block;
           float: left;
           width: 50px;
+          height: 40px;
           overflow: hidden;
         }
       }
       .contents-image{
-        display: inline-block;
+        float: left;
+        display: block;
         margin-bottom: 0;
         label{
           border-radius: 35px 0 0 35px;
           border-right: 0 none;
+          font-size: 16px;
         }
       }
       .contents-text{
-        display: inline-block;
-        label{
+        float: left;
+        display: block;
+        button{
           border-radius: 0 35px 35px 0;
+          font-size: 16px;
         }
       }
     }
+
     .image-progress {
       position: fixed;
       z-index: 10;
@@ -966,7 +991,7 @@
       color: #fff;
       font-size: 20px;
     }
-      
+
     .write-button {
       text-align: center;
       margin: 20px 0;
@@ -994,6 +1019,5 @@
         font-size: 20px;
       }
     }
-    
   }
 </style>
