@@ -175,7 +175,6 @@ div
       border: 1px solid #fff;
       border-radius: 4px;
       box-shadow: 0 2px 3px 0 $color1;
-      cursor: pointer;
     }
   }
   

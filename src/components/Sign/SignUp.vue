@@ -3,7 +3,7 @@
     h1 트레블러 시작하기
     p
       span 복잡한 절차 없이 SNS 계정으로
-      span 간편하게 트레블러를 만나보세요!
+      span 가입을 간편하게 트레블러를 만나보세요!
     button.google-sign-up(href="#" type="button" @click.prevent="signUpAndSignIN({'type': 'up', 'provider': 'google'})") Google계정으로 시작하기
     button.facebook-sign-up(href="#" type="button" @click.prevent="signUpAndSignIN({'type': 'up', 'provider': 'facebook'})") FaceBook 계정으로 시작하기
     strong(v-show="showSignUpMessage") {{ SignUpMessage }}
@@ -54,7 +54,7 @@
         margin-bottom: 10px;
       }
     }
-    strong{
+    strong {
       display: block;
       width: 80%;
       margin: 20px auto 20px auto;
@@ -64,30 +64,26 @@
       font-size: 14px;
       line-height: 1.2em;
     }
+    button {
+      height: 50px;
+      line-height: 50px;
+      background: #fff;
+    }
     .google-sign-up {
       display: block;
       width: 80%;
-      height: 50px;
-      line-height: 50px;
-      margin: 0 auto 10px auto;
+      margin: 0 auto 20px auto;
       color: #ea4335;
       border: 1px solid #ea4335;
       border-radius: 50px;
-      background: #fff;
     }
-    
     .facebook-sign-up {
-      display: block;
+      display: none;
       width: 80%;
-      height: 50px;
-      line-height: 50px;
       margin: 0 auto;
       color: #4c72b6;
       border: 1px solid #4c72b6;
-      border-radius: 50px;
-      background: #fff;
     }
-
     .sign-in {
       display: block;
       width: auto;
@@ -95,9 +91,9 @@
       line-height: 30px;
       padding: 0 20px;
       margin: 0 auto;
-      color: $color1;
-      border: 1px solid $color1;
-      background: #fff;
+      color: #fff;
+      border: 0 none ;
+      background: $color1;
     }
   }
 </style>

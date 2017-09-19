@@ -107,7 +107,7 @@
   import axios from 'axios'
   import WriteError from './WriteError.vue'
   export default {
-    name: 'write',`
+    name: 'write',
     components: {
       WriteError
     },
@@ -175,11 +175,6 @@
   a {
     text-decoration: none;
     color: inherit;
-  }
-  
-  label,
-  button {
-    cursor: pointer;
   }
   
   button {
@@ -582,11 +577,6 @@
       font-size: 20px;
       background: $color1;
     }
-  }
-  
-  .selected-country,
-  [for="contents-text"] {
-    cursor: pointer;
   }
   
   @include mobile {
