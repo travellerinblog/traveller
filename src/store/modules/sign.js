@@ -124,6 +124,8 @@ export default {
     },
     logout (state) {
       localStorage.removeItem('user_uid')
+      firebase.auth().signOut()
+      console.log(firebase.auth().currentUser)
       state.user_status = 'out'
       state.user_uid = ''
       router.push({name: 'Home'})
@@ -183,12 +185,14 @@ export default {
       }).catch(function (error) {
         console.log('error', error)
       })
+      console.log('login', firebase.auth().currentUser)
+      // console.log(firebase.auth().currentUser)
+      //   firebase.auth.currentUser.linkWithPopup(provider).then(result => {
+      //     console.log(result)
+      //   }).catch(error => {
+      //     console.log('error', error)
+      //   })
     },
-    // getUsersData ({commit}) {
-    //   axios.get(userApi).then(response => {
-    //     commit('getUsersData', response.data)
-    //   })
-    // },
     checkUserExist ({commit}) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
       if (user) {

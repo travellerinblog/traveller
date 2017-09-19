@@ -43,7 +43,7 @@ export default {
     min_page_num: null,
     max_page_num: null,
     // 글쓰기를 눌렀을 때 쿼리로 연결 될 user uid
-    user_uid: ''
+    list_user_uid: ''
   },
   getters: {
     // list에 뿌려줄 item들
@@ -129,8 +129,8 @@ export default {
     getViewCount (state) {
       return state.view_count
     },
-    userUid (state) {
-      return state.user_uid
+    listUserUid (state) {
+      return state.list_user_uid
     }
   },
   mutations: {
@@ -594,7 +594,7 @@ export default {
       state.view_count = payload + 1
     },
     getUserUid (state) {
-      state.user_uid = JSON.parse(localStorage.getItem('user_uid'))
+      state.list_user_uid = JSON.parse(localStorage.getItem('user_uid'))
     }
   },
   actions: {

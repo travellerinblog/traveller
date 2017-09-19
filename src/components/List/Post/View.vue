@@ -13,8 +13,8 @@
           span {{getBlogViewItem.write_date}}
           b |
           span 조회수 {{getViewCount}}
-        .btn-edits(v-if="getBlogViewItem.uid === userUid")
-          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': userUid, 'key': this.$route.params.id }}") 수정
+        .btn-edits(v-if="getBlogViewItem.uid === listUserUid")
+          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': listUserUid, 'key': this.$route.params.id }}") 수정
           button.btn-delete(@click="askDeletePost") 삭제
         .ask-delete(v-show="showDeletePost")
           p 글을 삭제하시겠습니까?
@@ -44,10 +44,10 @@
                   .btns
                     span {{item.date}}
                     div(v-if="userStatus==='in'")
-                      button.btn-edit(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
+                      button.btn-edit(v-show="item.user_uid === listUserUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
                       button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
                       button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
-                      button.btn-delete(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
+                      button.btn-delete(v-show="item.user_uid === listUserUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
                 .reply-list-content
                   p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText") {{item.reply_text}}
         .btn-contents
@@ -73,7 +73,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'userUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
+      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'listUserUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
       ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),
