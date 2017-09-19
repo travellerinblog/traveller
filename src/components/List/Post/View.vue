@@ -13,8 +13,8 @@
           span {{getBlogViewItem.write_date}}
           b |
           span 조회수 {{getViewCount}}
-        .btn-edits(v-if="getBlogViewItem.uid === userUid")
-          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': userUid, 'key': this.$route.params.id }}") 수정
+        .btn-edits(v-if="getBlogViewItem.uid === signUserUid")
+          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': signUserUid, 'key': this.$route.params.id }}") 수정
           button.btn-delete(@click="askDeletePost") 삭제
         .ask-delete(v-show="showDeletePost")
           .popup-background(@click="closeDeletePost")
@@ -50,15 +50,15 @@
                   .btns
                     span {{item.date}}
                     span(v-if="userStatus==='in'")
-                      button.btn-edit(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
+                      button.btn-edit(v-show="item.user_uid === signUserUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
                       button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
                       button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
-                      button.btn-delete(v-show="item.user_uid === userUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
+                      button.btn-delete(v-show="item.user_uid === signUserUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
                 .reply-list-content
                   p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText") {{item.reply_text}}
         .btn-contents
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
-          router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
+          router-link.btn-write(:to="{name: 'Write', query: {id: signUserUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
     .btn-goto
       button(type="button") 위로 
       button(type="button") 아래로 
@@ -83,7 +83,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['userStatus', 'getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'userUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
+      ...mapGetters(['userStatus', 'getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'signUserUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
       ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),

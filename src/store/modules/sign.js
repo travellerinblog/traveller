@@ -15,7 +15,7 @@ export default {
     signin_user: {},
     user_status: 'out',
     user_name: '',
-    user_uid: ''
+    sign_user_uid: ''
   },
   getters: {
     showSignContainer (state) {
@@ -45,8 +45,8 @@ export default {
     userName (state) {
       return state.user_name
     },
-    userUid (state) {
-      return state.user_uid
+    signUserUid (state) {
+      return state.sign_user_uid
     }
   },
   mutations: {
@@ -81,7 +81,7 @@ export default {
       state.user_status = status
     },
     setUserUid (state, uid) {
-      state.user_uid = uid
+      state.sign_user_uid = uid
     },
     saveUserData (state, result) {
       let user = result.user
@@ -125,7 +125,8 @@ export default {
     logout (state) {
       localStorage.removeItem('user_uid')
       state.user_status = 'out'
-      state.user_uid = ''
+      state.sign_user_uid = ''
+      firebase.auth().signOut()
       router.push({name: 'Home'})
     },
     showUserName (state) {
