@@ -46,3 +46,6 @@ table {
 :focus{
   outline: 1px dotted #f4430b;
 }
+a, button, input, select, textarea, label{
+  cursor: pointer;
+}

@@ -13,13 +13,15 @@
           span {{getBlogViewItem.write_date}}
           b |
           span 조회수 {{getViewCount}}
-        .btn-edits(v-if="getBlogViewItem.uid === listUserUid")
-          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': listUserUid, 'key': this.$route.params.id }}") 수정
+        .btn-edits(v-if="getBlogViewItem.uid === signUserUid")
+          router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': signUserUid, 'key': this.$route.params.id }}") 수정
           button.btn-delete(@click="askDeletePost") 삭제
         .ask-delete(v-show="showDeletePost")
-          p 글을 삭제하시겠습니까?
-          button.btn-delete(@click="deleteAction('post')") 삭제
-          button.btn-cancel(@click="closeDeletePost") 취소
+          .popup-background(@click="closeDeletePost")
+          .popup
+            p 글을 삭제하시겠습니까?
+            button.btn-delete(@click="deleteAction('post')") 삭제
+            button.btn-cancel(@click="closeDeletePost") 취소
     .content-body
       .cover
         .contents
@@ -28,8 +30,12 @@
               p(v-if="item.key === 'text' ") {{ item.value }}
               img(v-else :src="item.value")
         .reply
-          .btn-start(v-if="userStatus==='out'")
-            button(type="button" @click="showSignModal") 시작하기
+          .btn-login-start(v-if="userStatus==='out'")
+            button(type="button" @click="showSignModal")
+              | 트레블로를 가입 혹은 로그인 후, 댓글이나 글쓰기가 가능합니다. 
+              br
+              | 트레블로 시작하기
+              i.icon-next
           .reply-write(v-else)
             h1 댓글 작성
             div
@@ -43,15 +49,19 @@
                     strong by. {{item.name}}
                   .btns
                     span {{item.date}}
-                    div(v-if="userStatus==='in'")
-                      button.btn-edit(v-show="item.user_uid === listUserUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
+                    span(v-if="userStatus==='in'")
+                      button.btn-edit(v-show="item.user_uid === signUserUid && !showEditReply" type="button" @click="changeEditReply({'index': index,'replyText': item.reply_text})") 수정
                       button.btn-save(v-show="showEditReply && index === replyEditable.index" type="button" @click="saveEditReply(item.key)" :id="'reply-save' + index") 저장
                       button.btn-cancel(v-show="showEditReply && index === replyEditable.index" type="button" @click="cancelEditReply(index)") 취소
-                      button.btn-delete(v-show="item.user_uid === listUserUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
+                      button.btn-delete(v-show="item.user_uid === signUserUid && !showEditReply" type="button" @click="deleteAction(item.key)") 삭제
                 .reply-list-content
                   p(:id="'reply'+index" :contenteditable="replyEditable.index === index && replyEditable.state === true" @blur="focusOut(index, item.key)" @input="editReplyText") {{item.reply_text}}
         .btn-contents
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
+          router-link.btn-write(:to="{name: 'Write', query: {id: signUserUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
+    .btn-goto
+      button(type="button" @click="goto('top')") 위로 
+      button(type="button" @click="goto('bottom')") 아래로 
 </template>
 
 <script>
@@ -73,7 +83,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'listUserUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
+      ...mapGetters(['userStatus', 'getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'signUserUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
       ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),
@@ -184,7 +194,7 @@
     } 
     .title{ 
       position: relative; 
-      z-index: 1; 
+      z-index: 5; 
       width: 100%; 
       max-width: 1220px; 
       box-sizing: border-box; 
@@ -275,8 +285,29 @@
       .reply{ 
         max-width: 1220px; 
         margin: 0 auto; 
-        box-sizing: border-box; 
+        box-sizing: border-box;
+        .btn-login-start{
+          margin-top: 50px;
+          box-shadow: 0 5px 5px rgba(#000, 0.3);
+          button{
+            border: 0 none;
+            box-sizing: border-box; 
+            width: 100%; 
+            height: 100px;
+            border: 1px solid $color1; 
+            border-radius: 4px; 
+            line-height: 1.4em;
+            font-size: 20px;
+            background: $color1;
+            color: #fff;
+            i{
+              margin-left: 20px;
+              vertical-align: -2px;
+            }
+          }
+        }
         .reply-write{ 
+          margin-top: 50px;
           h1{ 
             font-size: 20px; 
             margin-bottom: 10px; 
@@ -333,6 +364,7 @@
                 span{ 
                   height: 30px; 
                   line-height: 30px; 
+                  margin-left: 10px;
                 } 
                 button{ 
                   display: inline-block; 
@@ -341,17 +373,25 @@
                   height: 30px; 
                   line-height: 30px; 
                   border-radius: 4px; 
+                  border: 0 none;
                 } 
                 .btn-edit{ 
-                  border: 1px solid rgba($color1, .5); 
+                  background: $color1; 
+                  color: #fff;
                   margin: 0 5px; 
-                } 
-                .btn-delete{ 
-                  border: 1px solid rgba(#181818, .5); 
+                }
+                .btn-delete{
+                  background: #b0b0b0;
+                  color: #fff;
                 } 
                 .btn-save{ 
-                  border: 1px solid rgba($color1, .5); 
+                  background: $color1;
+                  color: #fff;
                   margin: 0 5px; 
+                }
+                .btn-cancel{
+                  background: #b0b0b0;
+                  color: #fff;
                 }
               } 
             } 
@@ -385,10 +425,103 @@
           font-size: 16px; 
           color: $color1; 
           text-decoration: none; 
-        } 
+        }
+        .btn-write{
+          display: inline-block; 
+          height: 30px; 
+          line-height: 30px; 
+          padding: 0 10px; 
+          margin-left: 10px;
+          border: 1px solid $color1; 
+          border-radius: 4px; 
+          font-size: 16px; 
+          color: #fff; 
+          background: $color1;
+          text-decoration: none; 
+        }
       } 
     } 
   } 
+  .ask-delete{
+    .popup-background{
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 10;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(#fff, .95);
+    }
+    .popup{
+      position: fixed;
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      margin: -150px 0 0 -150px;
+      width: 300px;
+      height: 300px;
+      border: 1px solid #b0b0b0;
+      text-align: center;
+    }
+    p{
+      margin: 90px 0 30px 0;
+      font-size: 26px;
+    }
+    button{
+      height: 40px;
+      line-height: 40px;
+      padding: 0 20px;
+      border: 0 none;
+    }
+    .btn-delete{
+      color: #fff;
+      background: #b0b0b0;
+    }
+    .btn-cancel{
+      color: #fff;
+      background: $color1;
+      margin-left: 10px;
+    }
+  }
+  .btn-goto{
+    position: fixed;
+    z-index: 2;
+    bottom: 85px;
+    right: 20px;
+    button{
+      position: relative;
+      overflow: hidden;
+      display: block;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid #b0b0b0;
+      background: none;
+      &::before{
+        content: '\66';
+        display: block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-family: "travelericon";
+        font-size: 19px;
+        color: $color1;
+        font-weight: bold;
+        background: rgba(#fff, .7);
+      }
+    }
+    button:first-child{
+      border-bottom: 0 none;
+      &::before {
+        transform: rotate(0deg);
+      }
+    }
+    button:last-child{
+      &::before {
+        transform: rotate(180deg);
+      }
+    }
+  }
   @include mobile { 
     .content-head{ 
       .title-img{ 
@@ -464,7 +597,7 @@
       } 
       .title{ 
         margin: 0 auto; 
-        padding: 550px 0 100px 0; 
+        padding: 493px 0 100px 0; 
         h1{ 
           padding: 0 15px; 
         } 
@@ -519,7 +652,7 @@
     .content-head{ 
       .title{ 
         margin: 0 auto; 
-        padding: 550px 0 100px 0; 
+        padding: 493px 0 100px 0; 
         h1{ 
           padding: 0 20px; 
         } 

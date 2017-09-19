@@ -36,7 +36,7 @@ div
     box-sizing: border-box;
   }
   .sign-background{
-    background: rgba(#000, 0.5);
+    background: rgba(#181818, 0.5);
     position: fixed;
     left: 0;
     top: 0;
@@ -49,10 +49,12 @@ div
     top: 50%; 
     left: 50%;
     margin-left: -200px;
-    margin-top: -250px; 
+    transform: translateY(-50%);
     width: 400px; 
-    height: 500px; 
+    height: auto; 
+    padding-bottom: 100px;
     background: #fff;
+    box-shadow: 0 5px 5px rgba(#000, 0.3);
     .tab-list{
       @include clearfix;
       position: absolute;
@@ -104,8 +106,8 @@ div
       z-index: 20;
       top: 0; 
       left: 0;
-      margin-left: 0;
-      margin-top: 0; 
+      margin-left: 0; 
+      transform: translateY(0%);
       width: 100vw;
       height: 100vh; 
       background: #fff; 

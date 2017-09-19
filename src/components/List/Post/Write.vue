@@ -177,11 +177,6 @@
     color: inherit;
   }
   
-  label,
-  button {
-    cursor: pointer;
-  }
-  
   button {
     margin: 3px;
     font-size: 15px;
@@ -582,11 +577,6 @@
       font-size: 20px;
       background: $color1;
     }
-  }
-  
-  .selected-country,
-  [for="contents-text"] {
-    cursor: pointer;
   }
   
   @include mobile {
