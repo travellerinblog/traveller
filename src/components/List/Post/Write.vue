@@ -107,7 +107,7 @@
   import axios from 'axios'
   import WriteError from './WriteError.vue'
   export default {
-    name: 'write',`
+    name: 'write',
     components: {
       WriteError
     },
