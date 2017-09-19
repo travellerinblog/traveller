@@ -1,4 +1,3 @@
-const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
 import axios from 'axios'
 export default {
   state: {
@@ -35,7 +34,6 @@ export default {
     // 블로그 상세페이지 이미지 / 텍스트 리스트
     blog_view_item_contents: [],
     // 블로그 상세페이지 리플
-    blog_view_item_reply: [],
     blog_view_item_replys: [],
     // 블로그 상세페이지 태그
     blog_view_item_tag: [],
@@ -414,46 +412,22 @@ export default {
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
-            if (a.view < b.view) {
-              return 1
-            }
-            if (a.view > b.view) {
-              return -1
-            }
-            return 0
+            return b.view - a.view
           })
           break
         case 'city':
           state.filtered_city_list.sort((a, b) => {
-            if (a.view < b.view) {
-              return 1
-            }
-            if (a.view > b.view) {
-              return -1
-            }
-            return 0
+            return b.view - a.view
           })
           break
         case 'all':
           state.all_blog_list.sort((a, b) => {
-            if (a.view < b.view) {
-              return 1
-            }
-            if (a.view > b.view) {
-              return -1
-            }
-            return 0
+            return b.view - a.view
           })
           break
         case 'search':
           state.filtered_search_list.sort((a, b) => {
-            if (a.view < b.view) {
-              return 1
-            }
-            if (a.view > b.view) {
-              return -1
-            }
-            return 0
+            return b.view - a.view
           })
           break
       }
@@ -465,46 +439,22 @@ export default {
       switch (state.filter_by) {
         case 'country':
           state.filtered_country_list.sort((a, b) => {
-            if (Number(a.write_date) < Number(b.write_date)) {
-              return 1
-            }
-            if (Number(a.write_date) > Number(b.write_date)) {
-              return -1
-            }
-            return 0
+            return Number(b.write_date) - Number(a.write_date)
           })
           break
         case 'city':
           state.filtered_city_list.sort((a, b) => {
-            if (Number(a.write_date) < Number(b.write_date)) {
-              return 1
-            }
-            if (Number(a.write_date) > Number(b.write_date)) {
-              return -1
-            }
-            return 0
+            return Number(b.write_date) - Number(a.write_date)
           })
           break
         case 'all':
           state.all_blog_list.sort((a, b) => {
-            if (Number(a.write_date) < Number(b.write_date)) {
-              return 1
-            }
-            if (Number(a.write_date) > Number(b.write_date)) {
-              return -1
-            }
-            return 0
+            return Number(b.write_date) - Number(a.write_date)
           })
           break
         case 'search':
           state.filtered_search_list.sort((a, b) => {
-            if (Number(a.write_date) < Number(b.write_date)) {
-              return 1
-            }
-            if (Number(a.write_date) > Number(b.write_date)) {
-              return -1
-            }
-            return 0
+            return Number(b.write_date) - Number(a.write_date)
           })
           break
       }
@@ -579,27 +529,23 @@ export default {
       }
     },
     gotoBlogViewReply (state, key) {
+      state.blog_view_item_replys = []
       // 리플 가져오는 곳
       var lists = state.all_blog_list
       for (var prop in lists) {
         if (lists.hasOwnProperty(prop)) {
           if (lists[prop].key === key) {
-            state.blog_view_item_reply = lists[prop].reply
-            let replyAlls = state.blog_view_item_reply // {{},{}}
-            state.blog_view_item_replys = []
+            let replyAlls = lists[prop].reply // {{},{}}
             // 빈배열 만듬
-            let replyAllFind = state.blog_view_item_replys // [{},{}]
-            for (let index in replyAlls) {
+            for (let replyProp in replyAlls) {
+              // reply를 삭제하거나 수정할때 사용하도록 key값을 객체에 추가해준다.
+              replyAlls[replyProp].key = replyProp
               // 빈배열에 객체를 순서대로 넣어줌
-              replyAllFind.push(replyAlls[index])
-              // 객체안의 찾을 값을 적음
-              let sortingDate = 'date'
+              state.blog_view_item_replys.push(replyAlls[replyProp])
               // 객체안에서 date 값끼리 비교해서 오름차순으로 적용
-              replyAllFind.sort(
-                function (a, b) { // 오름차순
-                  return b[sortingDate] - a[sortingDate]
-                }
-              )
+              state.blog_view_item_replys.sort((a, b) => {
+                return b.date - a.date
+              })
             }
             // replyAllCheckDate는 [{date: 12345677},{date: 12345677},{date: 12345677}] 이런식으로 들어가져 있다.
             let replyAllCheckDate = state.blog_view_item_replys
@@ -619,8 +565,10 @@ export default {
               let timeDate
               if (hourDate < 12) {
                 timeDate = hourDate + ':' + minDate + ' AM'
-              } else if (hourDate === 12) {
+              } else if (hourDate === '12') {
                 timeDate = hourDate + ':' + minDate + ' PM'
+              } else if (hourDate >= 22) {
+                timeDate = (hourDate - 12) + ':' + minDate + ' PM'
               } else {
                 timeDate = '0' + (hourDate - 12) + ':' + minDate + ' PM'
               }
@@ -743,11 +691,6 @@ export default {
         })
       }
       commit('setCountryAndCityData', {'countryAndCityName': countryAndCityName, 'cityNameGroup': cityNameGroup})
-    },
-    setReplyUserData ({commit}) {
-      axios.get(userApi).then(response => {
-        commit('getUsersData', response.data)
-      })
     }
   }
 }

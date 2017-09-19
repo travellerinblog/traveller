@@ -101,11 +101,11 @@
   }
   
   .cover {
-    display: flex;
-    justify-content: space-between;
+    @include clearfix;
   }
 
   .logo_search{
+    float: left;
     display: flex;
   }
 
@@ -130,7 +130,6 @@
     padding: 0;
     border: 0 none;
     background: none;
-    cursor: pointer;
     &::before {
       display: block;
       width: 40px;
@@ -226,7 +225,7 @@
   }
   
   .log {
-    text-align: right;
+    float: right;
     .btn-start, .btn-out {
       width: 82px;
       height: 32px;
@@ -237,7 +236,6 @@
       line-height: 32px;
       color: $color1;
       font-size: 14px;
-      cursor: pointer;
     }
   }
   @include mobile {

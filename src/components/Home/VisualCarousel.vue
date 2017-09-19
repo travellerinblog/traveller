@@ -95,7 +95,6 @@
   
   button[type="button"] {
     padding: 0;
-    cursor: pointer;
   }
   
   .prev::after {
@@ -134,7 +133,6 @@
       height: 2px;
       margin: 0px 4px;
       background-color: rgba(#fff, 0.5);
-      cursor: pointer;
     }
     .active-tab {
       background-color: #fff;

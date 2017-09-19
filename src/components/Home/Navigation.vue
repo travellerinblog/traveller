@@ -1,8 +1,8 @@
 <template lang="pug">
+transition(name="slide")
   nav
     .gnb
       .gnb-header
-        //- button.btn-start(type="button") 시작하기
         h1 {{ userName }} 
         button.btn-start(type="button" @click="startSign" v-if="userStatus === 'out'") 시작하기
         button.btn-close.icon-delete(type="button" aria-label="닫기" @click="oncloseModal") 닫기
@@ -13,7 +13,7 @@
           a(href) 나 여기 왔다 갔다.
         //- router-link(to="/" tag="li" active-class="current-page") 
         //-   a(href) 마이페이지
-      router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
+      router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
     .nav-background(@click="oncloseModal")
 </template>
 
@@ -43,6 +43,10 @@
 
 <style lang="scss" scoped>
   @import '../../sass/App.scss';
+  .slide-leave-active,
+  .slide-enter-active {
+    transition: 1.5s;
+  }
   .gnb {
     position: fixed;
     z-index: 100;
@@ -74,7 +78,6 @@
       border-radius: 4px;
       color: $color1;
       font-size: 14px;
-      cursor: pointer;
     }
     h1 {
       float: left;
@@ -120,7 +123,6 @@
     line-height: 36px;
     color: #181818;
     font-size: 16px;
-    cursor: pointer;
   }
   
   @include mobile {
@@ -139,9 +141,21 @@
     .btn-close {
       margin-right: 10px;
     }
+    .slide-enter {
+      transform: translateX(-100%);
+    }
+    .slide-leave-to {
+      transform: translate(-100%);
+    }
   }
   
   @include tablet {
+    .slide-enter {
+      transform: translateX(-50%);
+    }
+    .slide-leave-to {
+      transform: translate(-50%);
+    }
     .gnb {
       width: 330px;
     }
@@ -160,6 +174,12 @@
   }
   
   @include desktop {
+    .slide-enter {
+      transform: translateX(-30%);
+    }
+    .slide-leave-to {
+      transform: translate(-30%);
+    }
     .gnb {
       width: 330px;
     }

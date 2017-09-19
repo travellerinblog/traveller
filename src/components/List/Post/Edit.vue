@@ -1,7 +1,6 @@
 <template lang="pug">
   form.write
     .write-title-container
-      .title-container
       .title-text-container
         fieldset.title(:class="{'has-img': wirteTitleImgUrl}")
           legend.a11y-hidden 제목 입력 폼
@@ -22,7 +21,7 @@
                 circle(cx='8.5', cy='8.5', r='1.5')
                 polyline(points='21 15 16 10 5 21')
             | 대표이미지를 등록하세요
-          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')" accept="image/*")
+          input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
         span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
       .title-image-container
         img(:src="wirteTitleImgUrl")
@@ -56,7 +55,7 @@
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
                 | 여행 시작 날짜 : 
-              input#start-date(type="date" @change="setDate('start')")
+              input#start-date(type="date" @change="setDate('start')" :value="writeDate.start")
             .end-date(role="group")
               label(for="end-date")
                 i
@@ -66,11 +65,11 @@
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
                 | 여행 종료 날짜 : 
-              input#end-date(type="date" @change="setDate('end')")
+              input#end-date(type="date" @change="setDate('end')" :value="writeDate.end")
             span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
         ul.write-contents-view
           li.contents-view-item(v-for="(content, index) in writeContentsData")
-            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)")
+            textarea(v-if="content.key === 'text'" @input="addContentsText(index)" @blur="inputValueCheck(index)") {{ writeContentsData[index].value }}
             span.text-error-message(v-if="content.key === 'text' && content.value.length === 0" v-show="showContentErrorMessage") {{ contentErrorMessage }}
             img(v-if="content.key === 'img'" :src="content.value")
             button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
@@ -83,21 +82,22 @@
                   rect(x='3', y='3', width='18', height='18', rx='2', ry='2')
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
-              span 이미지를 추가하세요
+              | 이미지를 추가하세요
+            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
           .contents-text
             label(for="contents-text") 
               i
                 svg(xmlns='http://www.w3.org/2000/svg', viewbox='0 0 24 24', fill='none', stroke='currentColor', stroke-width='2', stroke-linecap='round', stroke-linejoin='round')
                   polygon(points='14 2 18 6 7 17 3 17 3 13 14 2')
                   line(x1='3', y1='22', x2='21', y2='22')
-              span 텍스트를 추가하세요
+              | 텍스트를 추가하세요
             button#contents-text.a11y-hidden(type="button" name="contents-text" @click="setContentsText")
         span.image-progress(v-show="showContentImageProgress") {{imageProgressMessage}}
         .write-button
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
-            button(type="submit" @click.prevent="saveWriteData") 저장
-            write-error.error-message(v-show="showWriteErrorMessage")
+            button(type="submit" @click.prevent="saveEditData") 수정
+            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 
@@ -105,11 +105,15 @@
   const locationApi = 'https://traveller-in-blog.firebaseio.com/locations.json'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import axios from 'axios'
-  import WriteError from './WriteError.vue'
   export default {
-    name: 'write',
-    components: {
-      WriteError
+    name: 'edit',
+    beforeCreate () {
+      let listApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.query.key + '.json'
+      console.log(listApi)
+      axios.get(listApi).then((response) => {
+        let payload = {'data': response.data, 'id': this.$route.query.key}
+        this.$store.commit('setEditData', payload)
+      }).catch(error => console.log(error.message))
     },
     mounted () {
       this.$store.commit('resetTempData', {'start': window.document.querySelector('#start-date'), 'end': window.document.querySelector('#end-date')})
@@ -118,7 +122,7 @@
       }).catch(error => console.log(error.message))
     },
     computed: {
-      ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage'])
+      ...mapGetters(['getCountryAndCityName', 'writeTitleValue', 'writeContentsData', 'writeTagValue', 'wirteTitleImgUrl', 'selectedWriteCity', 'selectedWriteCountryKey', 'showWriteCountry', 'showWriteCity', 'writeErrorMessage', 'showWriteErrorMessage', 'writeErrorMessage', 'dateErrorMessage', 'showDateErrorMessage', 'showTitleImageProgress', 'showContentImageProgress', 'imageProgressMessage', 'showTitleErrorMessage', 'titleErrorMessage', 'showTagErrorMessage', 'tagErrorMessage', 'contentErrorMessage', 'showContentErrorMessage', 'writeDate'])
     },
     methods: {
       ...mapMutations(['changeEditable', 'toggleWriteCountryCity', 'selectComplete', 'setDate', 'setContentsText', 'addContentsText', 'clearFileValue', 'resetTempData']),
@@ -150,9 +154,9 @@
         let payload = {'date': event.target.value, 'sort': sort}
         this.$store.commit('setDate', payload)
       },
-      saveWriteData () {
-        let payload = { 'id': this.$route.query.id }
-        this.$store.dispatch('saveWriteData', payload)
+      saveEditData () {
+        let payload = {'id': this.$route.query.id, 'key': this.$route.query.key}
+        this.$store.dispatch('saveEditData', payload)
       }
     }
   }
@@ -715,18 +719,12 @@
         line-height: 40px;
         padding: 0 10px;
         i{
-          display: block;
-          float: left;
+          display: inline-block;
+          float: none;
           width: 24px;
           height: 24px;
           margin-right: 0;
           margin-top: 7px;
-        }
-        span{
-          display: block;
-          float: left;
-          width: 50px;
-          overflow: hidden;
         }
       }
       .contents-image{
@@ -924,18 +922,12 @@
         line-height: 40px;
         padding: 0 10px;
         i{
-          display: block;
-          float: left;
+          display: inline-block;
+          float: none;
           width: 24px;
           height: 24px;
           margin-right: 0;
           margin-top: 7px;
-        }
-        span{
-          display: block;
-          float: left;
-          width: 50px;
-          overflow: hidden;
         }
       }
       .contents-image{
