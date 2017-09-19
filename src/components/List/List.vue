@@ -74,6 +74,7 @@ div
           this.$store.dispatch('setListsData', payload).then(response => {
             this.$store.commit('makePageNumber', this.getFilteredList.length)
             this.$store.commit('newListFilter')
+            this.$store.commit('changeListLoadingStatus')
           })
         }).catch(error => console.log(error.message))
       },

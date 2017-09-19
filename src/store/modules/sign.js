@@ -124,6 +124,7 @@ export default {
     },
     logout (state) {
       localStorage.removeItem('user_uid')
+      firebase.auth().signOut()
       state.user_status = 'out'
       state.sign_user_uid = ''
       firebase.auth().signOut()
@@ -132,6 +133,7 @@ export default {
     showUserName (state) {
       let user = JSON.parse(localStorage.getItem('user_uid'))
       let userDB = state.users_data
+      console.log(state.users_data)
       if (user) {
         for (let prop in userDB) {
           if (userDB[prop]['uid'] === user) {
@@ -184,6 +186,13 @@ export default {
       }).catch(function (error) {
         console.log('error', error)
       })
+      console.log('login', firebase.auth().currentUser)
+      // console.log(firebase.auth().currentUser)
+      //   firebase.auth.currentUser.linkWithPopup(provider).then(result => {
+      //     console.log(result)
+      //   }).catch(error => {
+      //     console.log('error', error)
+      //   })
     },
     checkUserExist ({commit}) {
       let user = JSON.parse(localStorage.getItem('user_uid'))

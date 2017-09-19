@@ -97,7 +97,9 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveWriteData") 저장
-            write-error.error-message(v-show="showWriteErrorMessage")
+            .error-message(v-show="showWriteErrorMessage")
+              transition(name="fade")
+                span.error-message {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 

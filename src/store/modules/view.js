@@ -101,6 +101,16 @@ export default {
     editReplyText (state, replyText) {
       // 리플 텍스트의 input 이벤트, state에서 reply 값을 변경한다.
       state.edited_reply_text = event.target.textContent
+    },
+    scrollViewPostion (state, position) {
+      switch (position) {
+        case 'top':
+          window.scrollTo({top: 0, left: 0, behavior: 'smooth'})
+          break
+        case 'bottom':
+          window.scrollTo({top: document.body.scrollHeight, left: 0, behavior: 'smooth'})
+          break
+      }
     }
   },
   actions: {

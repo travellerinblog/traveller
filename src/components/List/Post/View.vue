@@ -60,8 +60,8 @@
           router-link.btn-gotolist(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click.native="setAllBlogList") 목록으로
           router-link.btn-write(:to="{name: 'Write', query: {id: signUserUid}}" tag="button" v-if="userStatus === 'in'" @click.native="oncloseModal") 여행 일지 쓰기
     .btn-goto
-      button(type="button") 위로 
-      button(type="button") 아래로 
+      button(type="button" @click="scrollViewPostion('top')") 위로 
+      button(type="button" @click="scrollViewPostion('bottom')") 아래로 
 </template>
 
 <script>
@@ -86,7 +86,7 @@
       ...mapGetters(['userStatus', 'getBlogViewItem', 'getBlogViewItemContents', 'getBlogViewItemReply', 'getBlogViewItemTag', 'getViewCount', 'viewReplyData', 'userStatus', 'signUserUid', 'showDeletePost', 'replyEditable', 'showEditReply', 'originalReplyText'])
     },
     methods: {
-      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText']),
+      ...mapMutations(['filterTagList', 'resetReplytext', 'setAllBlogList', 'showSignModal', 'askDeletePost', 'closeDeletePost', 'editReplyText', 'scrollViewPostion']),
       ...mapActions(['inputReplyText', 'saveEditReply']),
       submitText () {
         // 댓글 등록
@@ -159,13 +159,6 @@
           this.cancelEditReply(index)
         }
       }
-      // ,
-      // goTo (what) {
-      //   console.log(what)
-      //   scrollBehavior (to, from, savedPosition) {
-      //     return { x: 0, y: 0 }
-      //   }
-      // }
     }
   }
 </script>
@@ -492,7 +485,7 @@
   }
   .btn-goto{
     position: fixed;
-    z-index: 2;
+    z-index: 6;
     bottom: 85px;
     right: 20px;
     button{

@@ -28,6 +28,7 @@
 
 <script>
   const listApi = 'https://traveller-in-blog.firebaseio.com/lists.json'
+  const userApi = 'https://traveller-in-blog.firebaseio.com/users.json'
   import {mapGetters, mapMutations} from 'vuex'
   import Navigation from './Navigation.vue'
   import Sign from './../Sign/Sign.vue'
@@ -37,7 +38,11 @@
       Navigation, Sign
     },
     mounted () {
+      axios.get(userApi).then(response => {
+        this.$store.commit('getUsersData', response.data)
+      })
       this.$store.dispatch('checkUserExist')
+      this.$store.commit('showUserName')
       this.$store.commit('getUserUid')
     },
     data () {
