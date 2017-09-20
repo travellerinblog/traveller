@@ -309,6 +309,9 @@ export default {
       let contentImg = {key: 'img'}
       contentImg.value = payload.url
       contentImg.name = payload.name
+      if (Object.prototype.toString.call(state.write_contents_data).slice(8, -1).toLowerCase() !== 'array') {
+        state.write_contents_data = []
+      }
       state.write_contents_data.push(contentImg)
       state.temp_write_data.contents = state.write_contents_data
     },
@@ -324,6 +327,9 @@ export default {
       contentText.value = ''
       state.show_content_error_message = true
       state.error_check_before_post.content = false
+      if (Object.prototype.toString.call(state.write_contents_data).slice(8, -1).toLowerCase() !== 'array') {
+        state.write_contents_data = []
+      }
       state.write_contents_data.push(contentText)
       state.temp_write_data.contents = state.write_contents_data
     },
@@ -338,6 +344,10 @@ export default {
     deleteContent (state, payload) {
       // 이미지와 텍스트에리어의 삭제 버튼을 눌렀을 때 state 데이터에서 해당 값을 삭제해준다.
       let content = state.write_contents_data[payload]
+      console.log(state.temp_write_data.contents)
+      delete state.temp_write_data.contents
+      console.log(state.temp_write_data.contents)
+      console.log(state.temp_write_data)
       switch (content.key) {
         case 'text':
           state.write_contents_data.splice(payload, 1)
@@ -477,6 +487,7 @@ export default {
       let tempData = context.state.temp_write_data
       let requiredData = [{ 'key': 'title', 'print': '제목' }, { 'key': 'title_img', 'print': '대표 이미지' }, { 'key': 'tag', 'print': '태그' }, { 'key': 'city', 'print': '여행지' }, { 'key': 'start_date', 'print': '여행 시작 날짜' }, { 'key': 'end_date', 'print': '여행 종료 날짜' }, { 'key': 'contents', 'print': '블로그 본문' }]
       let errorCheck = context.state.error_check_before_post
+      console.log('temp', tempData.contents)
       for (var prop in errorCheck) {
         if (errorCheck[prop] === false) {
           context.commit('printErrorMessage', 'error')
@@ -486,7 +497,6 @@ export default {
       if (Object.keys(tempData).length >= 16) {
         let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.key + '.json'
         axios.patch(URL, tempData).then(response => {
-          // 객체 형식으로 보내지 않으면 patch가 되지 않음
           router.push({name: 'View', params: { id: payload.key }})
         }).catch(function (error) {
           console.log('error', error)

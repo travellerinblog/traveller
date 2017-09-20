@@ -108,7 +108,6 @@
     name: 'edit',
     beforeCreate () {
       let listApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.query.key + '.json'
-      console.log(listApi)
       axios.get(listApi).then((response) => {
         let payload = {'data': response.data, 'id': this.$route.query.key}
         this.$store.commit('setEditData', payload)
