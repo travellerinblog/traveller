@@ -9,7 +9,6 @@ import countryList from './modules/country_list'
 import recommendation from './modules/recommendation'
 import list from './modules/list'
 import post from './modules/post'
-import edit from './modules/edit'
 import sign from './modules/sign'
 import view from './modules/view'
 
@@ -19,7 +18,7 @@ Vue.use(firebase)
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   modules: {
-    header, visual, blogList, countryList, recommendation, list, post, sign, view, edit
+    header, visual, blogList, countryList, recommendation, list, post, sign, view
   },
   state: {
   },

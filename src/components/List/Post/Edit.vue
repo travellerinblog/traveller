@@ -22,7 +22,8 @@
                 polyline(points='21 15 16 10 5 21')
             | 대표이미지를 등록하세요
           input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
-        span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
+        transition(name="fade")
+          span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
       .title-image-container
         img(:src="wirteTitleImgUrl")
         .title-background(v-show="wirteTitleImgUrl")
@@ -83,7 +84,7 @@
                   circle(cx='8.5', cy='8.5', r='1.5')
                   polyline(points='21 15 16 10 5 21')
               span 이미지를 추가하세요
-            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')")
+            input#contents-image.a11y-hidden(type="file" name="contents-image" @change="imageUpload('content')" accept="image/*")
           .contents-text
             button(type="button" @click="setContentsText") 
               i
@@ -96,7 +97,8 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveEditData") 수정
-            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+            transition(name="fade")
+              span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 
@@ -108,7 +110,6 @@
     name: 'edit',
     beforeCreate () {
       let listApi = 'https://traveller-in-blog.firebaseio.com/lists/' + this.$route.query.key + '.json'
-      console.log(listApi)
       axios.get(listApi).then((response) => {
         let payload = {'data': response.data, 'id': this.$route.query.key}
         this.$store.commit('setEditData', payload)
@@ -203,6 +204,12 @@
     color: #fff;
     font-size: 20px;
     display: block;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s
+  }
+  .fade-enter, .fade-leave-to  {
+    opacity: 0
   }
   .write-title-container {
     position: relative;

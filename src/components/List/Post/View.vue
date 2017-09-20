@@ -116,10 +116,10 @@
             // 댓글 삭제 후 firebase에서 수정된 댓글 값을 가져온다.
             if (deletekey === 'post') {
               this.$router.push({name: 'Home'})
+              this.$store.commit('closeDeletePost')
             } else {
               this.$store.dispatch('setListsData', payload).then(() => {
                 this.$store.commit('gotoBlogViewReply', this.$route.params.id)
-                this.$store.commit('closeDeletePost')
               })
             }
           }).catch(error => console.log(error.message))
