@@ -22,7 +22,8 @@
                 polyline(points='21 15 16 10 5 21')
             | 대표이미지를 등록하세요
           input#title-image-input.a11y-hidden(type="file" name="title-image" @change="imageUpload('title')")
-        span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
+        transition(name="fade")
+          span.title-image-error(v-show="showTitleImageProgress") {{imageProgressMessage}}
       .title-image-container
         img(:src="wirteTitleImgUrl")
         .title-background(v-show="wirteTitleImgUrl")
@@ -96,7 +97,8 @@
           fieldset
             legend.a11y-hidden 글 저장 및 취소 폼
             button(type="submit" @click.prevent="saveEditData") 수정
-            span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
+            transition(name="fade")
+              span.error-message(v-show="showWriteErrorMessage") {{ writeErrorMessage }}
             router-link.save-btn(to="/" tag="button") 취소
 </template>
 
@@ -202,6 +204,12 @@
     color: #fff;
     font-size: 20px;
     display: block;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s
+  }
+  .fade-enter, .fade-leave-to  {
+    opacity: 0
   }
   .write-title-container {
     position: relative;

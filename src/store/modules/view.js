@@ -87,7 +87,6 @@ export default {
     closeDeletePost (state) {
       // 댓글 삭제 여부 확인 창 닫음
       state.show_delete_post = false
-      console.log(state.show_delete_post)
     },
     changeEditReply (state, payload) {
       // 저장버튼 보이게하고 리플 텍스트 editable 상태를 변경
