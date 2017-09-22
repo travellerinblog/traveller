@@ -1,9 +1,8 @@
 <template lang="pug">
   .carousel
     slot
-    .button-group(role="group" v-if="isTabletScreen")
-      button.carousel-button.prev(type="button" aria-label="previous content" @click="prevItem") 
-      button.carousel-button.next(type="button" aria-label="next content" @click="nextItem")
+    button.prev(type="button" aria-label="previous content" @click="prevItem" v-if="!isDesktopScreen")
+    button.next(type="button" aria-label="next content" @click="nextItem" v-if="!isDesktopScreen")
     ul.indicators(role="tablist")
       li(role="presentation" v-for="n in itemCount" :aria-label="'item' + n" )
         a(href role="tab" @click.prevent="gotoItem(n-1)" :aria-selected="getAcitveIndex === n-1" :class="{'active-tab': getAcitveIndex === n-1}" )
@@ -74,22 +73,33 @@
     position: relative;
     overflow: hidden;
   }
-  
-  .carousel-button {
+  button{
     position: absolute;
-    top: 50%;
-    width: 32px;
-    height: 32px;
-    transition: opacity 0.4s;
-    transform: translateY(-50%);
-    background-color: rgba(#fff, 0.6);
+    width: 50px;
+    padding: 0 5px;
+    height: 100%;
     border: none;
-    border-radius: 50%;
+    background: none;
+    &::after{
+      position: absolute;
+      top: 50%;
+      font-size: 50px;
+      color: $color1;
+      transform: scaleX(0.7);
+    }
     &.prev {
-      left: 20px;
+      left: 0;
+      &::after {
+        content: '<';
+        left: 10px;
+      }
     }
     &.next {
-      right: 20px;
+      right: 0;
+      &::after {
+        content: '>';
+        right: 10px;
+      }
     }
   }
   
@@ -97,51 +107,28 @@
     padding: 0;
   }
   
-  .prev::after {
-    content: '\66';
-    position: absolute;
-    top: 5px;
-    left: 6px;
-    transform: rotate(-90deg);
-    font-family: "travelericon";
-    font-size: 19px;
-    color: $color1;
-    font-weight: bold;
-  }
-  
-  .next::after {
-    content: '\66';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    transform: rotate(90deg);
-    font-family: "travelericon";
-    font-size: 19px;
-    color: $color1;
-    font-weight: bold;
-  }
-  
   .indicators {
     position: absolute;
     display: flex;
     justify-content: center;
-    bottom: 20px;
+    bottom: 0;
     width: 100%;
     a {
       display: block;
       width: 32px;
-      height: 2px;
+      padding: 15px 0;
       margin: 0px 4px;
-      background-color: rgba(#fff, 0.5);
     }
-    .active-tab {
+    .active-tab::after {
       background-color: #fff;
       cursor: default;
     }
     a::after {
       content: '';
+      display: block;
       width: 32px;
-      padding: 15px;
+      height: 2px;
+      background-color: rgba(#fff, 0.5);
     }
   }
   

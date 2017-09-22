@@ -1,6 +1,6 @@
 <template lang="pug">
   .visual-container(:class="{'click-disable': clickDisable}")
-    .video.col(v-show="isDesktopScreen")
+    .video(v-show="isDesktopScreen")
       video#bgvid(poster="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4_000058716.png?alt=media&token=86673f71-3437-4882-96b9-926ca7ec798f" playsinline autoplay muted loop)
         source(src="https://firebasestorage.googleapis.com/v0/b/traveller-in-blog.appspot.com/o/visual%2FOur%20Adventure%20WEARING%20KIMONOS%20in%20JAPAN.mp4?alt=media&token=46ec0f7a-a308-4cdb-a6ac-6b26f8781d83" type="video/mp4")
       .video-content
@@ -11,14 +11,16 @@
             i.icon-next
           router-link.btn-write(:to="{name: 'Write', query: {id: userUid}}" tag="button" v-if="userStatus === 'in'") 여행 일지 쓰기
             i.icon-next
-    .image-carousel.col(v-show="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
+    .image-carousel(v-show="!isDesktopScreen" role="region" aria-label="여행지 이미지 슬라이드")
       visual-carousel.carousel
         visual-carousel-item(v-for="(item, index) in getCarouselItems" :index="index" key="index")
-          v-touch(tag="ul" daraggable="true" @swipeleft="nextItem('drag')" @swiperight="prevItem('drag')" :swipe-options="{ direction: 'horizontal'}").item-container.grid
+          v-touch(tag="ul" daraggable="true" @swipeleft="nextItem('drag')" @swiperight="prevItem('drag')" :swipe-options="{ direction: 'horizontal'}").item-container
             router-link(tag="li" :to="{ name: 'View', params: { id: getCarouselItems[index].key }}" @dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(getCarouselItems[index].key)")
               a(href)
                 img(:src="item.title_img" :alt="item.country_kr")
-                p.content {{ item.country_kr }}
+                p.content 
+                  strong {{ item.title }}
+                  em {{ item.country_kr }} | {{ item.name }} | 조회수 {{ item.view }}
 </template>
 
 <script>
@@ -78,10 +80,35 @@
     pointer-events: none;
     cursor: default;
   }
+  @include mobile {
+    .image-carousel{
+      height: 253px;
+      a{
+        position: relative;
+        display: block;
+        width: 100vw;
+        height: 253px;
+        overflow: hidden;
+      }
+    }
+  }
+  
+  @include tablet {
+    .image-carousel{
+      height: 362px;
+      a{
+        position: relative;
+        display: block;
+        width: 100vw;
+        height: 362px;
+        overflow: hidden;
+      }
+    }
+  }
   @include desktop {
     .video {
       position: relative;
-      width: 100%;
+      width: 100vw;
       height: 720px;
       overflow: hidden;
       video {
@@ -137,30 +164,53 @@
   }
   
   @include breakpoint(0px, 1199px) {
-    img {
-      width: 125%;
-      transform: translateY(-10%);
-      user-drag: none;
-      user-select: none;
-      -moz-user-select: none;
-      -webkit-user-drag: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-    .content {
-      position: absolute;
-      padding-top: 20px;
-      padding-left: 40px;
-      left: 0px;
-      bottom: 0px;
-      width: 125%;
-      height: 76px;
-      font-size: 23px;
-      color: #fff;
-      background-color: rgba(#181818, 0.4);
-      white-space : nowrap;
-			overflow : hidden;
-			text-overflow : ellipsis;
+    .image-carousel{
+      width: 100vw;
+      overflow: hidden;
+      a{
+        position: relative;
+        overflow: hidden;
+        display: block;
+      }
+      img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      .content {
+        box-sizing: border-box;
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        width: 100vw;
+        height: 76px;
+        padding: 10px 60px 0 60px;
+        color: #fff;
+        background-color: rgba(#181818, 0.6);
+        white-space : nowrap;
+        overflow : hidden;
+        text-overflow : ellipsis;
+        strong{
+          display: block;
+          width: 100%;
+          font-size: 20px;
+          margin-bottom: 5px;
+          white-space : nowrap;
+          overflow : hidden;
+          text-overflow : ellipsis;
+        }
+        em{
+          font-size: 14px;
+        }
+      }
     }
   }
   @include breakpoint(1200px, 1276px) {

@@ -5,8 +5,8 @@
       router-link.more(tag="a" :to="{ name: 'ListView', params: { id: 'all' }}" @click="setAllBlogList") 더보기
         i.icon-next
     .bloglist-body
-      button.btn-prev.icon-up(type="button" @click="clickBtn") 이전
-      button.btn-next.icon-down(type="button" @click="clickBtn") 다음
+      button.prev(type="button" @click="clickBtn" aria-label="previous content")
+      button.next(type="button" @click="clickBtn" aria-label="next content")
       v-touch(tag="ul" daraggable="true" @swipeleft="listNext" @swiperight="listPrev" :swipe-options="{ direction: 'horizontal'}")
         router-link(@dragstart.native="dragStart" @dragend.native="dragEnd" @click.native="gotoBlogView(list.key)" v-for="(list, index) in get_BlogList" :index="index" :key="index" :to="{ name: 'View', params: { id: list.key }}" tag="li")
           a(href)
@@ -43,13 +43,14 @@
       },
       clickBtn () {
         let classListString = event.target.classList.value
-        if (classListString.indexOf('btn-prev') === 0) {
+        if (classListString.indexOf('prev') === 0) {
           return this.listPrev()
-        } else if (classListString.indexOf('btn-next') === 0) {
+        } else if (classListString.indexOf('next') === 0) {
           return this.listNext()
         }
       },
       listNext (event) {
+        console.log('뭐야?')
         this.$store.commit('swipeBlogList', 'next')
       },
       listPrev () {
@@ -97,38 +98,35 @@
     margin-bottom: 16px;
     width: 100%;
     overflow: hidden;
-    .btn-prev, .btn-next{
+    button{
+      box-sizing: border-box;
       position: absolute;
       top: 50%;
+      transform: translateY(-50%);
       z-index: 1;
       overflow: hidden;
-      width: 32px;
-      height: 32px;
-      padding: 0;
+      width: 50px;
       background: none;
       border: 0 none;
-      // box-shadow: 5px 5px 5px rgba(#ca3a0d, 0.3);
-      &::before{
-        display: block;
-        width: 32px;
-        height: 32px;
-        line-height: 37px;
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 50%;
-        text-align: center;
-        font-size: 19px;
+      padding: 0;
+      &::after{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) scaleX(0.7);
+        font-size: 50px;
         color: $color1;
-        font-weight: bold;
       }
-    }
-    .btn-prev{
-      &::before{
-        transform: rotate(-90deg);
+      &.prev {
+        &::after {
+          content: '<';
+          left: 10px;
+        }
       }
-    }
-    .btn-next{
-      &::before{
-        transform: rotate(-90deg);
+      &.next {
+        &::after {
+          content: '>';
+          right: 10px;
+        }
       }
     }
     ul {
@@ -142,9 +140,16 @@
         figure {
           position: relative;
           div {
+            position: relative;
             width: 100%;
             overflow: hidden;
-            img {
+            img{ 
+              position: absolute;
+              left: 50%;
+              top: 54%;
+              transform: translate(-50%, -50%);
+              width: 120%; 
+              height: auto;
               user-drag: none; 
               user-select: none;
               -moz-user-select: none;
@@ -212,11 +217,14 @@
     }
     .bloglist-body {
       height: 254px;
-      .btn-prev{
-        left: 15px;
+      button{
+        height: 254px;
       }
-      .btn-next{
-        right: 15px;
+      .prev {
+        left: 10px;
+      }
+      .next {
+        right: 10px;
       }
       ul{
         padding: 0 5px;
@@ -228,7 +236,7 @@
             div {
               height: 254px;
               img {
-                width: 100%;
+                width: 150%;
                 height: auto;
               }
             }
@@ -281,11 +289,14 @@
     }
     .bloglist-body {
       height: 340px;
-      .btn-prev{
-        left: 20px;
+      button{
+        height: 340px;
       }
-      .btn-next{
-        right: 20px;
+      .prev {
+        left: 15px;
+      }
+      .next {
+        right: 15px;
       }
       ul{
         padding: 0 8px;
@@ -297,8 +308,8 @@
             div {
               height: 340px;
               img {
-                height: 100%;
-                width: auto;
+                width: 250%;
+                height: auto;
               }
             }
             figcaption {
@@ -348,11 +359,14 @@
     }
     .bloglist-body {
       height: 680px;
-      .btn-prev{
-        left: 25px;
+      button{
+        height: 680px;
       }
-      .btn-next{
-        right: 25px;
+      .prev {
+        left: 20px;
+      }
+      .next {
+        right: 20px;
       }
       ul{
         padding: 0 10px;
@@ -393,9 +407,8 @@
           figure {
             div {
               img {
-                width: auto;
+                width: 150%;
                 height: auto;
-                transform: translate(-20%, -20%)
               }
             }
           }
