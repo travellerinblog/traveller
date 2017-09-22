@@ -146,6 +146,7 @@ export default {
       if (event.target.value.length > 30) {
         state.show_title_error_message = true
         state.error_check_before_post.title = false
+        setTimeout(() => { state.show_title_error_message = false }, 2500)
         return
       }
       state.write_title_value = payload
@@ -189,16 +190,19 @@ export default {
       if (state.temp_write_data.tag.length === 0) {
         state.show_tag_error_message = true
         state.error_check_before_post.tag = false
+        setTimeout(() => { state.show_tag_error_message = false }, 2500)
         return
       } else if (event.target.value.slice(0, 1) !== '#') {
         state.show_tag_error_message = true
         state.error_check_before_post.tag = false
+        setTimeout(() => { state.show_title_error_message = false }, 2500)
         return
       } else {
         for (let i = state.temp_write_data.tag.length; i--;) {
           if (state.temp_write_data.tag[i] === '') {
             state.show_tag_error_message = true
             state.error_check_before_post.tag = false
+            setTimeout(() => { state.show_title_error_message = false }, 2500)
             return
           }
         }
@@ -309,6 +313,9 @@ export default {
       let contentImg = {key: 'img'}
       contentImg.value = payload.url
       contentImg.name = payload.name
+      if (Object.prototype.toString.call(state.write_contents_data).slice(8, -1).toLowerCase() !== 'array') {
+        state.write_contents_data = []
+      }
       state.write_contents_data.push(contentImg)
       state.temp_write_data.contents = state.write_contents_data
     },
@@ -324,6 +331,9 @@ export default {
       contentText.value = ''
       state.show_content_error_message = true
       state.error_check_before_post.content = false
+      if (Object.prototype.toString.call(state.write_contents_data).slice(8, -1).toLowerCase() !== 'array') {
+        state.write_contents_data = []
+      }
       state.write_contents_data.push(contentText)
       state.temp_write_data.contents = state.write_contents_data
     },
@@ -333,7 +343,6 @@ export default {
         state.error_check_before_post.content = true
       }
       state.write_contents_data[payload].value = event.target.value
-      console.log('이건 알아야해 :', state.write_contents_data[payload].value)
       state.temp_write_data.contents = state.write_contents_data
     },
     deleteContent (state, payload) {
@@ -478,32 +487,47 @@ export default {
       let tempData = context.state.temp_write_data
       let requiredData = [{ 'key': 'title', 'print': '제목' }, { 'key': 'title_img', 'print': '대표 이미지' }, { 'key': 'tag', 'print': '태그' }, { 'key': 'city', 'print': '여행지' }, { 'key': 'start_date', 'print': '여행 시작 날짜' }, { 'key': 'end_date', 'print': '여행 종료 날짜' }, { 'key': 'contents', 'print': '블로그 본문' }]
       let errorCheck = context.state.error_check_before_post
-      for (var prop in errorCheck) {
+      for (let prop in errorCheck) {
         if (errorCheck[prop] === false) {
           context.commit('printErrorMessage', 'error')
+          setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
           return
         }
       }
       if (Object.keys(tempData).length >= 16) {
-        let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.key + '.json'
-        axios.patch(URL, tempData).then(response => {
-          // 객체 형식으로 보내지 않으면 patch가 되지 않음
-          router.push({name: 'View', params: { id: payload.key }})
-        }).catch(function (error) {
-          console.log('error', error)
-        })
+        if (tempData.title === '' && tempData.contents.length === 0) {
+          context.commit('printErrorMessage', [{ 'key': 'title', 'print': '제목' }, { 'key': 'contents', 'print': '블로그 본문' }])
+          setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
+          return
+        } else if (tempData.contents.length === 0) {
+          context.commit('printErrorMessage', [{ 'key': 'contents', 'print': '블로그 본문' }])
+          setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
+          return
+        } else if (tempData.title === '') {
+          context.commit('printErrorMessage', [{ 'key': 'title', 'print': '제목' }])
+          setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
+          return
+        } else {
+          let URL = 'https://traveller-in-blog.firebaseio.com/lists/' + payload.key + '.json'
+          axios.patch(URL, tempData).then(response => {
+            router.push({name: 'View', params: { id: payload.key }})
+          }).catch(function (error) {
+            console.log('error', error)
+          })
+        }
       } else if (Object.keys(tempData).length === 0) {
-        console.log('check')
         context.commit('printErrorMessage', 'all')
+        setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
       } else {
         for (let prop in tempData) {
           for (let i = requiredData.length; i--;) {
-            if (requiredData[i].key === prop) {
+            if (requiredData[i].key === prop && tempData[prop].length !== 0) {
               requiredData.splice(i, 1)
             }
           }
         }
         context.commit('printErrorMessage', requiredData)
+        setTimeout(() => { context.commit('closeErrorMessage') }, 2500)
       }
     },
     deleteContent ({commit, state}, payload) {
