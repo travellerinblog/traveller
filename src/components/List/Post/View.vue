@@ -176,9 +176,13 @@
       z-index: -1; 
       width: 100vw; 
       height: 700px; 
-      overflow: hidden; 
+      overflow: hidden;
       img{ 
-        width: 100%; 
+        position: absolute;
+        left: 50%;
+        top: 54%;
+        transform: translate(-50%, -50%);
+        width: 120vw; 
         height: auto; 
       } 
       &::after{ 
@@ -189,7 +193,7 @@
         display: block; 
         width: 100%; 
         height: 700px; 
-        background: rgba(#181818, .5); 
+        background: rgba(#181818, .6); 
       } 
     } 
     .title{ 

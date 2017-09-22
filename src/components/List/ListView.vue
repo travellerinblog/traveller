@@ -9,8 +9,13 @@
               p.title {{ list.title }}
               p.content {{ list.write_date.substr(0, 4) + '.' + list.write_date.substr(4, 2) + '.' + list.write_date.substr(6, 2) }} | {{ list.country_kr}} | {{ list.name}} | 조회수 {{ list.view}}
                 i.icon-next
-      p.listNotFound(v-show="listNotFound && !listLoading") 관련 글이 존재하지 않습니다.
-      p.listLoading(v-show="listLoading") 글을 불러오고 있습니다.
+    p.listNotFound(v-show="listNotFound && !listLoading") 관련 글이 존재하지 않습니다.
+    .listLoading(v-show="listLoading")
+      .loding
+        span
+        span
+        span
+      p 글을 불러오고 있습니다.
     .page
       a.first-page.page-btn(href @click.prevent="changePagePosition('first')" v-show="activePage !== 0") 처음페이지
       a.last-page.page-btn(href @click.prevent="changePagePosition('last')" v-show="activePage !== pageAmount-1") 마지막페이지
@@ -183,7 +188,41 @@
       color: rgba(#181818, 0.4);
     }
   }
-  
+
+  .listLoading {
+    width: 100%;
+    padding-top: 100px;
+    text-align: center;
+    span{
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: $color1;
+      margin: 0 10px;
+      border-radius: 20px;
+      transform-origin: 50% 50%;
+      animation: bubble 1.2s -0.6s infinite  ease-out;
+      &:nth-of-type(2n){
+        animation-delay: -0.3s;
+      }
+      &:nth-of-type(3n){
+        animation-delay: 0s;
+      }
+    }
+    @keyframes bubble {
+      0%, 100%{
+        transform: scale(0)
+      }
+      50%{
+        transform: scale(1)
+      }
+    }
+    p{
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  }
+
   @include mobile {
     .blog-list {
       padding: 0 0 20px 0;
@@ -212,7 +251,7 @@
     }
     img {
       transform: translate(-20%, -10%);
-      width: 160%;
+      width: 200%;
       height: auto;
     }
     .list-item {
@@ -232,8 +271,8 @@
       height: 440px;
     }
     img {
-      width: 200%;
-      height: auto;
+      width: auto;
+      height: 100%;
     }
     .listNotFound {
       margin: 100px 0;
@@ -384,4 +423,5 @@
       height: 130%;
     }
   }
+
 </style>

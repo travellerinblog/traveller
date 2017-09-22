@@ -285,11 +285,14 @@
     width: 100vw;
     height: 500px;
     overflow: hidden;
-    img {
-      width: 100%;
-      height: auto;
-      padding: 0 0 5px 0;
-    }
+    img{ 
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      width: 120vw; 
+      height: auto; 
+    } 
     .title-background{
       position: absolute;
       left: 0;
@@ -526,7 +529,7 @@
     }
     label, button{
       display: inline-block;
-      width: 190px;
+      width: 200px;
       height: 40px;
       line-height: 40px;
       padding: 0 10px;

@@ -32,29 +32,31 @@
   }
   
   .slideleft-enter {
-    transform: translateX(125%);
+    transform: translateX(100%);
   }
   
   .slideleft-leave-to {
-    transform: translate(-125%);
+    transform: translate(-100%);
   }
   
   .slideright-enter {
-    transform: translateX(-125%);
+    transform: translateX(-100%);
   }
   
   .slideright-leave-to {
-    transform: translate(125%);
+    transform: translate(100%);
   }
   
   @include mobile {
     .carousel-item {
+      width: 100vw;
       height: 253px;
     }
   }
   
   @include tablet {
     .carousel-item {
+      width: 100vw;
       height: 362px;
     }
   }
