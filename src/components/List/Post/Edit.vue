@@ -1,5 +1,6 @@
 <template lang="pug">
   form.write
+    button.a11y-hidden(type="submit" @click.prevent="preventSubmitEvent")
     .write-title-container
       .title-text-container
         fieldset.title(:class="{'has-img': wirteTitleImgUrl}")
@@ -157,6 +158,9 @@
       saveEditData () {
         let payload = {'id': this.$route.query.id, 'key': this.$route.query.key}
         this.$store.dispatch('saveEditData', payload)
+      },
+      preventSubmitEvent () {
+        return false
       }
     }
   }

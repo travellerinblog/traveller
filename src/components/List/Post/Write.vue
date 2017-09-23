@@ -1,5 +1,6 @@
 <template lang="pug">
   form.write
+    button.a11y-hidden(type="submit" @click.prevent="preventSubmitEvent")
     .write-title-container
       .title-container
       .title-text-container
@@ -150,6 +151,9 @@
       saveWriteData () {
         let payload = { 'id': this.$route.query.id }
         this.$store.dispatch('saveWriteData', payload)
+      },
+      preventSubmitEvent () {
+        return false
       }
     }
   }
