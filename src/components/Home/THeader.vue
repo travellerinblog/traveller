@@ -7,7 +7,7 @@
             a(href) Traveler
         button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
         .search
-          form#search-form(role="search" v-on:submit.prevent="goTofilterList")
+          form#search-form(role="search" :submit.prevent="goTofilterList")
             fieldset 
               legend.a11y-hidden 검색 폼
               label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 

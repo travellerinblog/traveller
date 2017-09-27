@@ -1,5 +1,5 @@
 <template lang="pug">
-  form.write
+  form.write(:submit.prevent="nothingHappen")
     .write-title-container
       .title-container
       .title-text-container
@@ -150,6 +150,10 @@
       saveWriteData () {
         let payload = { 'id': this.$route.query.id }
         this.$store.dispatch('saveWriteData', payload)
+      },
+      nothingHappen () {
+        console.log('??')
+        return
       }
     }
   }
