@@ -182,8 +182,8 @@
             figure {
               div {
                 img {
-                  width: auto;
-                  height: 100%;
+                  width: 150%;
+                  height: auto;
                 }
               }
             }
@@ -244,7 +244,7 @@
               div {
                 img {
                   width: auto;
-                  height: 100%;
+                  height: 150%;
                 }
               }
             }
@@ -300,7 +300,7 @@
               div {
                 img {
                   width: auto;
-                  height: 100%;
+                  height: 110%;
                 }
               }
             }
