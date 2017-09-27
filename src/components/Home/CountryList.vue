@@ -96,11 +96,14 @@
         }
         figure {
           div {
-            width: 100%;
+            position: relative;
             overflow: hidden;
+            width: 100%;
             img {
-              height: 100%;
-              width: auto;
+              position: absolute;
+              left: 50%;
+              top: 54%;
+              transform: translate(-50%, -50%);
               user-drag: none;
               user-select: none;
               -moz-user-select: none;
@@ -159,7 +162,7 @@
               div {
                 height: 254px;
                 img {
-                  width: 100%;
+                  width: 150%;
                   height: auto;
                 }
               }
@@ -219,6 +222,10 @@
               height: 340px;
               div {
                 height: 340px;
+                img {
+                  width: 150%;
+                  height: auto;
+                }
               }
               figcaption {
                 padding: 0 15px;
@@ -275,6 +282,10 @@
             height: 680px;
             div {
               height: 680px;
+              img {
+                width: auto;
+                height: 110%;
+              }
             }
             figcaption {
               padding: 0 20px;
