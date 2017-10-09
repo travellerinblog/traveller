@@ -10,9 +10,13 @@
         p
           strong by. {{getBlogViewItem.name}}
           b |
-          span {{getBlogViewItem.write_date}}
+          span {{getBlogViewItem.country_kr}}
           b |
           span 조회수 {{getViewCount}}
+        p
+          span 작성일 {{getBlogViewItem.write_date}}
+          b |
+          span 여행기간 {{getBlogViewItem.start_date}} ~ {{getBlogViewItem.end_date}}
         .btn-edits(v-if="getBlogViewItem.uid === signUserUid")
           router-link.btn-edit(tag='button' :to="{ name: 'Edit', query:{'id': signUserUid, 'key': this.$route.params.id }}") 수정
           button.btn-delete(@click="askDeletePost") 삭제
@@ -200,7 +204,7 @@
       position: relative; 
       z-index: 5; 
       width: 100%; 
-      max-width: 1220px; 
+      max-width: 900px; 
       box-sizing: border-box; 
       h1{ 
         font-size: 30px; 
@@ -252,6 +256,7 @@
         height: 30px;
         line-height: 30px;
         border: 0 none;
+        border-radius: 4px;
       }
       .btn-edit{
         background: rgba($color1, .8);
@@ -274,7 +279,7 @@
       padding-top: 50px; 
       padding-bottom: 100px; 
       .contents{ 
-        max-width: 1220px; 
+        max-width: 900px; 
         margin: 0 auto; 
         box-sizing: border-box; 
         img{ 
@@ -287,7 +292,7 @@
         } 
       } 
       .reply{ 
-        max-width: 1220px; 
+        max-width: 900px; 
         margin: 0 auto; 
         box-sizing: border-box;
         .btn-login-start{
@@ -414,7 +419,7 @@
         } 
       } 
       .btn-contents{ 
-        max-width: 1220px; 
+        max-width: 900px; 
         margin: 0 auto; 
         box-sizing: border-box; 
         margin-top: 20px; 
@@ -540,7 +545,7 @@
       } 
       .title{ 
         margin: 0 auto; 
-        padding: 320px 0 100px 0; 
+        padding: 261px 0 100px 0; 
         h1{ 
           padding: 0 10px; 
         } 
@@ -601,7 +606,7 @@
       } 
       .title{ 
         margin: 0 auto; 
-        padding: 493px 0 100px 0; 
+        padding: 461px 0 100px 0; 
         h1{ 
           padding: 0 15px; 
         } 
@@ -656,7 +661,7 @@
     .content-head{ 
       .title{ 
         margin: 0 auto; 
-        padding: 493px 0 100px 0; 
+        padding: 461px 0 100px 0; 
         h1{ 
           padding: 0 20px; 
         } 

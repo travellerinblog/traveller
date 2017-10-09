@@ -50,7 +50,6 @@
         }
       },
       listNext (event) {
-        console.log('뭐야?')
         this.$store.commit('swipeBlogList', 'next')
       },
       listPrev () {
