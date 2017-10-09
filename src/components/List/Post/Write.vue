@@ -56,7 +56,7 @@
                     line(x1="16" y1="2" x2="16" y2="6")
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
-                | 여행 시작 날짜 : 
+                | 여행 시작 : 
               input#start-date(type="date" @change="setDate('start')")
             .end-date(role="group")
               label(for="end-date")
@@ -66,7 +66,7 @@
                     line(x1="16" y1="2" x2="16" y2="6")
                     line(x1="8" y1="2" x2="8" y2="6")
                     line(x1="3" y1="10" x2="21" y2="10")
-                | 여행 종료 날짜 : 
+                | 여행 종료 : 
               input#end-date(type="date" @change="setDate('end')")
             span.date-error-message(v-show="showDateErrorMessage") {{ dateErrorMessage }}
         ul.write-contents-view
@@ -76,7 +76,7 @@
             img(v-if="content.key === 'img'" :src="content.value")
             button.delete(type="button" @click="deleteContent(index)" aria-label="삭제") X
         fieldset.input-contents
-          legend.a11y-hidden 이미지 택스트 입력 폼
+          legend.a11y-hidden 이미지 텍스트 입력 폼
           .contents-image
             label(for="contents-image") 
               i
@@ -215,7 +215,7 @@
     border-bottom: 1px solid rgba(#181818, 0.2);
     .title-text-container {
       position: relative;
-      max-width: 1220px;
+      max-width: 900px;
       margin: 55px auto 0 auto;
       input,
       label {
@@ -225,7 +225,7 @@
         background: none;
       }
       #write-title, #write-tag {
-        width: 900px;
+        width: 650px;
         height: 40px;
         line-height: 40px;
       }
@@ -310,7 +310,7 @@
     background: #fff;
     .warp{
       width: 100%;
-      max-width: 1220px;
+      max-width: 900px;
       margin: 0 auto;
     }
     .form-warp{
@@ -321,7 +321,7 @@
     }
     .country-and-city {
       float: left;
-      width: 450px;
+      width: 250px;
       overflow: hidden;
       background-color: #fff;
       border: 1px solid #b0b0b0;
@@ -334,7 +334,7 @@
       z-index: 10;
       left: 0;
       top: 56px;
-      width: 450px;
+      width: 250px;
       overflow: hidden;
       border: 1px solid #b0b0b0;
       border-top: 0 none;
@@ -348,7 +348,7 @@
       }
     }
     .selected-country {
-      width: 450px;
+      width: 250px;
       height: 35px;
       padding: 0 20px;
       line-height: 35px;
@@ -360,20 +360,24 @@
       font-size: 16px;
     }
     .country-and-city-select {
-      width: 470px;
+      width: 270px;
       height: 200px;
       overflow-Y: scroll;
       background: #fff;
       .country {
         margin-top: 20px;
         padding: 0 20px;
-        width: 450px;
+        width: 250px;
         font-size: 16px;
       }
       .city-filter {
         font-size: 16px;
         margin-top: 20px;
+        border-bottom: 1px solid #dfdfdf;
+        padding-bottom: 15px;
         ul{
+          border-top: 1px solid #dfdfdf;
+          padding-top: 10px;
           @include clearfix;
         }
         .city {
@@ -444,7 +448,7 @@
         height: 35px;
         line-height: 35px;
         border: 1px solid #b0b0b0;
-        padding: 0 20px;
+        padding: 0 5px;
         box-shadow: 0 1px 0px 0 #b0b0b0;
       }
       .end-date {
@@ -453,7 +457,7 @@
         height: 35px;
         line-height: 35px;
         border: 1px solid #b0b0b0;
-        padding: 0 20px;
+        padding: 0 5px;
         box-shadow: 0 1px 0px 0 #b0b0b0;
       }
       .date-btn {
@@ -526,10 +530,10 @@
     }
     label, button{
       display: inline-block;
-      width: 200px;
+      width: 210px;
       height: 40px;
       line-height: 40px;
-      padding: 0 10px;
+      padding: 0 5px 0 10px;
       background: #fff;
       border-radius: 35px;
       color: #b0b0b0;
@@ -547,6 +551,7 @@
         display: block;
         float: left;
         font-size: 16px;
+        font-family: 'Nanum Square', 'Avenir', Helvetica, Arial, sans-serif;
       }
     }
     .contents-text{
@@ -611,11 +616,13 @@
           bottom: -190px;
           font-size: 56px;
           font-size: 24px;
+          width: 90%;
         }
         .tag {
           left: 10px;
           bottom: -230px;
           font-size: 18px;
+          width: 90%;
         }
         .title-image-form {
           left: 10px;
@@ -626,7 +633,7 @@
         }
         #write-title, #write-tag {
           width: 100%;
-          min-width: 300px;
+          // min-width: 300px;
         }
       }
     }
@@ -825,11 +832,13 @@
           bottom: -190px;
           font-size: 56px;
           font-size: 24px;
+          width: 90%;
         }
         .tag {
           left: 10px;
           bottom: -230px;
           font-size: 18px;
+          width: 90%;
         }
         .title-image-form {
           left: 10px;
@@ -839,8 +848,7 @@
           }
         }
         #write-title, #write-tag {
-          width: 748px;
-          min-width: 300px;
+          width: 100%;
         }
       }
     }
@@ -848,14 +856,15 @@
     .title-image-container {
       height: 300px;
       img{
-        width: auto;
-        height: 200%;
+        width: 100%;
+        height: auto;
         padding: 0;
       }
       .title-background{
         height: 300px;
       }
     }
+      
 
     .write-contents-container {
       .warp{

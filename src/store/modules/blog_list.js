@@ -19,6 +19,7 @@ export default {
         item.write_date = payload[prop].write_date.substring(0, 10).split('-').join('.')
         state.lists.push(item)
       }
+      state.lists.sort((a, b) => b.write_date - a.write_date)
     },
     swipeBlogList (state, payload) {
       switch (payload) {

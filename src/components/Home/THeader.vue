@@ -7,7 +7,7 @@
             a(href) Traveler
         button.btn-nav.icon-hamburger(type="button" @click="onshowModal") 메뉴
         .search
-          form#search-form(role="search" :submit.prevent="goTofilterList")
+          form#search-form(role="search" @submit.prevent="goTofilterList")
             fieldset 
               legend.a11y-hidden 검색 폼
               label.btn-open-search.icon-search(for="search-keyword" @click="onshowSearch") 
@@ -80,6 +80,7 @@
         this.search = e.target.value
       },
       searchBlogList () {
+        console.log('되니????')
         this.$store.commit('closeMeSearch')
         this.$store.commit('setAllBlogList', {'id': this.$route.params.id})
         this.$store.commit('filterSearchList', {'id': this.$route.params.id, 'search': this.$route.query.search})
