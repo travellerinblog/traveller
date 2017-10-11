@@ -102,7 +102,7 @@
             img {
               position: absolute;
               left: 50%;
-              top: 54%;
+              top: 50%;
               transform: translate(-50%, -50%);
               user-drag: none;
               user-select: none;
@@ -182,8 +182,8 @@
             figure {
               div {
                 img {
-                  width: 150%;
-                  height: auto;
+                  width: auto;
+                  height: 254px;
                 }
               }
             }
@@ -221,6 +221,7 @@
             figure {
               height: 340px;
               div {
+                overflow: hidden;
                 height: 340px;
                 img {
                   width: 150%;
@@ -244,7 +245,7 @@
               div {
                 img {
                   width: auto;
-                  height: 150%;
+                  height: 340px;
                 }
               }
             }

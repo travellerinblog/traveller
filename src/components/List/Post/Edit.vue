@@ -719,10 +719,13 @@
           }
         }
       }
+      .date-error-message {
+        bottom: -70px;
+      }
     }
       
     .write-contents-view {
-      margin-top: 20px;
+      margin-top: 40px;
       textarea {
         padding: 10px;
       }
@@ -933,10 +936,13 @@
           }
         }
       }
+      .date-error-message {
+        bottom: -70px;
+      }
     }
       
     .write-contents-view {
-      margin-top: 20px;
+      margin-top: 40px;
       textarea {
         padding: 10px;
       }
