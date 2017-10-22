@@ -35,7 +35,7 @@
       this.$nextTick(function () {
         // 윈도우 사이즈가 변할때 이벤트가 발생하게 연결
         window.addEventListener('resize', this.makePageNumber)
-        // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행.
+        // 접속했을 때의 윈도우 사이즈를 알아내기 위해 실행
         this.makePageNumber()
       })
     },
